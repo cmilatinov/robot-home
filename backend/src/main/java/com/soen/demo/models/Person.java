@@ -1,5 +1,6 @@
 package com.soen.demo.models;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,15 +11,17 @@ public class Person {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
+	@Column(name = "name")
 	private String name;
+	@Column(name = "roomId")
 	private int roomId;
 	
-	public Person(int id, String name, int roomId) {
-		super();
-		this.id = id;
+	public Person(String name, int roomId) {
 		this.name = name;
 		this.roomId = roomId;
 	}
+
+	public Person() {}
 	
 	@Override
 	public String toString() {
