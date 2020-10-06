@@ -1,1 +1,1 @@
-release: ./build.sh
+release: bash ./build.sh
