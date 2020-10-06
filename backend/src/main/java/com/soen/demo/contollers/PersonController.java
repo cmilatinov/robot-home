@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.soen.demo.models.Person;
 import com.soen.demo.repositories.PersonRepository;
 
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/api")
 public class PersonController {

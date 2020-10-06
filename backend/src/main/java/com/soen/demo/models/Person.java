@@ -12,6 +12,9 @@ public class Person {
 	private int id;
 	private String name;
 	private int roomId;
+
+	public Person() {
+	}
 	
 	public Person(int id, String name, int roomId) {
 		super();
