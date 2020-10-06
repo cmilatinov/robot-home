@@ -15,6 +15,7 @@ public class Person {
 	private String name;
 	@Column(name = "roomId")
 	private int roomId;
+
 	
 	public Person(String name, int roomId) {
 		this.name = name;

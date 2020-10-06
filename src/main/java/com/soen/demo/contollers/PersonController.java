@@ -52,6 +52,7 @@ public class PersonController {
 		if (p.isPresent()) {
 			p.get().setName(dto.getName());
 			p.get().setRoomId(dto.getRoomId());
+			personRepository.save(p.get());
 		}
 		else {
 			personRepository.save(new Person(dto.getName(), dto.getRoomId()));
