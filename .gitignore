@@ -1,6 +1,7 @@
 **/.idea/
 **/node_modules/
 target/
+src/main/resources/public/
 
 HELP.md
 target/
