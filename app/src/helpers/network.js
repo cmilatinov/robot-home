@@ -14,8 +14,16 @@ class Network {
         return this.axiosInstance.get(url, params);
     }
 
-    post(url, params) {
-        return this.axiosInstance.post(url, params);
+    post(url, body, params) {
+        return this.axiosInstance.post(url, body, params);
+    }
+
+    setToken(token) {
+        this.axiosInstance.defaults.headers.common[`Authorization`] = `Bearer ${token}`;
+    }
+
+    clearToken() {
+        delete this.axiosInstance.defaults.headers.common["Authorization"];
     }
 
 }
