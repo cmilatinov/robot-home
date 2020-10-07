@@ -1,16 +1,108 @@
 <template>
-    <v-container fluid class="w-100 h-100">
-        <v-card class="w-100 h-100">
-            <v-card-title>This is a card</v-card-title>
-            <v-card-subtitle>Subtitle</v-card-subtitle>
-            <v-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eget tellus non augue dapibus porta hendrerit quis lectus. Suspendisse pulvinar.</v-card-text>
-        </v-card>
+    <v-container fluid>
+        <v-row class="d-flex">
+          <v-col
+            class="align-center-content"
+            :cols="3"
+          >
+            <v-card>
+              <v-card-title><h3>Simulation</h3></v-card-title>
+              <v-card-subtitle>Context of the Simulation</v-card-subtitle>
+              <div class="pa-4">
+              <v-img
+                max-width="100"
+                max-height="100"
+                src="https://www.c2mi.ca/wp-content/uploads/2019/03/person-silhouette-vector-icon-vector-id1129576939.jpg"
+              ></v-img>
+              <v-card-text>User</v-card-text>
+              <v-switch
+                align="center"
+                v-model="simulationToggle"
+                :label="`Simulation ${simulationToggle?'On':'Off'}`"
+              ></v-switch>
+              <v-time-picker
+                format="ampm"
+              ></v-time-picker>
+              </div>
+            </v-card>
+          </v-col>
+          <v-col
+          >
+            <v-card>
+              <v-card-title><h3>Smart Home Modules</h3></v-card-title>
+              <v-tabs v-model="tab" grow>
+                <v-tab
+                  v-for="module in smartModules"
+                  :key="module"
+                >
+                  {{ module }}
+                </v-tab>
+              </v-tabs>
+              <v-tabs-items v-model="tab">
+                <v-tab-item>
+                  <v-card flat>
+                    <v-card-text>
+                      SHS is responsible for providing an API where smart home modules can be subscribed to track  environmental conditions like temperature inside and outside, date and time , as well as information regarding the layout of the house (number of rooms, windows and lights); motion sensors to detect the presence of people in the rooms;  sensors in the windows and doors.  Smart modules use that information to perform their work
+                    </v-card-text>
+                  </v-card>
+                </v-tab-item>
+                <v-tab-item>
+                  <v-card flat>
+                    <v-card-text>
+                      This module is responsible to execute general actions to house items like doors, windows, lights, etc.  at user request or by  any smart home module.
+                    </v-card-text>
+                  </v-card>
+                </v-tab-item>
+                <v-tab-item>
+                  <v-card flat>
+                    <v-card-text>
+                      This module ensures that the home is protected from intruders and it relies on sensors to determine the presence of undesired people.
+                    </v-card-text>
+                  </v-card>
+                </v-tab-item>
+                <v-tab-item>
+                  <v-card flat>
+                    <v-card-text>
+                      Smart home heating module.
+                    </v-card-text>
+                  </v-card>
+                </v-tab-item>
+              </v-tabs-items>
+            </v-card>
+          </v-col>
+          <v-col
+            :cols=3
+          >
+            <v-card>
+              <v-card-title><h3>EXAMPLE Home Layout</h3></v-card-title>
+              <v-card-subtitle>Example Home</v-card-subtitle>
+              <div class="pa-4">
+              <v-img
+                src="https://www.roomsketcher.com/blog/wp-content/uploads/2012/05/Unoptimal-Floor-plan.png"
+                max-height="400"
+                max-width="400"
+              ></v-img>
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
+
     </v-container>
 </template>
 
 <script>
     export default {
-        name: "dashboard"
+      data () {
+        return {
+          name: "dashboard",
+          tab:null,
+          smartModules: [
+            'SHS', 'SHC', 'SHP', 'SHH', '+'
+          ],
+          simulationToggle: false
+
+        }
+      }
     }
 </script>
 
