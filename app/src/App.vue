@@ -1,29 +1,25 @@
 <template>
-    <div id="app">
-        <img alt="Vue logo" src="./assets/logo.png">
-        <HelloWorld msg="Welcome to Your Vue.js App"/>
-        <p>THIS IS A TEST</p>
-    </div>
+    <v-app id="app">
+        <keep-alive>
+            <router-view></router-view>
+        </keep-alive>
+    </v-app>
 </template>
 
 <script>
-    import HelloWorld from './components/HelloWorld.vue'
-
     export default {
         name: 'App',
-        components: {
-            HelloWorld
+        created() {
+            this.$network.get('/persons').then(res => console.log(res.data));
         }
     }
 </script>
 
-<style>
+<style lang="scss">
+    @import "./assets/style/global";
+
     #app {
-        font-family: Avenir, Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-align: center;
-        color: #2c3e50;
-        margin-top: 60px;
+        width: 100% !important;
+        height: 100% !important;
     }
 </style>
