@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container fluid class="h-100 d-flex flex-column justify-center align-center">
         <v-row class="d-flex">
           <v-col
             class="align-center-content"
@@ -7,22 +7,106 @@
           >
             <v-card>
               <v-card-title><h3>Simulation</h3></v-card-title>
-              <v-card-subtitle>Context of the Simulation</v-card-subtitle>
               <div class="pa-4">
-              <v-img
-                max-width="100"
-                max-height="100"
-                src="https://www.c2mi.ca/wp-content/uploads/2019/03/person-silhouette-vector-icon-vector-id1129576939.jpg"
-              ></v-img>
-              <v-card-text>User</v-card-text>
-              <v-switch
-                align="center"
-                v-model="simulationToggle"
-                :label="`Simulation ${simulationToggle?'On':'Off'}`"
-              ></v-switch>
-              <v-time-picker
-                format="ampm"
-              ></v-time-picker>
+                <v-switch
+                    align="center"
+                    v-model="simulationToggle"
+                    :label="`Simulation ${simulationToggle?'On':'Off'}`"
+                ></v-switch>
+                <v-img
+                 max-width="100"
+                 max-height="100"
+                  src="https://www.c2mi.ca/wp-content/uploads/2019/03/person-silhouette-vector-icon-vector-id1129576939.jpg"
+                ></v-img>
+                <v-card-text>User</v-card-text>
+                <v-expansion-panels>
+                  <v-expansion-panel>
+                    <v-expansion-panel-header>
+                     Edit Context
+                   </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <v-form ref="contextForm" v-model="contextForm">
+                        <v-menu
+                            ref="timeMenu"
+                            v-model="timeMenu"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            :return-value.sync="time"
+                            transition="scale-transition"
+                            offset-y
+                            max-width="290px"
+                            min-width="290px"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                                v-model="time"
+                                label="Time"
+                                prepend-icon="mdi-clock-time-four-outline"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                            ></v-text-field>
+                          </template>
+                          <v-time-picker
+                              v-if="timeMenu"
+                              v-model="time"
+                              full-width
+                              @click:minute="$refs.contextForm.save(time)"
+                          ></v-time-picker>
+                        </v-menu>
+
+                        <v-menu
+                            ref="dateMenu"
+                            v-model="dateMenu"
+                            :close-on-content-click="false"
+                            :return-value.sync="date"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="290px"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                                v-model="date"
+                                label="Date"
+                                prepend-icon="mdi-calendar"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                              v-model="date"
+                              no-title
+                              scrollable
+                          >
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                text
+                                color="primary"
+                                @click="dateMenu = false"
+                            >
+                              Cancel
+                            </v-btn>
+                            <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.dateMenu.save(date)"
+                            >
+                              OK
+                            </v-btn>
+                          </v-date-picker>
+                        </v-menu>
+
+                        <v-text-field
+                          v-model="temperature"
+                          :rules="temperatureRules"
+                          label="temperature"
+                        ></v-text-field>
+
+                      </v-form>
+                   </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
               </div>
             </v-card>
           </v-col>
@@ -94,12 +178,17 @@
     export default {
       data () {
         return {
+          contextForm: true,
           name: "dashboard",
           tab:null,
           smartModules: [
             'SHS', 'SHC', 'SHP', 'SHH', '+'
           ],
-          simulationToggle: false
+          simulationToggle: false,
+          time: null,
+          timeMenu: false,
+          date: null,
+          dateMenu: false
 
         }
       }
