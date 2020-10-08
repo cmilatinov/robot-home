@@ -7,6 +7,9 @@ public class Window {
         this.state = state;
     }
 
+    public Window() {
+    }
+
     @Override
     public String toString() {
         return "Window{" +
