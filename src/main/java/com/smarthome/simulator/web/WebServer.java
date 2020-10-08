@@ -11,7 +11,7 @@ public class WebServer extends Thread {
     private HttpServer httpServer;
 
     private static final String serverHome = "./public";
-    private static final int port = 80;
+    private static final int port = 8080;
 
     public void run() {
         try {

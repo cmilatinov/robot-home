@@ -39,7 +39,7 @@ public class SmartHomeSimulator extends Application {
             }
         });
 
-        webEngine.load("http://localhost/");
+        webEngine.load("http://localhost:8080/");
         WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceId) -> System.out.println(message));
 
     }

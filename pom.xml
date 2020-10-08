@@ -24,6 +24,12 @@
                 <version>0.0.4</version>
                 <configuration>
                     <mainClass>com.smarthome.simulator.SmartHomeSimulator</mainClass>
+                    <options>
+                        <option>--add-exports</option>
+                        <option>javafx.web/com.sun.javafx.webkit=ALL-UNNAMED</option>
+                        <option>--add-exports</option>
+                        <option>javafx.graphics/com.sun.javafx.sg.prism=ALL-UNNAMED</option>
+                    </options>
                 </configuration>
             </plugin>
         </plugins>
