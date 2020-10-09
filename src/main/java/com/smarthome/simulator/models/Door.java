@@ -1,16 +1,18 @@
 package com.smarthome.simulator.models;
 
-public class Door {
+public class Door extends Id {
     private boolean open;
 
     @Override
     public String toString() {
         return "Door{" +
+                "id='" + getId() + '\'' +
                 "open=" + open +
                 '}';
     }
 
     public Door() {
+        super();
     }
 
     public boolean isOpen() {
@@ -22,6 +24,7 @@ public class Door {
     }
 
     public Door(boolean open) {
+        super();
         this.open = open;
     }
 }

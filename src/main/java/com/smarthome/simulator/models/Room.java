@@ -3,21 +3,12 @@ package com.smarthome.simulator.models;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
-public class Room {
-    private int id;
+public class Room extends Id {
     private String name;
     private Rectangle2D dimensions;
     private ArrayList<Window> windows;
     private ArrayList<Door> doors;
     private ArrayList<Light> lights;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -54,7 +45,7 @@ public class Room {
     @Override
     public String toString() {
         return "Room{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", name='" + name + '\'' +
                 ", dimensions=" + dimensions +
                 ", windows=" + windows +
@@ -64,6 +55,7 @@ public class Room {
     }
 
     public Room() {
+        super();
     }
 
     public ArrayList<Light> getLights() {
@@ -74,8 +66,8 @@ public class Room {
         this.lights = lights;
     }
 
-    public Room(int id, String name, Rectangle2D dimensions, ArrayList<Window> windows, ArrayList<Door> doors, ArrayList<Light> lights) {
-        this.id = id;
+    public Room(String name, Rectangle2D dimensions, ArrayList<Window> windows, ArrayList<Door> doors, ArrayList<Light> lights) {
+        super();
         this.name = name;
         this.dimensions = dimensions;
         this.windows = windows;

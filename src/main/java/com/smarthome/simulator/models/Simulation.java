@@ -3,14 +3,20 @@ package com.smarthome.simulator.models;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Simulation {
+public class Simulation extends Id {
     private LocalDateTime dateTime;
     private boolean running;
     private UserProfile userProfile;
+    private float temperatureInside;
+    private float temperatureOutside;
+    private HouseLayout houseLayout;
+    private String houseLocation;
+    private ArrayList<Person> people;
 
     @Override
     public String toString() {
         return "Simulation{" +
+                "id='" + getId() + '\'' +
                 "dateTime=" + dateTime +
                 ", running=" + running +
                 ", userProfile=" + userProfile +
@@ -87,9 +93,11 @@ public class Simulation {
     }
 
     public Simulation() {
+        super();
     }
 
     public Simulation(LocalDateTime dateTime, boolean running, UserProfile userProfile, float temperatureInside, float temperatureOutside, HouseLayout houseLayout, String houseLocation, ArrayList<Person> people) {
+        super();
         this.dateTime = dateTime;
         this.running = running;
         this.userProfile = userProfile;
@@ -99,10 +107,4 @@ public class Simulation {
         this.houseLocation = houseLocation;
         this.people = people;
     }
-
-    private float temperatureInside;
-    private float temperatureOutside;
-    private HouseLayout houseLayout;
-    private String houseLocation;
-    private ArrayList<Person> people;
 }

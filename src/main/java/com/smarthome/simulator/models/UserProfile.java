@@ -2,8 +2,7 @@ package com.smarthome.simulator.models;
 
 import java.util.ArrayList;
 
-public class UserProfile {
-    private int id;
+public class UserProfile extends Id {
     private String name;
     private ArrayList<String> permissions;
     private Person person;
@@ -11,19 +10,11 @@ public class UserProfile {
     @Override
     public String toString() {
         return "UserProfile{" +
-                "id=" + id +
+                "id='" + getId() + '\'' +
                 ", name='" + name + '\'' +
                 ", permissions=" + permissions +
                 ", person=" + person +
                 '}';
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -51,10 +42,11 @@ public class UserProfile {
     }
 
     public UserProfile() {
+        super();
     }
 
-    public UserProfile(int id, String name, ArrayList<String> permissions, Person person) {
-        this.id = id;
+    public UserProfile(String name, ArrayList<String> permissions, Person person) {
+        super();
         this.name = name;
         this.permissions = permissions;
         this.person = person;

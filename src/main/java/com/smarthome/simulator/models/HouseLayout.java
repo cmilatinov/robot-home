@@ -2,26 +2,17 @@ package com.smarthome.simulator.models;
 
 import java.util.ArrayList;
 
-public class HouseLayout {
-    private int id;
+public class HouseLayout extends Id {
     private String name;
     private ArrayList<Room> rooms;
 
     @Override
     public String toString() {
         return "HouseLayout{" +
-                "id=" + id +
+                "id='" + getId() + '\'' +
                 ", name='" + name + '\'' +
                 ", rooms=" + rooms +
                 '}';
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -41,10 +32,11 @@ public class HouseLayout {
     }
 
     public HouseLayout() {
+        super();
     }
 
-    public HouseLayout(int id, String name, ArrayList<Room> rooms) {
-        this.id = id;
+    public HouseLayout(String name, ArrayList<Room> rooms) {
+        super();
         this.name = name;
         this.rooms = rooms;
     }

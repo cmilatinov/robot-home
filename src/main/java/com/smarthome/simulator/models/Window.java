@@ -1,18 +1,21 @@
 package com.smarthome.simulator.models;
 
-public class Window {
+public class Window extends Id {
     private String state;
 
     public Window(String state) {
+        super();
         this.state = state;
     }
 
     public Window() {
+        super();
     }
 
     @Override
     public String toString() {
         return "Window{" +
+                "id='" + getId() + '\'' +
                 "state='" + state + '\'' +
                 '}';
     }
