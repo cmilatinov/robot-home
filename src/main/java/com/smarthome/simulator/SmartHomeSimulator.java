@@ -11,13 +11,11 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 
-import java.util.Arrays;
-
 public class SmartHomeSimulator extends Application {
 
     private final WebServer server = new WebServer();
 
-    private final JavaBridge javaBridge = new JavaBridge();
+    private JavaBridge javaBridge;
 
     @Override
     public void start(Stage primaryStage) {
@@ -25,12 +23,11 @@ public class SmartHomeSimulator extends Application {
 
         WebView webView = new WebView();
         final WebEngine webEngine = webView.getEngine();
+        javaBridge = new JavaBridge(webEngine);
 
-        Scene scene = new Scene(webView, 1280, 720);
+        Scene scene = new Scene(webView, 1920, 1080);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        javaBridge.addEventListener("login.click", (event) -> System.out.println(Arrays.toString(javaBridge.array)));
 
         webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
             if (Worker.State.SUCCEEDED == newValue) {
@@ -39,9 +36,8 @@ public class SmartHomeSimulator extends Application {
             }
         });
 
-        webEngine.load("http://localhost:8080/");
+        webEngine.load("http://localhost:" + WebServer.SERVER_PORT + "/");
         WebConsoleListener.setDefaultListener((view, message, lineNumber, sourceId) -> System.out.println(message));
-
     }
 
 }

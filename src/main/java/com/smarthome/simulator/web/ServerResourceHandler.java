@@ -10,17 +10,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Serves static resources from the specified root folder.
+ */
 public class ServerResourceHandler implements HttpHandler {
 
-    private final String pathToRoot;
+    private final String rootPath;
     private final Map<String, Resource> resources = new HashMap<>();
 
-    public ServerResourceHandler(String pathToRoot) throws IOException {
-        this.pathToRoot = pathToRoot.endsWith("/") ? pathToRoot : pathToRoot + "/";
+    public ServerResourceHandler(String rootPath) throws IOException {
+        this.rootPath = rootPath.endsWith("/") ? rootPath : rootPath + "/";
 
-        File[] files = new File(pathToRoot).listFiles();
+        File[] files = new File(rootPath).listFiles();
         if (files == null) {
-            throw new IllegalStateException("Couldn't find webroot: " + pathToRoot);
+            throw new IllegalStateException("Couldn't find webroot: " + rootPath);
         }
         for (File f : files) {
             processFile("", f);
@@ -73,7 +76,7 @@ public class ServerResourceHandler implements HttpHandler {
         if (!requestPath.contains(".")) {
             requestPath = "index.html";
         }
-        serveFile(httpExchange, pathToRoot + requestPath);
+        serveFile(httpExchange, rootPath + requestPath);
     }
 
     private void serveFile(HttpExchange httpExchange, String resourcePath) throws IOException {
@@ -152,4 +155,5 @@ public class ServerResourceHandler implements HttpHandler {
         String ext = getFileExt(path).toLowerCase();
         return MIME_MAP.getOrDefault(ext, "application/octet-stream");
     }
+
 }

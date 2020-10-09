@@ -6,12 +6,15 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Hosts a HTTP web server locally using the contents of the "public" folder.
+ */
 public class WebServer extends Thread {
 
     private HttpServer httpServer;
 
     private static final String serverHome = "./public";
-    private static final int port = 8080;
+    public static final int SERVER_PORT = 8080;
 
     public void run() {
         try {
@@ -20,7 +23,7 @@ public class WebServer extends Thread {
             ExecutorService executor = Executors.newFixedThreadPool(1);
 
             // Start the http server
-            httpServer = HttpServer.create(new InetSocketAddress("localhost", port), 0);
+            httpServer = HttpServer.create(new InetSocketAddress("localhost", SERVER_PORT), 0);
             httpServer.createContext("/", new ServerResourceHandler(serverHome));
             httpServer.setExecutor(executor);
             httpServer.start();

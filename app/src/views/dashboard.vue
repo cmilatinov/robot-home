@@ -1,13 +1,11 @@
 <template>
-    <v-container fluid class="h-100 d-flex flex-column justify-center align-center">
-        <v-row class="d-flex">
-            <v-col  class="align-center-content"
-                    :cols="3">
+    <v-container fluid class="h-100">
+        <v-row>
+            <v-col cols="3">
                 <v-card>
                     <v-card-title><h3>Simulation</h3></v-card-title>
                     <div class="pa-4">
                         <v-switch
-                                align="center"
                                 v-model="simulationToggle"
                                 :label="`Simulation ${simulationToggle?'On':'Off'}`"/>
                         <v-img  max-width="100"
@@ -44,7 +42,6 @@
                                                     v-if="timeMenu"
                                                     v-model="time"
                                                     full-width
-                                                    @click:minute="$refs.contextForm.save(time)"
                                             ></v-time-picker>
                                         </v-menu>
 
@@ -72,13 +69,11 @@
                                                     scrollable>
                                                 <v-spacer></v-spacer>
                                                 <v-btn  text
-                                                        color="primary"
-                                                        @click="dateMenu = false">
+                                                        color="primary">
                                                     Cancel
                                                 </v-btn>
                                                 <v-btn  text
-                                                        color="primary"
-                                                        @click="$refs.dateMenu.save(date)">
+                                                        color="primary">
                                                     OK
                                                 </v-btn>
                                             </v-date-picker>
@@ -96,13 +91,11 @@
                     </div>
                 </v-card>
             </v-col>
-            <v-col>
+            <v-col cols="6">
                 <v-card>
                     <v-card-title><h3>Smart Home Modules</h3></v-card-title>
                     <v-tabs v-model="tab" grow>
-                        <v-tab
-                                v-for="module in smartModules"
-                                :key="module">
+                        <v-tab v-for="module in smartModules" :key="module">
                             {{ module }}
                         </v-tab>
                     </v-tabs>
@@ -144,7 +137,7 @@
                     </v-tabs-items>
                 </v-card>
             </v-col>
-            <v-col :cols=3>
+            <v-col cols="3">
                 <v-card>
                     <v-card-title><h3>EXAMPLE Home Layout</h3></v-card-title>
                     <v-card-subtitle>Example Home</v-card-subtitle>
@@ -156,7 +149,6 @@
                 </v-card>
             </v-col>
         </v-row>
-
     </v-container>
 </template>
 
@@ -176,6 +168,12 @@
                 date: null,
                 dateMenu: false
             }
+        },
+        created() {
+            this.$store.subscribe(mutation => {
+                if (mutation.type === 'update')
+                    this.$forceUpdate();
+            });
         }
     }
 </script>
