@@ -4,6 +4,144 @@
             <v-col cols="3" class="h-100 pr-0">
                 <v-card class="h-100 main-card" flat outlined>
                     <v-card-title><v-icon class="primary--text">fa-project-diagram</v-icon>Simulation</v-card-title>
+                    <v-container fluid class="h-100 py-0 d-flex flex-column">
+                        <v-switch
+                            v-model="simulationToggle"
+                            :label="`Simulation ${simulationToggle?'On':'Off'}`"
+                        ></v-switch>
+                        <v-container
+                            fluid class="py-0"
+                            v-if="simulationToggle"
+                        >
+                            <span>Date: {{ date }}</span><br>
+                            <span>Time: {{ time }}</span><br>
+                            <span>Outside Temperature: {{ outsideTemperature }}</span><br>
+                            <span>Inside Temperature: {{ insideTemperature }}</span>
+                        </v-container>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    Edit Context
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form ref="contextForm" v-model="contextForm">
+                                        <v-menu
+                                            ref="timeMenu"
+                                            v-model="timeMenu"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            :return-value.sync="time"
+                                            transition="scale-transition"
+                                            offset-y
+                                            max-width="290px"
+                                            min-width="290px"
+
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    v-model="time"
+                                                    label="Time"
+                                                    prepend-icon="mdi-clock-time-four-outline"
+                                                    readonly
+                                                    :rules="[v => v!=null|| 'Time is required']"
+                                                    required
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                ></v-text-field>
+                                            </template>
+                                            <v-time-picker
+                                                v-if="timeMenu"
+                                                v-model="time"
+                                                full-width
+                                                required
+                                                @click:minute="$refs.timeMenu.save(time)"
+                                            ></v-time-picker>
+                                        </v-menu>
+                                        <v-menu
+                                            ref="dateMenu"
+                                            v-model="dateMenu"
+                                            :close-on-content-click="false"
+                                            :return-value.sync="date"
+                                            transition="scale-transition"
+                                            offset-y
+                                            min-width="290px"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    v-model="date"
+                                                    label="Date"
+                                                    prepend-icon="mdi-calendar"
+                                                    readonly
+                                                    :rules="[v => !!v || 'Date is required']"
+                                                    required
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                ></v-text-field>
+                                            </template>
+                                            <v-date-picker
+                                                v-model="date"
+                                                no-title
+                                                scrollable
+                                            >
+                                                <v-spacer></v-spacer>
+                                                <v-btn
+                                                    text
+                                                    color="primary"
+                                                    @click="dateMenu = false"
+                                                >
+                                                    Cancel
+                                                </v-btn>
+                                                <v-btn
+                                                    text
+                                                    color="primary"
+                                                    @click="$refs.dateMenu.save(date)"
+                                                >
+                                                    OK
+                                                </v-btn>
+                                            </v-date-picker>
+                                        </v-menu>
+                                        <v-text-field
+                                            v-model="outsideTemperature"
+                                            :rules="temperatureRules"
+                                            label="Outside temperature"
+                                        ></v-text-field>
+                                        <v-text-field
+                                            v-model="insideTemperature"
+                                            :rules="temperatureRules"
+                                            label="Inside temperature"
+                                        ></v-text-field>
+                                        <div>
+                                            <v-btn
+                                                :disabled="!contextForm"
+                                                color="success"
+                                                class="mr-4"
+                                                @click="submit"
+                                            >
+                                                Validate
+                                            </v-btn>
+
+                                            <v-btn
+                                                :disabled="!contextForm"
+                                                color="success"
+                                                class="mr-4"
+                                                @click="submit"
+                                            >
+                                                Validate
+                                            </v-btn>
+
+                                            <v-btn
+                                                color="error"
+                                                class="mr-4"
+                                                @click="reset"
+                                            >
+                                                Reset Form
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-container>
                 </v-card>
             </v-col>
             <v-col cols="9" class="h-100 d-flex flex-column">
@@ -49,13 +187,20 @@
         components: {HouseLayoutRoom, HouseLayout},
         data() {
             return {
-                contextForm: true,
+                contextForm: false,
                 name: "dashboard",
                 tab: null,
                 smartModules: [
                     'SHC', 'SHP', 'SHH'
                 ],
                 simulationToggle: false,
+                outsideTemperature: null,
+                insideTemperature: null,
+                temperatureRules: [
+                    v => !!v || 'Item is required',
+                    v => !isNaN(Number(v)) || 'Temperature must be a number.',
+                    v => (v < 100 && v > -100) || 'Invalid temperature. Valid range is -100 to 100.'
+                ],
                 time: null,
                 timeMenu: false,
                 date: null,
@@ -76,6 +221,16 @@
                 ]
             }
         },
+
+        methods: {
+            validate () {
+                this.$refs.contextForm.validate()
+            },
+            reset () {
+                this.$refs.contextForm.reset()
+            }
+        },
+
         created() {
             this.$store.subscribe(mutation => {
                 if (mutation.type === 'update')
