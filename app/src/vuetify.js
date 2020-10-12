@@ -10,6 +10,11 @@ export default new Vuetify({
         dark: true,
         options: {
             customProperties: true
+        },
+        themes: {
+            dark: {
+                primary: '#1db954'
+            }
         }
     }
 });

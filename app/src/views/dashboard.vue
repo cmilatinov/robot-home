@@ -1,172 +1,79 @@
 <template>
-    <v-container fluid class="h-100">
-        <v-row>
-            <v-col cols="3">
-                <v-card>
-                    <v-card-title><h3>Simulation</h3></v-card-title>
-                    <div class="pa-4">
-                        <v-switch
-                                v-model="simulationToggle"
-                                :label="`Simulation ${simulationToggle?'On':'Off'}`"/>
-                        <v-img  max-width="100"
-                                max-height="100"
-                                src="https://www.c2mi.ca/wp-content/uploads/2019/03/person-silhouette-vector-icon-vector-id1129576939.jpg"/>
-                        <v-card-text>User</v-card-text>
-                        <v-expansion-panels>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    Edit Context
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form ref="contextForm" v-model="contextForm">
-                                        <v-menu ref="timeMenu"
-                                                v-model="timeMenu"
-                                                :close-on-content-click="false"
-                                                :nudge-right="40"
-                                                :return-value.sync="time"
-                                                transition="scale-transition"
-                                                offset-y
-                                                max-width="290px"
-                                                min-width="290px">
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field
-                                                        v-model="time"
-                                                        label="Time"
-                                                        prepend-icon="mdi-clock-time-four-outline"
-                                                        readonly
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                ></v-text-field>
-                                            </template>
-                                            <v-time-picker
-                                                    v-if="timeMenu"
-                                                    v-model="time"
-                                                    full-width
-                                            ></v-time-picker>
-                                        </v-menu>
-
-                                        <v-menu
-                                                ref="dateMenu"
-                                                v-model="dateMenu"
-                                                :close-on-content-click="false"
-                                                :return-value.sync="date"
-                                                transition="scale-transition"
-                                                offset-y
-                                                min-width="290px">
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field
-                                                        v-model="date"
-                                                        label="Date"
-                                                        prepend-icon="mdi-calendar"
-                                                        readonly
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                ></v-text-field>
-                                            </template>
-                                            <v-date-picker
-                                                    v-model="date"
-                                                    no-title
-                                                    scrollable>
-                                                <v-spacer></v-spacer>
-                                                <v-btn  text
-                                                        color="primary">
-                                                    Cancel
-                                                </v-btn>
-                                                <v-btn  text
-                                                        color="primary">
-                                                    OK
-                                                </v-btn>
-                                            </v-date-picker>
-                                        </v-menu>
-
-<!--                                        <v-text-field-->
-<!--                                                v-model="temperature"-->
-<!--                                                :rules="temperatureRules"-->
-<!--                                                label="temperature"/>-->
-
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </div>
+    <v-container fluid class="h-100 py-0 d-flex flex-column">
+        <v-row style="flex: 5;">
+            <v-col cols="3" class="h-100 pr-0">
+                <v-card class="h-100 main-card" flat outlined>
+                    <v-card-title><v-icon class="primary--text">fa-project-diagram</v-icon>Simulation</v-card-title>
                 </v-card>
             </v-col>
-            <v-col cols="6">
-                <v-card>
-                    <v-card-title><h3>Smart Home Modules</h3></v-card-title>
-                    <v-tabs v-model="tab" grow>
-                        <v-tab v-for="module in smartModules" :key="module">
-                            {{ module }}
-                        </v-tab>
-                    </v-tabs>
-                    <v-tabs-items v-model="tab">
-                        <v-tab-item>
-                            <v-card flat>
-                                <v-card-text>
-                                    SHS is responsible for providing an API where smart home modules can be subscribed
-                                    to track environmental conditions like temperature inside and outside, date and time
-                                    , as well as information regarding the layout of the house (number of rooms, windows
-                                    and lights); motion sensors to detect the presence of people in the rooms; sensors
-                                    in the windows and doors. Smart modules use that information to perform their work
-                                </v-card-text>
-                            </v-card>
-                        </v-tab-item>
-                        <v-tab-item>
-                            <v-card flat>
-                                <v-card-text>
-                                    This module is responsible to execute general actions to house items like doors,
-                                    windows, lights, etc. at user request or by any smart home module.
-                                </v-card-text>
-                            </v-card>
-                        </v-tab-item>
-                        <v-tab-item>
-                            <v-card flat>
-                                <v-card-text>
-                                    This module ensures that the home is protected from intruders and it relies on
-                                    sensors to determine the presence of undesired people.
-                                </v-card-text>
-                            </v-card>
-                        </v-tab-item>
-                        <v-tab-item>
-                            <v-card flat>
-                                <v-card-text>
-                                    Smart home heating module.
-                                </v-card-text>
-                            </v-card>
-                        </v-tab-item>
-                    </v-tabs-items>
+            <v-col cols="9" class="h-100 d-flex flex-column">
+                <v-card style="flex: 7;" class="h-100 mb-3 main-card d-flex flex-column" flat outlined>
+                    <v-card-title><v-icon class="primary--text">fa-ruler-combined</v-icon>House Layout</v-card-title>
+                    <house-layout>
+                        <house-layout-room :key="room.name" v-for="room in rooms" :room="room"></house-layout-room>
+                    </house-layout>
                 </v-card>
-            </v-col>
-            <v-col cols="3">
-                <v-card>
-                    <v-card-title><h3>EXAMPLE Home Layout</h3></v-card-title>
-                    <v-card-subtitle>Example Home</v-card-subtitle>
-                    <div class="pa-4">
-                        <v-img  src="https://www.roomsketcher.com/blog/wp-content/uploads/2012/05/Unoptimal-Floor-plan.png"
-                                max-height="400"
-                                max-width="400"></v-img>
-                    </div>
-                </v-card>
+                <div style="flex: 3;" class="d-flex">
+                    <v-card style="margin-right: 6px !important;" class="h-100 main-card flex-1" flat outlined>
+                        <div class="d-flex align-stretch">
+                            <v-card-title class="flex-1 d-flex align-center">
+                                <v-icon class="primary--text">fa-th-large</v-icon>Modules
+                            </v-card-title>
+                            <div>
+                                <v-tabs class="main-tabs">
+                                    <v-tab :key="module" v-for="module in smartModules">{{module}}</v-tab>
+                                </v-tabs>
+                            </div>
+                            <div class="card-title d-flex flex-column justify-center">
+                                <v-btn icon class="mx-2">
+                                    <v-icon>mdi-plus</v-icon>
+                                </v-btn>
+                            </div>
+                        </div>
+
+                    </v-card>
+                    <v-card style="margin-left: 6px !important;" class="h-100 main-card flex-1" flat outlined>
+                        <v-card-title><v-icon class="primary--text">fa-terminal</v-icon>Logs</v-card-title>
+                    </v-card>
+                </div>
             </v-col>
         </v-row>
     </v-container>
 </template>
 
 <script>
+    import HouseLayout from "../components/house-layout";
+    import HouseLayoutRoom from "../components/house-layout-room";
+
     export default {
+        components: {HouseLayoutRoom, HouseLayout},
         data() {
             return {
                 contextForm: true,
                 name: "dashboard",
                 tab: null,
                 smartModules: [
-                    'SHS', 'SHC', 'SHP', 'SHH', '+'
+                    'SHC', 'SHP', 'SHH'
                 ],
                 simulationToggle: false,
                 time: null,
                 timeMenu: false,
                 date: null,
-                dateMenu: false
+                dateMenu: false,
+                rooms: [
+                    {
+                        name: 'Kitchen'
+                    },
+                    {
+                        name: 'Living Room'
+                    },
+                    {
+                        name: 'Master Bedroom'
+                    },
+                    {
+                        name: 'Bathroom'
+                    }
+                ]
             }
         },
         created() {
@@ -179,5 +86,4 @@
 </script>
 
 <style scoped>
-
 </style>
