@@ -1,4 +1,3 @@
 .idea/
 target/
-house-layout.json
 src/main/java/com/smarthome/simulator/models/test.java

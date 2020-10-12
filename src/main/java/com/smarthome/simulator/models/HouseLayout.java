@@ -1,8 +1,12 @@
 package com.smarthome.simulator.models;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.io.FileReader;
 import java.io.IOException;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -54,13 +58,54 @@ public class HouseLayout extends Id {
         this.rooms = rooms;
     }
 
+    public JFileChooser selectFile()
+    {
+        //Setting the UI of the file chooser
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.exit(0);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            System.exit(0);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            System.exit(0);
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+
+        //Creating prompt to choose file and restricting it to JSON file only
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON File", "json");
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(filter);
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        return fileChooser;
+    }
+
     public void parseFile()
     {
+        //Choosing a file
+        JFileChooser fileChooser = selectFile();
+        int result = fileChooser.showOpenDialog(new Component() {});
+        File selectedFile = null;
+
+        //Verifying if the user chose a file
+        if (result == JFileChooser.APPROVE_OPTION) {
+            selectedFile = fileChooser.getSelectedFile();
+        }
+        else
+        {
+            System.exit(0);
+        }
+
         Object obj = null;
 
-        //Parsing house-layout.json
+        //Parsing file
         try {
-            obj = new JSONParser().parse(new FileReader("house-layout.json"));
+            obj = new JSONParser().parse(new FileReader(selectedFile.getAbsolutePath()));
         } catch (IOException e) {
             System.out.println(e.getMessage());
             System.exit(0);
@@ -78,7 +123,7 @@ public class HouseLayout extends Id {
         //Verifying if the user entered the rooms correctly
         if(rooms == null)
         {
-            System.out.println("Could not find any rooms. Make sure that house-layout.json contains a rooms array.");
+            System.out.println("Could not find any rooms. Make sure that the file contains a rooms array.");
             System.exit(0);
         }
 
@@ -124,7 +169,7 @@ public class HouseLayout extends Id {
             }
             catch(NullPointerException e)
             {
-                System.out.println("Missing fields in house-layout.json");
+                System.out.println("Missing fields in json file.");
                 System.exit(0);
             }
 
@@ -142,6 +187,8 @@ public class HouseLayout extends Id {
             //Adding the room to the list of rooms in the house
             roomsList.add(room1);
         }
+
+        this.setRooms(roomsList);
     }
 
     public ArrayList<Window> setRoomWindows(int nbOfWindows)
