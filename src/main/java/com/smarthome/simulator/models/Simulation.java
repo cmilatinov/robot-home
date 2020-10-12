@@ -6,12 +6,37 @@ import java.util.ArrayList;
 public class Simulation extends Id {
     private LocalDateTime dateTime;
     private boolean running;
-    private UserProfile userProfile;
+    private ArrayList<UserProfile> userProfiles;
+    private UserProfile activeUserProfile;
     private float temperatureInside;
     private float temperatureOutside;
     private HouseLayout houseLayout;
     private String houseLocation;
     private ArrayList<Person> people;
+
+    public void addPerson(Person person) {
+        people.add(person);
+    }
+
+    public void removePerson(Person person) {
+        people.remove(person);
+    }
+
+    public ArrayList<UserProfile> getUserProfiles() {
+        return userProfiles;
+    }
+
+    public void setUserProfiles(ArrayList<UserProfile> userProfiles) {
+        this.userProfiles = userProfiles;
+    }
+
+    public UserProfile getActiveUserProfile() {
+        return activeUserProfile;
+    }
+
+    public void setActiveUserProfile(UserProfile activeUserProfile) {
+        this.activeUserProfile = activeUserProfile;
+    }
 
     @Override
     public String toString() {
@@ -19,7 +44,8 @@ public class Simulation extends Id {
                 "id='" + getId() + '\'' +
                 "dateTime=" + dateTime +
                 ", running=" + running +
-                ", userProfile=" + userProfile +
+                ", userProfiles=" + userProfiles +
+                ", activeUProfile=" + activeUserProfile +
                 ", temperatureInside=" + temperatureInside +
                 ", temperatureOutside=" + temperatureOutside +
                 ", houseLayout=" + houseLayout +
@@ -42,14 +68,6 @@ public class Simulation extends Id {
 
     public void setRunning(boolean running) {
         this.running = running;
-    }
-
-    public UserProfile getUserProfile() {
-        return userProfile;
-    }
-
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
     }
 
     public float getTemperatureInside() {
@@ -96,11 +114,12 @@ public class Simulation extends Id {
         super();
     }
 
-    public Simulation(LocalDateTime dateTime, boolean running, UserProfile userProfile, float temperatureInside, float temperatureOutside, HouseLayout houseLayout, String houseLocation, ArrayList<Person> people) {
+    public Simulation(LocalDateTime dateTime, boolean running, ArrayList<UserProfile> userProfiles, UserProfile activeUserProfile, float temperatureInside, float temperatureOutside, HouseLayout houseLayout, String houseLocation, ArrayList<Person> people) {
         super();
         this.dateTime = dateTime;
         this.running = running;
-        this.userProfile = userProfile;
+        this.userProfiles = userProfiles;
+        this.activeUserProfile = activeUserProfile;
         this.temperatureInside = temperatureInside;
         this.temperatureOutside = temperatureOutside;
         this.houseLayout = houseLayout;

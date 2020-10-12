@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class UserProfile extends Id {
     private String name;
     private ArrayList<String> permissions;
-    private Person person;
 
     @Override
     public String toString() {
@@ -13,7 +12,6 @@ public class UserProfile extends Id {
                 "id='" + getId() + '\'' +
                 ", name='" + name + '\'' +
                 ", permissions=" + permissions +
-                ", person=" + person +
                 '}';
     }
 
@@ -33,22 +31,13 @@ public class UserProfile extends Id {
         this.permissions = permissions;
     }
 
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
     public UserProfile() {
         super();
     }
 
-    public UserProfile(String name, ArrayList<String> permissions, Person person) {
+    public UserProfile(String name, ArrayList<String> permissions) {
         super();
         this.name = name;
         this.permissions = permissions;
-        this.person = person;
     }
 }
