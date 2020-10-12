@@ -9,6 +9,10 @@ import './directives';
 import './filters';
 import './mixins';
 
+import panzoom from 'vue-panzoom';
+
+Vue.use(panzoom);
+
 Vue.config.productionTip = false;
 
 window.vm = new Vue({

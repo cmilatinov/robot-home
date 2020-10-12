@@ -1,0 +1,19 @@
+.v-card.main-card {
+  margin: 0 !important;
+  border-radius: 0 !important;
+
+  .v-card__title {
+    padding: 8px 16px 7px 16px !important;
+    border-bottom: 1px solid rgba(white, 0.1);
+    background-color: rgba(black, 0.1);
+
+    i {
+      margin-right: 16px !important;
+    }
+  }
+}
+
+.card-title {
+  border-bottom: 1px solid rgba(white, 0.1);
+  background-color: rgba(black, 0.1);
+}
