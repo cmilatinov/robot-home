@@ -14,11 +14,16 @@ public class Simulation {
      * The state of the simulation (running or not).
      */
     private boolean running;
+  
+    /**
+     * The list of available {@link UserProfile}s.
+     */
+    private ArrayList<UserProfile> userProfiles;
 
     /**
      * The active {@link UserProfile} for the simulation.
      */
-    private UserProfile userProfile;
+    private UserProfile activeUserProfile;
 
     /**
      * The temperature inside of the house.
@@ -44,20 +49,45 @@ public class Simulation {
      * The list of people present in the house.
      */
     private ArrayList<Person> people;
-
-
+  
     /**
      * Creates a simulation with default parameters.
      */
     public Simulation() {
+        super();
         this.dateTime = LocalDateTime.now();
         this.running = false;
-        this.userProfile = null;
+        this.userProfiles = new ArrayList<>();
+        this.activeUserProfile = null;
         this.temperatureInside = 24.0f;
         this.temperatureOutside = 11.0f;
         this.houseLayout = null;
         this.houseLocation = "";
         this.people = new ArrayList<>();
+    }
+
+    public void addPerson(Person person) {
+        people.add(person);
+    }
+
+    public void removePerson(Person person) {
+        people.remove(person);
+    }
+
+    public ArrayList<UserProfile> getUserProfiles() {
+        return userProfiles;
+    }
+
+    public void setUserProfiles(ArrayList<UserProfile> userProfiles) {
+        this.userProfiles = userProfiles;
+    }
+
+    public UserProfile getActiveUserProfile() {
+        return activeUserProfile;
+    }
+
+    public void setActiveUserProfile(UserProfile activeUserProfile) {
+        this.activeUserProfile = activeUserProfile;
     }
 
     public LocalDateTime getDateTime() {
@@ -74,14 +104,6 @@ public class Simulation {
 
     public void setRunning(boolean running) {
         this.running = running;
-    }
-
-    public UserProfile getUserProfile() {
-        return userProfile;
-    }
-
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
     }
 
     public float getTemperatureInside() {
@@ -126,10 +148,12 @@ public class Simulation {
 
     @Override
     public String toString() {
-        return  "Simulation{" +
+        return "Simulation{" +
+                "id='" + getId() + '\'' +
                 "dateTime=" + dateTime +
                 ", running=" + running +
-                ", userProfile=" + userProfile +
+                ", userProfiles=" + userProfiles +
+                ", activeUProfile=" + activeUserProfile +
                 ", temperatureInside=" + temperatureInside +
                 ", temperatureOutside=" + temperatureOutside +
                 ", houseLayout=" + houseLayout +
