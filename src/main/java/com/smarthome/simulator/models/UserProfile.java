@@ -2,7 +2,7 @@ package com.smarthome.simulator.models;
 
 import java.util.ArrayList;
 
-public class UserProfile extends Id {
+public class UserProfile extends IdentifiableObject {
     private String name;
     private ArrayList<String> permissions;
 

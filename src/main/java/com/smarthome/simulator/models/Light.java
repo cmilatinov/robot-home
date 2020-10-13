@@ -1,6 +1,6 @@
 package com.smarthome.simulator.models;
 
-public class Light extends Id {
+public class Light extends IdentifiableObject {
     private boolean on;
 
     public Light(boolean on) {

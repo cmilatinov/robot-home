@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.smarthome.simulator.models.HouseLayout;
+
 public class JavaBridge {
 
     private static final Map<String, Consumer<JSObject>> listeners = new HashMap<>();
@@ -44,7 +46,17 @@ public class JavaBridge {
      * Updates the frontend component views to properly display any changes made to object instances from the Java side.
      */
     public void updateViews() {
-        engine.executeScript("window.vm.$store.commit('update')");
+        engine.executeScript("window.vm.$store.commit('update');");
+    }
+
+    /**
+     * Sets a Vuex Store property to the corresponding Java object.
+     * @param prop The property name (ex: "houseLayout").
+     * @param obj The object instance (ex: a {@link HouseLayout} instance).
+     */
+    public void setStoreProperty(String prop, Object obj) {
+        JSObject storeState = (JSObject) engine.executeScript("window.vm.$store.state");
+        storeState.setMember(prop, obj);
     }
 
 }

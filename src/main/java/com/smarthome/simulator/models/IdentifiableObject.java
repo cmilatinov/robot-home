@@ -2,10 +2,10 @@ package com.smarthome.simulator.models;
 
 import java.util.UUID;
 
-public class Id {
+public class IdentifiableObject {
     private String id;
 
-    public Id() {
+    public IdentifiableObject() {
          id = UUID.randomUUID().toString();
     }
 
