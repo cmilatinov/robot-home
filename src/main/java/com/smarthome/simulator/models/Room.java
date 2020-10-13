@@ -3,7 +3,7 @@ package com.smarthome.simulator.models;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
-public class Room extends Id {
+public class Room extends IdentifiableObject {
     private String name;
     private Rectangle2D dimensions;
     private ArrayList<Window> windows;

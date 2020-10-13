@@ -1,6 +1,6 @@
 package com.smarthome.simulator.models;
 
-public class Door extends Id {
+public class Door extends IdentifiableObject {
     private boolean open;
     private boolean lock;
 

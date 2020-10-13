@@ -1,6 +1,6 @@
 package com.smarthome.simulator.models;
 
-public class Person extends Id {
+public class Person extends IdentifiableObject {
     private String name;
     private int roomId;
 

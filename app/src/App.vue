@@ -3,7 +3,7 @@
         <v-app-bar flat>
             <h2 class="d-flex align-center">Smart Home Simulator</h2>
             <v-spacer></v-spacer>
-            <v-btn color="primary">
+            <v-btn color="primary" @click="dispatchEvent('uploadHouseLayout', null)">
                 <v-icon class="f-10 mr-3">fa-upload</v-icon>
                 Load Layout
             </v-btn>
