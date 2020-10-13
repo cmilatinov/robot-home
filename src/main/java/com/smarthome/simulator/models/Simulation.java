@@ -149,7 +149,6 @@ public class Simulation {
     @Override
     public String toString() {
         return "Simulation{" +
-                "id='" + getId() + '\'' +
                 "dateTime=" + dateTime +
                 ", running=" + running +
                 ", userProfiles=" + userProfiles +
