@@ -2,48 +2,61 @@
   <div class="modal-mask">
     <div class="modal-wrapper">
      <div class="modal-container">
-       hello
-       <v-btn color="primary" @click="$emit('close')">
-         Confirm
-       </v-btn>
+       <p>
+         <v-btn @click="showForm = true">Add User</v-btn>
+         <add-user v-if="showForm" @addProfile="showForm = false" v-on:addProfile="addProfile">
+         </add-user>
+       </p>
+       <Profile v-bind:users="users" v-on:close="$emit('close')" v-on:del-user="deleteUser"></Profile>
      </div>
     </div>
   </div>
 </template>
 
 <script>
+import Profile from "./Profile";
+import AddUser from "@/views/addUser";
 export default {
-  name: "Popup"
+  components: {AddUser, Profile},
+  name: "Popup",
+  data () {
+    return {
+      showForm: false,
+      users: [
+        {
+          id: 1,
+          title: "Parent"
+        },
+        {
+          id: 2,
+          title: "Child"
+        },
+        {
+          id: 3,
+          title: "Guest"
+        },
+        {
+          id: 4,
+          title: "Strangers"
+        }
+      ]
+    }
+  },
+  methods: {
+    addProfile (newProfile) {
+      this.users = [...this.users, newProfile];
+    },
+    deleteUser(id) {
+      this.users = this.users.filter(user => user.id !== id);
+    }
+  }
 }
 </script>
 
 <style scoped>
 
-.modal-mask {
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: table;
-  transition: opacity 0.3s ease;
-  vertical-align: middle;
-}
-
-.modal-container {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 20px;
-  border: 5px solid #33cc33;
-  width: 75%;
-  vertical-align: middle;
-}
-
-.modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
+.btn {
+  align-content: normal;
 }
 
 </style>

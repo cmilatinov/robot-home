@@ -1,13 +1,13 @@
 <template>
     <v-container fluid class="h-100 py-0 d-flex flex-column">
-      <v-btn color="primary" id="show-modal" @click="showModal = true">Choose Profile</v-btn>
+      <v-btn color="primary" @click="showModal = true">Choose Profile</v-btn>
+      <Popup v-if="showModal" @close="showModal = false">
+      </Popup>
         <v-row style="flex: 5;">
             <v-col cols="3" class="h-100 pr-0">
                 <v-card class="h-100 main-card" flat outlined>
                     <v-card-title><v-icon class="primary--text">fa-project-diagram</v-icon>Simulation</v-card-title>
                 </v-card>
-              <Popup v-if="showModal" @close="showModal = false">
-              </Popup>
             </v-col>
             <v-col cols="9" class="h-100 d-flex flex-column">
                 <v-card style="flex: 7;" class="h-100 mb-3 main-card d-flex flex-column" flat outlined>
