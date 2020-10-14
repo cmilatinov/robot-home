@@ -3,29 +3,91 @@ package com.smarthome.simulator.models;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Simulation extends Id {
-    private LocalDateTime dateTime;
-    private boolean running;
-    private UserProfile userProfile;
-    private float temperatureInside;
-    private float temperatureOutside;
-    private HouseLayout houseLayout;
-    private String houseLocation;
-    private ArrayList<Person> people;
+public class Simulation {
 
-    @Override
-    public String toString() {
-        return "Simulation{" +
-                "id='" + getId() + '\'' +
-                "dateTime=" + dateTime +
-                ", running=" + running +
-                ", userProfile=" + userProfile +
-                ", temperatureInside=" + temperatureInside +
-                ", temperatureOutside=" + temperatureOutside +
-                ", houseLayout=" + houseLayout +
-                ", houseLocation='" + houseLocation + '\'' +
-                ", people=" + people +
-                '}';
+    /**
+     * The date and time of the simulation.
+     */
+    private LocalDateTime dateTime;
+
+    /**
+     * The state of the simulation (running or not).
+     */
+    private boolean running;
+  
+    /**
+     * The list of available {@link UserProfile}s.
+     */
+    private ArrayList<UserProfile> userProfiles;
+
+    /**
+     * The active {@link UserProfile} for the simulation.
+     */
+    private UserProfile activeUserProfile;
+
+    /**
+     * The temperature inside of the house.
+     */
+    private float temperatureInside;
+
+    /**
+     * The temperature outside of the house.
+     */
+    private float temperatureOutside;
+
+    /**
+     * The {@link HouseLayout} of the home.
+     */
+    private HouseLayout houseLayout;
+
+    /**
+     *
+     */
+    private String houseLocation;
+
+    /**
+     * The list of people present in the house.
+     */
+    private ArrayList<Person> people;
+  
+    /**
+     * Creates a simulation with default parameters.
+     */
+    public Simulation() {
+        super();
+        this.dateTime = LocalDateTime.now();
+        this.running = false;
+        this.userProfiles = new ArrayList<>();
+        this.activeUserProfile = null;
+        this.temperatureInside = 24.0f;
+        this.temperatureOutside = 11.0f;
+        this.houseLayout = null;
+        this.houseLocation = "";
+        this.people = new ArrayList<>();
+    }
+
+    public void addPerson(Person person) {
+        people.add(person);
+    }
+
+    public void removePerson(Person person) {
+        people.remove(person);
+    }
+
+    public ArrayList<UserProfile> getUserProfiles() {
+        return userProfiles;
+    }
+
+    public void setUserProfiles(ArrayList<UserProfile> userProfiles) {
+        this.userProfiles = userProfiles;
+    }
+
+    public UserProfile getActiveUserProfile() {
+        return activeUserProfile;
+    }
+
+    public void setActiveUserProfile(UserProfile activeUserProfile) {
+        this.activeUserProfile = activeUserProfile;
     }
 
     public LocalDateTime getDateTime() {
@@ -42,14 +104,6 @@ public class Simulation extends Id {
 
     public void setRunning(boolean running) {
         this.running = running;
-    }
-
-    public UserProfile getUserProfile() {
-        return userProfile;
-    }
-
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
     }
 
     public float getTemperatureInside() {
@@ -92,19 +146,19 @@ public class Simulation extends Id {
         this.people = people;
     }
 
-    public Simulation() {
-        super();
+    @Override
+    public String toString() {
+        return "Simulation{" +
+                "dateTime=" + dateTime +
+                ", running=" + running +
+                ", userProfiles=" + userProfiles +
+                ", activeUProfile=" + activeUserProfile +
+                ", temperatureInside=" + temperatureInside +
+                ", temperatureOutside=" + temperatureOutside +
+                ", houseLayout=" + houseLayout +
+                ", houseLocation='" + houseLocation + '\'' +
+                ", people=" + people +
+                '}';
     }
 
-    public Simulation(LocalDateTime dateTime, boolean running, UserProfile userProfile, float temperatureInside, float temperatureOutside, HouseLayout houseLayout, String houseLocation, ArrayList<Person> people) {
-        super();
-        this.dateTime = dateTime;
-        this.running = running;
-        this.userProfile = userProfile;
-        this.temperatureInside = temperatureInside;
-        this.temperatureOutside = temperatureOutside;
-        this.houseLayout = houseLayout;
-        this.houseLocation = houseLocation;
-        this.people = people;
-    }
 }

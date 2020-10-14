@@ -5,7 +5,7 @@
          tabIndex="0"
          class="diagram-room"
          :style="`top: ${top}px; left: ${left}px; width: ${width}px; height: ${height}px;`">
-        <h2>{{room.name}}</h2>
+        <h2>{{room.getName()}}</h2>
         <div @mousedown.stop="onResizeMouseDown" class="diagram-room-resize"></div>
     </div>
 </template>
@@ -32,11 +32,10 @@
         },
         mounted() {
             this.diagram = this.firstParentOfType(this, 'house-layout');
-            this.$nextTick(() => {
-                let rect = this.$el.getBoundingClientRect();
-                this.left = Math.min(Math.random() * 1000, 1000 - rect.width);
-                this.top = Math.min(Math.random() * 1000, 1000 - rect.height);
-            });
+            this.left = Number(this.room.getDimensions().getX());
+            this.top = Number(this.room.getDimensions().getY());
+            this.width = Number(this.room.getDimensions().getWidth());
+            this.height = Number(this.room.getDimensions().getWidth());
         },
         methods: {
             onFocus(event) {

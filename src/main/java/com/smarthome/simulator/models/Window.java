@@ -1,6 +1,6 @@
 package com.smarthome.simulator.models;
 
-public class Window extends Id {
+public class Window extends IdentifiableObject {
     private String state;
 
     public Window(String state) {

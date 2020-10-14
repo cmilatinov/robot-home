@@ -142,7 +142,7 @@
                 <v-card style="flex: 7;" class="h-100 mb-3 main-card d-flex flex-column" flat outlined>
                     <v-card-title><v-icon class="primary--text">fa-ruler-combined</v-icon>House Layout</v-card-title>
                     <house-layout>
-                        <house-layout-room :key="room.name" v-for="room in rooms" :room="room"></house-layout-room>
+                        <house-layout-room :key="room.name" v-for="room in houseLayoutRooms()" :room="room"></house-layout-room>
                     </house-layout>
                 </v-card>
                 <div style="flex: 3;" class="d-flex">
@@ -162,7 +162,6 @@
                                 </v-btn>
                             </div>
                         </div>
-
                     </v-card>
                     <v-card style="margin-left: 6px !important;" class="h-100 main-card flex-1" flat outlined>
                         <v-card-title><v-icon class="primary--text">fa-terminal</v-icon>Logs</v-card-title>
@@ -216,6 +215,7 @@
                     {
                         name: 'Bathroom'
                     }
+
                 ]
             }
         },
@@ -235,9 +235,16 @@
 
         created() {
             this.$store.subscribe(mutation => {
-                if (mutation.type === 'update')
+                if (mutation.type === 'update') {
                     this.$forceUpdate();
+                    console.log(this.houseLayoutRooms().length);
+                }
             });
+        },
+        methods: {
+            houseLayoutRooms() {
+                return this.$store.state.houseLayout?.getRooms().toArray().map(r => r) || [];
+            }
         }
     }
 </script>
