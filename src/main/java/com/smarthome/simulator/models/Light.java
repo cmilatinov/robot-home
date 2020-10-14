@@ -16,6 +16,15 @@ public class Light extends IdentifiableObject {
                 '}';
     }
 
+    public boolean equals(Light other)
+    {
+        if(this.on == other.on)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public Light() {
         super();
     }

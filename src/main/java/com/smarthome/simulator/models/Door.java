@@ -13,6 +13,18 @@ public class Door extends IdentifiableObject {
                 '}';
     }
 
+    public boolean equals(Door other)
+    {
+        if(this.open == other.open)
+        {
+            if(this.lock == other.lock)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Door() {
         super();
     }

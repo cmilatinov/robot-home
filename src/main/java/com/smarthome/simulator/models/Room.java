@@ -54,6 +54,29 @@ public class Room extends IdentifiableObject {
                 '}';
     }
 
+    public boolean equals(Room other)
+    {
+        if(this.name.equalsIgnoreCase(other.name))
+        {
+            if(this.dimensions.equals(other.dimensions))
+            {
+                if(this.windows.equals(other.windows))
+                {
+                    if(this.doors.equals(other.doors))
+                    {
+                        if(this.lights.equals(other.lights))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return false;
+    }
+
     public Room() {
         super();
     }

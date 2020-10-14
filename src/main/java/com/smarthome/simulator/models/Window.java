@@ -20,6 +20,16 @@ public class Window extends IdentifiableObject {
                 '}';
     }
 
+    public boolean equals(Window other)
+    {
+        if(state.equalsIgnoreCase(other.state))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public String getState() {
         return state;
     }
