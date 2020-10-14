@@ -220,6 +220,14 @@
             }
         },
 
+        created() {
+            this.$store.subscribe(mutation => {
+                if (mutation.type === 'update') {
+                    this.$forceUpdate();
+                    console.log(this.houseLayoutRooms().length);
+                }
+            });
+        },
         methods: {
             submit () {
                 this.contextTime = this.formTime;
@@ -230,18 +238,7 @@
             },
             reset () {
                 this.$refs.contextForm.reset()
-            }
-        },
-
-        created() {
-            this.$store.subscribe(mutation => {
-                if (mutation.type === 'update') {
-                    this.$forceUpdate();
-                    console.log(this.houseLayoutRooms().length);
-                }
-            });
-        },
-        methods: {
+            },
             houseLayoutRooms() {
                 return this.$store.state.houseLayout?.getRooms().toArray().map(r => r) || [];
             }
