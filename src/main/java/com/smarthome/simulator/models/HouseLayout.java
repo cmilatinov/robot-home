@@ -22,16 +22,16 @@ public class HouseLayout extends IdentifiableObject {
     private String name;
 
     /**
-     * The list of rooms making up this house layout.
+     * The list of {@link Room} making up this house layout.
      */
     private ArrayList<Room> rooms;
 
     // ============================ CONSTRUCTORS ============================
 
     /**
-     * Constructor of the HouseLayout class
-     * @param name String that represents the name of the house
-     * @param rooms ArrayList of rooms that contains all the rooms in the house in details about each room
+     * Parameterized constructor.
+     * @param name The name of the house layout.
+     * @param rooms The list of {@link Room} inside the house layout.
      */
     public HouseLayout(String name, ArrayList<Room> rooms) {
         this.name = name;
@@ -41,8 +41,8 @@ public class HouseLayout extends IdentifiableObject {
     // ============================ OVERRIDES ============================
 
     /**
-     * Method to display the content of a HouseLayout object
-     * @return String with the id, name and rooms of the HouseLayout object
+     * This function is meant to put all attributes of a house layout in a string format.
+     * @return String representation of all the current attributes of the house layout.
      */
     @Override
     public String toString() {
@@ -54,9 +54,9 @@ public class HouseLayout extends IdentifiableObject {
     }
 
     /**
-     * Verifying if two HouseLayout are equal
-     * @param other HouseLayout object representing the HouseLayout we are comparing too
-     * @return True or False depending on if the objects are equal or not
+     * This function is meant to compare two HouseLayout objects and to verify if they are the same.
+     * @param other HouseLayout object that represents the house layout being compared too.
+     * @return Boolean value confirming or not if the two house layouts are the same.
      */
     public boolean equals(HouseLayout other)
     {
@@ -74,32 +74,32 @@ public class HouseLayout extends IdentifiableObject {
     // ============================ GETTERS/SETTERS ============================
 
     /**
-     * Accessor method for the name of the HouseLayout
-     * @return String that contains the name of the HouseLayout
+     * This function gets the name of the house layout.
+     * @return Name of the house layout.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Mutator method for the name of the HouseLayout
-     * @param name String that contains the name of the HouseLayout
+     * This function sets the name of the house layout.
+     * @param name Name of the house layout.
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * Accessor method for the rooms of the HouseLayout
-     * @return ArrayList of rooms that contains the rooms of the HouseLayout and their details
+     * This function gets the list of {@link Room} of the house layout.
+     * @return The list of {@link Room} of the house layout.
      */
     public ArrayList<Room> getRooms() {
         return rooms;
     }
 
     /**
-     * Mutator method for the rooms of the HouseLayout
-     * @param rooms ArrayList of rooms that contains the rooms of the HouseLayout and their details
+     * This function sets the list of {@link Room} of the house layout.
+     * @param rooms The list of {@link Room} of the house layout.
      */
     public void setRooms(ArrayList<Room> rooms) {
         this.rooms = rooms;
@@ -108,9 +108,9 @@ public class HouseLayout extends IdentifiableObject {
     // ============================ STATIC METHODS ============================
 
     /**
-     * Public method that creates the list of windows in a room after parsing the JSON file
-     * @param nbOfWindows Integer that contains the number of windows in a room
-     * @return ArrayList of windows that are in room
+     * This static function creates a new list of {@link Window} and sets them all as closed.
+     * @param nbOfWindows Number of {@link Window} to be created.
+     * @return The new list of {@link Window} created.
      */
     public static ArrayList<Window> createWindowList(int nbOfWindows) {
         // Creating the number of windows specified in the layout and storing them in a list
@@ -123,9 +123,9 @@ public class HouseLayout extends IdentifiableObject {
     }
 
     /**
-     * Public method that creates the list of doors in a room after parsing the JSON file
-     * @param nbOfDoors Integer that contains the number of doors in a room
-     * @return ArrayList of doors that are in room
+     * This static function creates a new list of {@link Door} and sets them all as closed and unlocked.
+     * @param nbOfDoors Number of {@link Door} to be created.
+     * @return The new list of {@link Door} created.
      */
     public static ArrayList<Door> createDoorList(int nbOfDoors) {
         // Creating the number of doors specified in the layout and storing them in a list
@@ -138,9 +138,9 @@ public class HouseLayout extends IdentifiableObject {
     }
 
     /**
-     * Public method that creates the list of lights in a room after parsing the JSON file
-     * @param nbOfLights Integer that contains the number of lights in a room
-     * @return ArrayList of lights that are in room
+     * This static function creates a new list of {@link Light} and sets them all as turned on.
+     * @param nbOfLights Number of {@link Light} to be created.
+     * @return The new list of {@link Light} created.
      */
     public static ArrayList<Light> createLightList(int nbOfLights) {
         // Creating the number of lights specified in the layout and storing them in a list
