@@ -82,6 +82,21 @@ public class SmartHomeSimulator extends Application {
             });
         });
 
+        javaBridge.addEventListener("editContextParameters", (event) -> {
+
+            //example: time
+            String time = (String) event.getMember("time");
+            System.out.println("time is: " + time);
+
+            //TODO: date, in/outside temperature
+
+        });
+
+        javaBridge.addEventListener("toggleSimulation", (event) -> {
+            System.out.println("Toggling Simulation");
+            //TODO: toggle simulation on/off
+        });
+
     }
 
 }
