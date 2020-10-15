@@ -17,6 +17,7 @@
                         <v-switch
                             v-model="simulationToggle"
                             :label="`Simulation ${simulationToggle?'On':'Off'}`"
+                            @click="dispatchEvent('toggleSimulation', null)"
                         ></v-switch>
                         <v-container
                             fluid class="py-0"
@@ -126,8 +127,12 @@
                                                 :disabled="!contextForm"
                                                 color="success"
                                                 class="mr-4"
-                                                type="submit"
-                                                @click="submit"
+                                                @click="dispatchEvent('editContextParameters', {
+                                                    time: formTime,
+                                                    date: formDate,
+                                                    outsideTemperature: formOutsideTemperature,
+                                                    insideTemperature: formInsideTemperature,
+                                                });"
                                             >
                                                 Submit
                                             </v-btn>
@@ -214,21 +219,7 @@
                 formDate: null,
                 contextDate: null,
                 dateMenu: false,
-                rooms: [
-                    {
-                        name: 'Kitchen'
-                    },
-                    {
-                        name: 'Living Room'
-                    },
-                    {
-                        name: 'Master Bedroom'
-                    },
-                    {
-                        name: 'Bathroom'
-                    }
 
-                ]
             }
         },
 
