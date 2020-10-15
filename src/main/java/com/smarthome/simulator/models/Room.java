@@ -13,22 +13,22 @@ public class Room extends IdentifiableObject {
     private String name;
 
     /**
-     * Dimensions of the room.
+     * Dimensions {@link Rectangle2D} of the room.
      */
     private Rectangle2D dimensions;
 
     /**
-     * List of windows in the room.
+     * List of {@link Window} in the room.
      */
     private ArrayList<Window> windows;
 
     /**
-     * List of doors in the room.
+     * List of {@link Door} in the room.
      */
     private ArrayList<Door> doors;
 
     /**
-     * List of lights in the room.
+     * List of {@link Light} in the room.
      */
     private ArrayList<Light> lights;
 

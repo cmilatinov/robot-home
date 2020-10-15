@@ -21,12 +21,17 @@ public class HouseLayout extends IdentifiableObject {
     private String name;
 
     /**
-     * The list of rooms making up this house layout.
+     * The list of {@link Room} making up this house layout.
      */
     private ArrayList<Room> rooms;
 
     // ============================ CONSTRUCTORS ============================
 
+    /**
+     * Parameterized constructor.
+     * @param name The name of the house layout.
+     * @param rooms The list of {@link Room} inside the house layout.
+     */
     public HouseLayout(String name, ArrayList<Room> rooms) {
         this.name = name;
         this.rooms = rooms;
@@ -34,6 +39,10 @@ public class HouseLayout extends IdentifiableObject {
 
     // ============================ OVERRIDES ============================
 
+    /**
+     * This function is meant to put all attributes of a house layout in a string format.
+     * @return String representation of all the current attributes of the house layout.
+     */
     @Override
     public String toString() {
         return "HouseLayout{" +
@@ -45,24 +54,45 @@ public class HouseLayout extends IdentifiableObject {
 
     // ============================ GETTERS/SETTERS ============================
 
+    /**
+     * This function gets the name of the house layout.
+     * @return Name of the house layout.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * This function sets the name of the house layout.
+     * @param name Name of the house layout.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * This function gets the list of {@link Room} of the house layout.
+     * @return The list of {@link Room} of the house layout.
+     */
     public ArrayList<Room> getRooms() {
         return rooms;
     }
 
+    /**
+     * This function sets the list of {@link Room} of the house layout.
+     * @param rooms The list of {@link Room} of the house layout.
+     */
     public void setRooms(ArrayList<Room> rooms) {
         this.rooms = rooms;
     }
 
     // ============================ STATIC METHODS ============================
 
+    /**
+     * This static function creates a new list of {@link Window} and sets them all as closed.
+     * @param nbOfWindows Number of {@link Window} to be created.
+     * @return The new list of {@link Window} created.
+     */
     private static ArrayList<Window> createWindowList(int nbOfWindows) {
         // Creating the number of windows specified in the layout and storing them in a list
         ArrayList<Window> window = new ArrayList<Window>();
@@ -73,6 +103,11 @@ public class HouseLayout extends IdentifiableObject {
         return window;
     }
 
+    /**
+     * This static function creates a new list of {@link Door} and sets them all as closed and unlocked.
+     * @param nbOfDoors Number of {@link Door} to be created.
+     * @return The new list of {@link Door} created.
+     */
     private static ArrayList<Door> createDoorList(int nbOfDoors) {
         // Creating the number of doors specified in the layout and storing them in a list
         ArrayList<Door> door = new ArrayList<Door>();
@@ -83,6 +118,11 @@ public class HouseLayout extends IdentifiableObject {
         return door;
     }
 
+    /**
+     * This static function creates a new list of {@link Light} and sets them all as turned on.
+     * @param nbOfLights Number of {@link Light} to be created.
+     * @return The new list of {@link Light} created.
+     */
     private static ArrayList<Light> createLightList(int nbOfLights) {
         // Creating the number of lights specified in the layout and storing them in a list
         ArrayList<Light> light = new ArrayList<Light>();
