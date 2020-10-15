@@ -8,7 +8,7 @@
          </add-user>
        </p>
        <Profile
-           v-bind:users="users"
+           v-bind:users="this.$store.state.users"
            v-on:close="$emit('close')"
            v-on:del-user="deleteUser"
            v-on:chosen="chosenProfile($event)">
@@ -27,32 +27,14 @@ export default {
   data () {
     return {
       showForm: false,
-      users: [
-        {
-          id: 1,
-          title: "Parent"
-        },
-        {
-          id: 2,
-          title: "Child"
-        },
-        {
-          id: 3,
-          title: "Guest"
-        },
-        {
-          id: 4,
-          title: "Strangers"
-        }
-      ]
     }
   },
   methods: {
     addProfile (newProfile) {
-      this.users = [...this.users, newProfile];
+      this.$store.state.users = [...this.$store.state.users, newProfile];
     },
     deleteUser(id) {
-      this.users = this.users.filter(user => user.id !== id);
+      this.$store.state.users = this.$store.state.users.filter(user => user.id !== id);
     },
     chosenProfile(title) {
       this.$emit('chosenProfile', title)

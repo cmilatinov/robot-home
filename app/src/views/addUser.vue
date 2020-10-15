@@ -32,6 +32,7 @@ export default {
         id: uuidv4(),
         title: this.title
       }
+      this.dispatchEvent('addProfile', {name: this.title, permissions: []})
       this.$emit('addProfile', newProfile)
     }
   }
