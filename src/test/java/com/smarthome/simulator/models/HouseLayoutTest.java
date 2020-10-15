@@ -1,15 +1,20 @@
 package com.smarthome.simulator.models;
 
+import org.junit.Assert;
 import org.junit.*;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
 import org.assertj.core.api.*;
-import static org.hamcrest.CoreMatchers.is;
 
-
+/**
+ * 1. Read and load house-layout file
+ */
 public class HouseLayoutTest {
 
+    /**
+     * Testing if the parser method returns null when the JSON file is empty
+     */
     @Test
     public void parsingEmptyFileShouldReturnNull()
     {
@@ -17,9 +22,12 @@ public class HouseLayoutTest {
 
         File selectedFile = new File("src/test/resources/empty-sample-house-layout.json");
 
-        org.junit.Assert.assertNull(tester.parseJSONFile(selectedFile));
+        Assert.assertNull(tester.parseJSONFile(selectedFile));
     }
 
+    /**
+     * Testing if the parser method returns null when there is a missing field in the JSON file
+     */
     @Test
     public void missingFieldInFileShouldReturnNull()
     {
@@ -27,9 +35,12 @@ public class HouseLayoutTest {
 
         File selectedFile = new File("src/test/resources/missing-field-sample-house-layout.json");
 
-        org.junit.Assert.assertNull(tester.parseJSONFile(selectedFile));
+        Assert.assertNull(tester.parseJSONFile(selectedFile));
     }
 
+    /**
+     * Testing if the parser method returns null when the JSON file does not follow the right format (JSON format)
+     */
     @Test
     public void wrongFormatShouldReturnNull()
     {
@@ -37,11 +48,40 @@ public class HouseLayoutTest {
 
         File selectedFile = new File("src/test/resources/wrong-format-sample-house-layout.json");
 
-        org.junit.Assert.assertNull(tester.parseJSONFile(selectedFile));
+        Assert.assertNull(tester.parseJSONFile(selectedFile));
     }
 
-   /* @Test
-    public void rightFormatShouldReturnRoomList()
+    /**
+     * Testing if the parser method returns null when a JSON field contains the wrong data type
+     */
+    @Test
+    public void wrongFieldDataTypeShouldReturnNull()
+    {
+        HouseLayout tester= new HouseLayout("test",null);
+
+        File selectedFile = new File("src/test/resources/wrong-field-data-type-sample-house-layout.json");
+
+        Assert.assertNull(tester.parseJSONFile(selectedFile));
+    }
+
+    /**
+     * Testing if the parser method returns null when no file is chosen
+     */
+    @Test
+    public void noFileChosenShouldReturnNull()
+    {
+        HouseLayout tester= new HouseLayout("test",null);
+
+        File selectedFile = new File("");
+
+        Assert.assertNull(tester.parseJSONFile(selectedFile));
+    }
+
+    /**
+     * Testing if the parser method returns an ArrayList of Room when the JSON file is written correctly
+     */
+    @Test
+    public void rightFormatShouldReturnArrayListOfRoom()
     {
         HouseLayout tester = new HouseLayout("test", null);
 
@@ -61,7 +101,9 @@ public class HouseLayoutTest {
 
         roomList.add(room1);
 
-        org.assertj.core.api.Assertions.assertThat(roomList).usingElementComparatorIgnoringFields("id").isEqualTo(tester.parseJSONFile(selectedFile));
-
-    }*/
+        Assertions.assertThat(roomList)
+                .usingRecursiveComparison()
+                .ignoringFieldsMatchingRegexes(".*id")
+                .isEqualTo(HouseLayout.parseJSONFile(selectedFile));
+    }
 }
