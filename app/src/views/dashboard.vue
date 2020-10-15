@@ -1,9 +1,18 @@
 <template>
     <v-container fluid class="h-100 py-0 d-flex flex-column">
+      <v-btn color="primary" @click="showModal = true">Choose Profile</v-btn>
+      <Popup v-if="showModal" @close="showModal = false" v-on:chosenProfile="updateUser($event)">
+      </Popup>
         <v-row style="flex: 5;">
             <v-col cols="3" class="h-100 pr-0">
                 <v-card class="h-100 main-card" flat outlined>
                     <v-card-title><v-icon class="primary--text">fa-project-diagram</v-icon>Simulation</v-card-title>
+                  <h2 class="user">
+                    <div>
+                      <v-icon></v-icon>
+                    </div>
+                    {{user}}
+                  </h2>
                     <v-container fluid class="h-100 py-0 d-flex flex-column">
                         <v-switch
                             v-model="simulationToggle"
@@ -175,9 +184,10 @@
 <script>
     import HouseLayout from "../components/house-layout";
     import HouseLayoutRoom from "../components/house-layout-room";
+    import Popup from "./Popup";
 
     export default {
-        components: {HouseLayoutRoom, HouseLayout},
+        components: {HouseLayoutRoom, HouseLayout, Popup},
         data() {
             return {
                 contextForm: false,
@@ -186,6 +196,8 @@
                 smartModules: [
                     'SHC', 'SHP', 'SHH'
                 ],
+                showModal: false,
+                user: "",
                 simulationToggle: false,
                 formOutsideTemperature: null,
                 contextOutsideTemperature: null,
@@ -241,10 +253,17 @@
             },
             houseLayoutRooms() {
                 return this.$store.state.houseLayout?.getRooms().toArray().map(r => r) || [];
+            },
+            updateUser: function (updatedUser) {
+              this.user = updatedUser;
             }
         }
     }
 </script>
 
 <style scoped>
+h2 {
+  text-align: center;
+  width: 100%;
+}
 </style>
