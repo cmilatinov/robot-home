@@ -75,6 +75,34 @@ public class Room extends IdentifiableObject {
                 ", lights=" + lights +
                 '}';
     }
+  
+    /**
+     * This function is meant to compare two Room objects and to verify if they are the same.
+     * @param other Room object that represents the room being compared too.
+     * @return Boolean value confirming or not if the two rooms are the same.
+     */
+    public boolean equals(Room other)
+    {
+        if(this.name.equalsIgnoreCase(other.name))
+        {
+            if(this.dimensions.equals(other.dimensions))
+            {
+                if(this.windows.equals(other.windows))
+                {
+                    if(this.doors.equals(other.doors))
+                    {
+                        if(this.lights.equals(other.lights))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return false;
+    }
 
     // ============================ GETTERS/SETTERS ============================
 

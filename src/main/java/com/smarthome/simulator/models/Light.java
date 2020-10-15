@@ -41,6 +41,20 @@ public class Light extends IdentifiableObject {
                 '}';
     }
 
+    /**
+     * This function is meant to compare two Light objects and to verify if they are the same.
+     * @param other Light object that represents the light being compared too.
+     * @return Boolean value confirming or not if the two lights are the same.
+     */
+    public boolean equals(Light other)
+    {
+        if(this.on == other.on)
+        {
+            return true;
+        }
+        return false;
+    }
+
     // ============================ GETTERS/SETTERS ============================
 
     /**

@@ -49,6 +49,23 @@ public class Door extends IdentifiableObject {
                 '}';
     }
 
+    /**
+     * This function is meant to compare two Door objects and to verify if they are the same.
+     * @param other Door object that represents the door being compared too.
+     * @return Boolean value confirming or not if the two doors are the same.
+     */
+    public boolean equals(Door other)
+    {
+        if(this.open == other.open)
+        {
+            if(this.lock == other.lock)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+  
     // ============================ GETTERS/SETTERS ============================
 
     /**

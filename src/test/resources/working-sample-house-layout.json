@@ -1,0 +1,14 @@
+{
+   "rooms": [
+      {
+         "name": "Kitchen",
+         "nbOfWindows": 2,
+         "nbOfDoors": 1,
+         "nbOfLights": 1,
+         "height": 300,
+         "width": 200,
+         "position-x": 0,
+         "position-y": 0
+      }
+   ]
+}

@@ -6,13 +6,14 @@ import javafx.stage.Stage;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
-import javax.swing.*;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 
+/**
+ * Class to set up the house layout
+ */
 public class HouseLayout extends IdentifiableObject {
 
     /**
@@ -50,6 +51,24 @@ public class HouseLayout extends IdentifiableObject {
                 ", name='" + name + '\'' +
                 ", rooms=" + rooms +
                 '}';
+    }
+
+    /**
+     * This function is meant to compare two HouseLayout objects and to verify if they are the same.
+     * @param other HouseLayout object that represents the house layout being compared too.
+     * @return Boolean value confirming or not if the two house layouts are the same.
+     */
+    public boolean equals(HouseLayout other)
+    {
+        if(this.name.equalsIgnoreCase(other.name))
+        {
+            if(this.rooms.equals(other.rooms))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // ============================ GETTERS/SETTERS ============================
@@ -93,7 +112,7 @@ public class HouseLayout extends IdentifiableObject {
      * @param nbOfWindows Number of {@link Window} to be created.
      * @return The new list of {@link Window} created.
      */
-    private static ArrayList<Window> createWindowList(int nbOfWindows) {
+    public static ArrayList<Window> createWindowList(int nbOfWindows) {
         // Creating the number of windows specified in the layout and storing them in a list
         ArrayList<Window> window = new ArrayList<Window>();
         for (int i = 0; i < nbOfWindows; i++) {
@@ -108,7 +127,7 @@ public class HouseLayout extends IdentifiableObject {
      * @param nbOfDoors Number of {@link Door} to be created.
      * @return The new list of {@link Door} created.
      */
-    private static ArrayList<Door> createDoorList(int nbOfDoors) {
+    public static ArrayList<Door> createDoorList(int nbOfDoors) {
         // Creating the number of doors specified in the layout and storing them in a list
         ArrayList<Door> door = new ArrayList<Door>();
         for (int i = 0; i < nbOfDoors; i++) {
@@ -123,7 +142,7 @@ public class HouseLayout extends IdentifiableObject {
      * @param nbOfLights Number of {@link Light} to be created.
      * @return The new list of {@link Light} created.
      */
-    private static ArrayList<Light> createLightList(int nbOfLights) {
+    public static ArrayList<Light> createLightList(int nbOfLights) {
         // Creating the number of lights specified in the layout and storing them in a list
         ArrayList<Light> light = new ArrayList<Light>();
         for (int i = 0; i < nbOfLights; i++) {
@@ -134,29 +153,18 @@ public class HouseLayout extends IdentifiableObject {
     }
 
     /**
-     * Prompts the user for a file to load a house layout from. Reads the selected file and loads its information in a corresponding {@link HouseLayout} instance.
-     *
-     * @return The resulting {@link HouseLayout} instance, or null if the user has not selected a file or any other error occurs during parsing.
+     * Method to parse a JSON file selected
+     * @param selectedFile File object that contains the JSON file that will be parsed
+     * @return ArrayList of rooms that are in the HouseLayout
      */
-    public static HouseLayout promptForLayout(Stage stage) {
-
-        // Choosing a file
-        FileChooser fileChooser = FileChooserUtil.createJSON();
-        File selectedFile = fileChooser.showOpenDialog(stage);
-
-        // Verifying if the user chose a file
-        if (selectedFile == null) {
-            System.out.println("No file selected");
-            return null;
-        }
-
+    public static ArrayList<Room> parseJSONFile(File selectedFile)
+    {
         Object obj = null;
 
         // Parsing file
         try {
             obj = new JSONParser().parse(new FileReader(selectedFile.getAbsolutePath()));
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
 
@@ -232,13 +240,39 @@ public class HouseLayout extends IdentifiableObject {
                 roomsList.add(room1);
             }
 
-            // Return a new HouseLayout instance
-            return new HouseLayout(selectedFile.getName(), roomsList);
+            return roomsList;
 
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Prompts the user for a file to load a house layout from. Reads the selected file and loads its information in a corresponding {@link HouseLayout} instance.
+     *
+     * @return The resulting {@link HouseLayout} instance, or null if the user has not selected a file or any other error occurs during parsing.
+     */
+    public static HouseLayout promptForLayout(Stage stage) {
+
+        // Choosing a file
+        FileChooser fileChooser = FileChooserUtil.createJSON();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        // Verifying if the user chose a file
+        if (selectedFile == null) {
+            System.out.println("No file selected");
+            return null;
+        }
+
+        ArrayList<Room> roomsList = parseJSONFile(selectedFile);
+
+        if(roomsList == null)
+        {
+            return null;
+        }
+
+        // Return a new HouseLayout instance
+        return new HouseLayout(selectedFile.getName(), roomsList);
 
     }
 

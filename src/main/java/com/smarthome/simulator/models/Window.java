@@ -41,6 +41,21 @@ public class Window extends IdentifiableObject {
                 '}';
     }
 
+    /**
+     * This function is meant to compare two Window objects and to verify if they are the same.
+     * @param other Window object that represents the window being compared too.
+     * @return Boolean value confirming or not if the two windows are the same.
+     */
+    public boolean equals(Window other)
+    {
+        if(state.equalsIgnoreCase(other.state))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     // ============================ GETTERS/SETTERS ============================
 
     /**
