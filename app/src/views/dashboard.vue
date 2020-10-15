@@ -18,8 +18,11 @@
                     </h2>
                     <v-container fluid class="h-100 py-0 d-flex flex-column">
                         <v-switch
-                                v-model="simulationToggle"
-                                :label="`Simulation ${simulationToggle?'On':'Off'}`"
+
+                            v-model="simulationToggle"
+                            :label="`Simulation ${simulationToggle?'On':'Off'}`"
+                            @click="dispatchEvent('toggleSimulation', null)"
+
                         ></v-switch>
                         <v-container
                                 fluid class="py-0"
@@ -126,11 +129,17 @@
                                         ></v-text-field>
                                         <div>
                                             <v-btn
-                                                    :disabled="!contextForm"
-                                                    color="success"
-                                                    class="mr-4"
-                                                    type="submit"
-                                                    @click="submit"
+
+                                                :disabled="!contextForm"
+                                                color="success"
+                                                class="mr-4"
+                                                @click="dispatchEvent('editContextParameters', {
+                                                    time: formTime,
+                                                    date: formDate,
+                                                    outsideTemperature: formOutsideTemperature,
+                                                    insideTemperature: formInsideTemperature,
+                                                });"
+
                                             >
                                                 Submit
                                             </v-btn>
@@ -225,7 +234,9 @@
                 timeMenu: false,
                 formDate: null,
                 contextDate: null,
-                dateMenu: false
+
+                dateMenu: false,
+
             }
         },
 
