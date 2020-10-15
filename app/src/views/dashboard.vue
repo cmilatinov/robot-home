@@ -1,12 +1,18 @@
 <template>
     <v-container fluid class="h-100 py-0 d-flex flex-column">
       <v-btn color="primary" @click="showModal = true">Choose Profile</v-btn>
-      <Popup v-if="showModal" @close="showModal = false">
+      <Popup v-if="showModal" @close="showModal = false" v-on:chosenProfile="updateUser($event)">
       </Popup>
         <v-row style="flex: 5;">
             <v-col cols="3" class="h-100 pr-0">
                 <v-card class="h-100 main-card" flat outlined>
                     <v-card-title><v-icon class="primary--text">fa-project-diagram</v-icon>Simulation</v-card-title>
+                  <h2 class="user">
+                    <div>
+                      <v-icon></v-icon>
+                    </div>
+                    {{user}}
+                  </h2>
                 </v-card>
             </v-col>
             <v-col cols="9" class="h-100 d-flex flex-column">
@@ -55,7 +61,8 @@
                 smartModules: [
                     'SHC', 'SHP', 'SHH'
                 ],
-                showModal: false
+                showModal: false,
+                user: ""
             }
         },
         created() {
@@ -69,10 +76,17 @@
         methods: {
             houseLayoutRooms() {
                 return this.$store.state.houseLayout?.getRooms().toArray().map(r => r) || [];
+            },
+            updateUser: function (updatedUser) {
+              this.user = updatedUser;
             }
         }
     }
 </script>
 
 <style scoped>
+h2 {
+  text-align: center;
+  width: 100%;
+}
 </style>

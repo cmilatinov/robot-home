@@ -4,10 +4,15 @@
      <div class="modal-container">
        <p>
          <v-btn @click="showForm = true">Add User</v-btn>
-         <add-user v-if="showForm" @addProfile="showForm = false" v-on:addProfile="addProfile">
+         <add-user v-if="showForm" @addProfile="showForm = false" v-on:addProfile="addProfile($event)">
          </add-user>
        </p>
-       <Profile v-bind:users="users" v-on:close="$emit('close')" v-on:del-user="deleteUser"></Profile>
+       <Profile
+           v-bind:users="users"
+           v-on:close="$emit('close')"
+           v-on:del-user="deleteUser"
+           v-on:chosen="chosenProfile($event)">
+       </Profile>
      </div>
     </div>
   </div>
@@ -48,6 +53,9 @@ export default {
     },
     deleteUser(id) {
       this.users = this.users.filter(user => user.id !== id);
+    },
+    chosenProfile(title) {
+      this.$emit('chosenProfile', title)
     }
   }
 }

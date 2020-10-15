@@ -6,7 +6,7 @@
            <v-icon small>{{ icons.mdiDelete }}</v-icon>
          </v-btn>
        </p>
-      <v-btn class="inline" color="primary" @click="$emit('close')">
+      <v-btn class="inline" color="primary" @click="$emit('close'); $emit('chosen', user.title)">
         <v-icon>{{icons.mdiAccount}}</v-icon>
         {{user.title}}
       </v-btn>
