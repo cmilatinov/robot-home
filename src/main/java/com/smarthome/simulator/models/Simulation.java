@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Simulation {
 
     /**
-     * The date and time of the simulation.
+     * The {@link LocalDateTime} of the simulation.
      */
     private LocalDateTime dateTime;
 
@@ -41,15 +41,17 @@ public class Simulation {
     private HouseLayout houseLayout;
 
     /**
-     *
+     * The house location.
      */
     private String houseLocation;
 
     /**
-     * The list of people present in the house.
+     * The list of {@link Person} present in the house.
      */
     private ArrayList<Person> people;
-  
+
+    // ============================ CONSTRUCTORS ============================
+
     /**
      * Creates a simulation with default parameters.
      */
@@ -66,86 +68,12 @@ public class Simulation {
         this.people = new ArrayList<>();
     }
 
-    public void addPerson(Person person) {
-        people.add(person);
-    }
+    // ============================ OVERRIDES ============================
 
-    public void removePerson(Person person) {
-        people.remove(person);
-    }
-
-    public ArrayList<UserProfile> getUserProfiles() {
-        return userProfiles;
-    }
-
-    public void setUserProfiles(ArrayList<UserProfile> userProfiles) {
-        this.userProfiles = userProfiles;
-    }
-
-    public UserProfile getActiveUserProfile() {
-        return activeUserProfile;
-    }
-
-    public void setActiveUserProfile(UserProfile activeUserProfile) {
-        this.activeUserProfile = activeUserProfile;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
-
-    public float getTemperatureInside() {
-        return temperatureInside;
-    }
-
-    public void setTemperatureInside(float temperatureInside) {
-        this.temperatureInside = temperatureInside;
-    }
-
-    public float getTemperatureOutside() {
-        return temperatureOutside;
-    }
-
-    public void setTemperatureOutside(float temperatureOutside) {
-        this.temperatureOutside = temperatureOutside;
-    }
-
-    public HouseLayout getHouseLayout() {
-        return houseLayout;
-    }
-
-    public void setHouseLayout(HouseLayout houseLayout) {
-        this.houseLayout = houseLayout;
-    }
-
-    public String getHouseLocation() {
-        return houseLocation;
-    }
-
-    public void setHouseLocation(String houseLocation) {
-        this.houseLocation = houseLocation;
-    }
-
-    public ArrayList<Person> getPeople() {
-        return people;
-    }
-
-    public void setPeople(ArrayList<Person> people) {
-        this.people = people;
-    }
-
+    /**
+     * This function is meant to put all attributes of a simulation in a string format.
+     * @return String representation of all the current attributes of the simulation.
+     */
     @Override
     public String toString() {
         return "Simulation{" +
@@ -159,6 +87,170 @@ public class Simulation {
                 ", houseLocation='" + houseLocation + '\'' +
                 ", people=" + people +
                 '}';
+    }
+
+    // ============================ GETTERS/SETTERS ============================
+
+    /**
+     * This function gets the list of {@link UserProfile}.
+     * @return The list of {@link UserProfile}.
+     */
+    public ArrayList<UserProfile> getUserProfiles() {
+        return userProfiles;
+    }
+
+    /**
+     * This function sets the list of {@link UserProfile}.
+     * @param userProfiles The list of {@link UserProfile}.
+     */
+    public void setUserProfiles(ArrayList<UserProfile> userProfiles) {
+        this.userProfiles = userProfiles;
+    }
+
+    /**
+     * This function gets the list of active {@link UserProfile}.
+     * @return The list of active {@link UserProfile}.
+     */
+    public UserProfile getActiveUserProfile() {
+        return activeUserProfile;
+    }
+
+    /**
+     * This function sets the list of active {@link UserProfile}.
+     * @param activeUserProfile The list of active {@link UserProfile}.
+     */
+    public void setActiveUserProfile(UserProfile activeUserProfile) {
+        this.activeUserProfile = activeUserProfile;
+    }
+
+    /**
+     * This function gets the list of {@link LocalDateTime}.
+     * @return The list of {@link LocalDateTime}.
+     */
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    /**
+     * This function sets the list of {@link LocalDateTime}.
+     * @param dateTime The list of {@link LocalDateTime}.
+     */
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    /**
+     * This function shows if the simulation is running or not.
+     * @return Boolean representation of it.
+     */
+    public boolean isRunning() {
+        return running;
+    }
+
+    /**
+     * This function sets the state of the simulation to running or not running.
+     * @param running New state of the simulation.
+     */
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
+    /**
+     * This function gets the temperature of inside the house.
+     * @return The temperature of inside the house.
+     */
+    public float getTemperatureInside() {
+        return temperatureInside;
+    }
+
+    /**
+     * This function sets the temperature of inside the house.
+     * @param temperatureInside The temperature of inside the house.
+     */
+    public void setTemperatureInside(float temperatureInside) {
+        this.temperatureInside = temperatureInside;
+    }
+
+    /**
+     * This function gets the temperature of outside the house.
+     * @return The temperature of outside the house.
+     */
+    public float getTemperatureOutside() {
+        return temperatureOutside;
+    }
+
+    /**
+     * This function sets the temperature of outside the house.
+     * @param temperatureOutside The temperature of outside the house.
+     */
+    public void setTemperatureOutside(float temperatureOutside) {
+        this.temperatureOutside = temperatureOutside;
+    }
+
+    /**
+     * This function gets the {@link HouseLayout} of this simulation.
+     * @return The {@link HouseLayout} of this simulation.
+     */
+    public HouseLayout getHouseLayout() {
+        return houseLayout;
+    }
+
+    /**
+     * This function sets the {@link HouseLayout} of this simulation.
+     * @param houseLayout The {@link HouseLayout} of this simulation.
+     */
+    public void setHouseLayout(HouseLayout houseLayout) {
+        this.houseLayout = houseLayout;
+    }
+
+    /**
+     * This function gets the house location.
+     * @return The house location.
+     */
+    public String getHouseLocation() {
+        return houseLocation;
+    }
+
+    /**
+     * This function sets the house location.
+     * @param houseLocation The house location.
+     */
+    public void setHouseLocation(String houseLocation) {
+        this.houseLocation = houseLocation;
+    }
+
+    /**
+     * This function gets the list of {@link Person} in this simulation.
+     * @return The list of {@link Person} in this simulation.
+     */
+    public ArrayList<Person> getPeople() {
+        return people;
+    }
+
+    /**
+     * This function sets the list of {@link Person} in this simulation.
+     * @param people The list of {@link Person} in this simulation.
+     */
+    public void setPeople(ArrayList<Person> people) {
+        this.people = people;
+    }
+
+    // ============================ OTHER METHODS ============================
+    
+    /**
+     * This function adds a new {@link Person} in the list of people in this simulation.
+     * @param person The {@link Person} to be added.
+     */
+    public void addPerson(Person person) {
+        people.add(person);
+    }
+
+    /**
+     * This function removes a new {@link Person} in the list of people in this simulation.
+     * @param person The {@link Person} to be removed.
+     */
+    public void removePerson(Person person) {
+        people.remove(person);
     }
 
 }
