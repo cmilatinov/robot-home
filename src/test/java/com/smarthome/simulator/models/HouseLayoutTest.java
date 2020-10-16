@@ -83,7 +83,7 @@ public class HouseLayoutTest {
         ArrayList<Door> doors = HouseLayout.createDoorList(1);
         ArrayList<Light> lights = HouseLayout.createLightList(1);
 
-        Rectangle2D.Float dimensions = new Rectangle2D.Float(0,0,200,300);
+        RoomDimensions dimensions = new RoomDimensions(0,0,200,300);
 
         Room room1 = new Room(name, dimensions, windows, doors, lights);
 

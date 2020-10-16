@@ -1,5 +1,9 @@
 package com.smarthome.simulator.models;
 
+import com.smarthome.simulator.models.Door;
+import com.smarthome.simulator.models.IdentifiableObject;
+import com.smarthome.simulator.models.RoomDimensions;
+
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
@@ -7,6 +11,7 @@ import java.util.ArrayList;
  * This class represents a room with its functionalities.
  */
 public class Room extends IdentifiableObject {
+
     /**
      * Name of the room.
      */
@@ -15,7 +20,7 @@ public class Room extends IdentifiableObject {
     /**
      * Dimensions {@link Rectangle2D} of the room.
      */
-    private Rectangle2D dimensions;
+    private RoomDimensions dimensions;
 
     /**
      * List of {@link Window} in the room.
@@ -49,7 +54,7 @@ public class Room extends IdentifiableObject {
      * @param doors List of doors in the room.
      * @param lights List of lights in the room.
      */
-    public Room(String name, Rectangle2D dimensions, ArrayList<Window> windows, ArrayList<Door> doors, ArrayList<Light> lights) {
+    public Room(String name, RoomDimensions dimensions, ArrayList<Window> windows, ArrayList<Door> doors, ArrayList<Light> lights) {
         super();
         this.name = name;
         this.dimensions = dimensions;
@@ -75,7 +80,7 @@ public class Room extends IdentifiableObject {
                 ", lights=" + lights +
                 '}';
     }
-  
+
     /**
      * This function is meant to compare two Room objects and to verify if they are the same.
      * @param other Room object that represents the room being compared too.
@@ -126,7 +131,7 @@ public class Room extends IdentifiableObject {
      * This function gets the dimensions of the room.
      * @return The dimensions of the room.
      */
-    public Rectangle2D getDimensions() {
+    public RoomDimensions getDimensions() {
         return dimensions;
     }
 
@@ -134,7 +139,7 @@ public class Room extends IdentifiableObject {
      * This function sets the dimensions of the room.
      * @param dimensions The dimensions of the room.
      */
-    public void setDimensions(Rectangle2D dimensions) {
+    public void setDimensions(RoomDimensions dimensions) {
         this.dimensions = dimensions;
     }
 
@@ -185,5 +190,5 @@ public class Room extends IdentifiableObject {
     public void setLights(ArrayList<Light> lights) {
         this.lights = lights;
     }
-    
+
 }

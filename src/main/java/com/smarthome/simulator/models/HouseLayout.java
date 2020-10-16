@@ -1,12 +1,12 @@
 package com.smarthome.simulator.models;
 
 import com.smarthome.simulator.utils.FileChooserUtil;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import java.awt.geom.Rectangle2D;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -58,12 +58,9 @@ public class HouseLayout extends IdentifiableObject {
      * @param other HouseLayout object that represents the house layout being compared too.
      * @return Boolean value confirming or not if the two house layouts are the same.
      */
-    public boolean equals(HouseLayout other)
-    {
-        if(this.name.equalsIgnoreCase(other.name))
-        {
-            if(this.rooms.equals(other.rooms))
-            {
+    public boolean equals(HouseLayout other) {
+        if (this.name.equalsIgnoreCase(other.name)) {
+            if (this.rooms.equals(other.rooms)) {
                 return true;
             }
         }
@@ -157,8 +154,7 @@ public class HouseLayout extends IdentifiableObject {
      * @param selectedFile File object that contains the JSON file that will be parsed
      * @return ArrayList of rooms that are in the HouseLayout
      */
-    public static ArrayList<Room> parseJSONFile(File selectedFile)
-    {
+    public static ArrayList<Room> parseJSONFile(File selectedFile) {
         Object obj = null;
 
         // Parsing file
@@ -231,7 +227,7 @@ public class HouseLayout extends IdentifiableObject {
                 ArrayList<Light> lights = createLightList(nbOfLights);
 
                 // Setting the dimensions of the room
-                Rectangle2D.Float dimensions = new Rectangle2D.Float(positionX, positionY, width, height);
+                RoomDimensions dimensions = new RoomDimensions(positionX, positionY, width, height);
 
                 // Creating the room with the information gathered above
                 Room room1 = new Room(name, dimensions, windows, doors, lights);
@@ -252,27 +248,27 @@ public class HouseLayout extends IdentifiableObject {
      *
      * @return The resulting {@link HouseLayout} instance, or null if the user has not selected a file or any other error occurs during parsing.
      */
-    public static HouseLayout promptForLayout(Stage stage) {
+    public static HouseLayout promptForLayout(Component main) {
 
         // Choosing a file
-        FileChooser fileChooser = FileChooserUtil.createJSON();
-        File selectedFile = fileChooser.showOpenDialog(stage);
+        JFileChooser fileChooser = FileChooserUtil.createJSON();
+        int returnValue = fileChooser.showOpenDialog(main);
 
         // Verifying if the user chose a file
-        if (selectedFile == null) {
+        if (returnValue != JFileChooser.APPROVE_OPTION) {
             System.out.println("No file selected");
             return null;
         }
 
+        File selectedFile = fileChooser.getSelectedFile();
         ArrayList<Room> roomsList = parseJSONFile(selectedFile);
 
-        if(roomsList == null)
-        {
+        if (roomsList == null) {
             return null;
         }
 
         // Return a new HouseLayout instance
-        return new HouseLayout(selectedFile.getName(), roomsList);
+        return new HouseLayout(selectedFile.getName().replace("\\..*$", ""), roomsList);
 
     }
 

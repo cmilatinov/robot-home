@@ -1,9 +1,15 @@
 package com.smarthome.simulator.models;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Simulation {
+
+    /**
+     * The date format used to display the simulation date and time.
+     */
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
      * The {@link LocalDateTime} of the simulation.
@@ -14,7 +20,7 @@ public class Simulation {
      * The state of the simulation (running or not).
      */
     private boolean running;
-  
+
     /**
      * The list of available {@link UserProfile}s.
      */
@@ -59,8 +65,15 @@ public class Simulation {
         super();
         this.dateTime = LocalDateTime.now();
         this.running = false;
-        this.userProfiles = new ArrayList<>();
-        this.activeUserProfile = null;
+
+        this.userProfiles = new ArrayList<UserProfile>() {{
+            add(new UserProfile("Parents"));
+            add(new UserProfile("Children"));
+            add(new UserProfile("Guests"));
+            add(new UserProfile("Strangers"));
+        }};
+
+        this.activeUserProfile = this.userProfiles.get(0);
         this.temperatureInside = 24.0f;
         this.temperatureOutside = 11.0f;
         this.houseLayout = null;
@@ -124,19 +137,19 @@ public class Simulation {
     }
 
     /**
-     * This function gets the list of {@link LocalDateTime}.
-     * @return The list of {@link LocalDateTime}.
+     * Returns the formatted date time.
+     * @return String The date time of the simulation in the "yyyy-MM-dd HH:mm" format.
      */
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public String getDateTime() {
+        return dateTime.format(formatter);
     }
 
     /**
-     * This function sets the list of {@link LocalDateTime}.
-     * @param dateTime The list of {@link LocalDateTime}.
+     * This function sets the date time of the simulation.
+     * @param dateTime The date time string in the "yyyy-MM-dd HH:mm" format.
      */
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setDateTime(String dateTime) {
+        this.dateTime = LocalDateTime.parse(dateTime, formatter);
     }
 
     /**
@@ -236,7 +249,7 @@ public class Simulation {
     }
 
     // ============================ OTHER METHODS ============================
-    
+
     /**
      * This function adds a new {@link Person} in the list of people in this simulation.
      * @param person The {@link Person} to be added.

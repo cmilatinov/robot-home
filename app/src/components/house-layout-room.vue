@@ -4,8 +4,8 @@
          @blur="onBlur"
          tabIndex="0"
          class="diagram-room"
-         :style="`top: ${top}px; left: ${left}px; width: ${width}px; height: ${height}px;`">
-        <h2>{{room.getName()}}</h2>
+         :style="`left: ${left}px; top: ${top}px; width: ${width}px; height: ${height}px;`">
+        <h2>{{room.name}}</h2>
         <div @mousedown.stop="onResizeMouseDown" class="diagram-room-resize"></div>
     </div>
 </template>
@@ -32,10 +32,10 @@
         },
         mounted() {
             this.diagram = this.firstParentOfType(this, 'house-layout');
-            this.left = Number(this.room.getDimensions().getX());
-            this.top = Number(this.room.getDimensions().getY());
-            this.width = Number(this.room.getDimensions().getWidth());
-            this.height = Number(this.room.getDimensions().getWidth());
+            this.left = this.room.dimensions.x;
+            this.top = this.room.dimensions.y;
+            this.width = this.room.dimensions.width;
+            this.height = this.room.dimensions.height;
         },
         methods: {
             onFocus(event) {
@@ -81,6 +81,15 @@
             },
             onDragEnd() {
                 this.dragResize = false;
+                this.dispatchEvent('setRoomDimensions', { id: this.room.id, x: this.left, y: this.top, width: this.width, height: this.height });
+            }
+        },
+        watch: {
+            room() {
+                this.left = this.room.dimensions.x;
+                this.top = this.room.dimensions.y;
+                this.width = this.room.dimensions.width;
+                this.height = this.room.dimensions.height;
             }
         }
     }

@@ -2,3 +2,6 @@
 target/
 src/main/java/com/smarthome/simulator/models/test.java
 public/
+natives/
+*.iml
+*.log

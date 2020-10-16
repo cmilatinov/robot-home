@@ -19,10 +19,12 @@ public class UserProfile extends IdentifiableObject {
     // ============================ CONSTRUCTORS ============================
 
     /**
-     * Default constructor.
+     * Constructor for a profile with an empty permission list.
+     * @param name The name of the user profile.
      */
-    public UserProfile() {
-        super();
+    public UserProfile(String name) {
+        this.name = name;
+        this.permissions = new ArrayList<>();
     }
 
     /**

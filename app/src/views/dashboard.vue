@@ -1,8 +1,9 @@
 <template>
     <v-container fluid class="h-100 py-0 d-flex flex-column">
-        <v-btn color="primary" @click="showModal = true">Choose Profile</v-btn>
-        <Popup v-if="showModal" @close="showModal = false" v-on:chosenProfile="updateUser($event)">
-        </Popup>
+<!--        <v-btn color="primary" @click="showModal = true">Choose Profile</v-btn>-->
+<!--        <Popup v-if="showModal" @close="showModal = false" v-on:chosenProfile="updateUser($event)">-->
+<!--        </Popup>-->
+
         <v-row style="flex: 5;">
             <v-col cols="3" class="h-100 pr-0">
                 <v-card class="h-100 main-card" flat outlined>
@@ -10,152 +11,104 @@
                         <v-icon class="primary--text">fa-project-diagram</v-icon>
                         Simulation
                     </v-card-title>
-                    <h2 class="user">
-                        <div>
-                            <v-icon></v-icon>
-                        </div>
-                        {{user}}
-                    </h2>
+
+                    <v-subheader class="text-uppercase">Active Profile</v-subheader>
+                    <v-select class="mx-4 mt-0 pt-0" outlined dense v-if="activeUserProfile" :value="activeUserProfile.id" @change="dispatchEvent('setActiveProfile', { id: $event })" item-value="id" item-text="name" :items="userProfiles">
+                    </v-select>
+
+                    <v-subheader class="text-uppercase">Simulation</v-subheader>
                     <v-container fluid class="h-100 py-0 d-flex flex-column">
-                        <v-switch
+                        <v-btn class="mx-3 mb-4" :color="simulationRunning ? 'primary' : 'red'" @click="dispatchEvent('toggleSimulation', { value: !simulationRunning })">
+                            <template v-if="simulationRunning">
+                                <v-icon class="mr-2">fa-play</v-icon> Running
+                            </template>
+                            <template v-else>
+                                <v-icon class="mr-2">fa-stop</v-icon> Stopped
+                            </template>
+                        </v-btn>
+                        <v-form>
+                            <v-menu v-model="timeMenu"
+                                    ref="timeMenu"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    max-width="290px"
+                                    min-width="290px">
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field
+                                            :value="simulationTime"
+                                            label="Time"
+                                            class="mx-2"
+                                            prepend-inner-icon="mdi-clock-time-four-outline"
+                                            readonly
+                                            :rules="[validationRules.required]"
+                                            required
+                                            v-bind="attrs"
+                                            v-on="on"></v-text-field>
+                                </template>
+                                <v-time-picker
+                                        v-if="timeMenu"
+                                        :value="simulationTime"
+                                        full-width
+                                        required
+                                        @input="dispatchEvent('setSimulationDateTime', { value: `${simulationDate} ${$event}` })">
+                                </v-time-picker>
+                            </v-menu>
+                            <v-menu
+                                    ref="dateMenu"
+                                    v-model="dateMenu"
+                                    :close-on-content-click="false"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px">
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field
+                                            :value="simulationDate"
+                                            label="Date"
+                                            class="mx-2"
+                                            prepend-inner-icon="mdi-calendar"
+                                            readonly
+                                            :rules="[validationRules.required]"
+                                            required
+                                            v-bind="attrs"
+                                            v-on="on"></v-text-field>
+                                </template>
+                                <v-date-picker
+                                        :value="simulationDate"
+                                        no-title
+                                        scrollable
+                                        @input="dispatchEvent('setSimulationDateTime', { value: `${$event} ${simulationTime}` })">
+                                    <v-spacer></v-spacer>
+                                    <v-btn  text
+                                            color="primary"
+                                            @click="dateMenu = false">
+                                        OK
+                                    </v-btn>
+                                </v-date-picker>
+                            </v-menu>
 
-                            v-model="simulationToggle"
-                            :label="`Simulation ${simulationToggle?'On':'Off'}`"
-                            @click="dispatchEvent('toggleSimulation', null)"
-
-                        ></v-switch>
-                        <v-container
-                                fluid class="py-0"
-                                v-if="simulationToggle"
-                        >
-                            <div id="context">
-                                <span>Time: {{ contextTime }}</span><br>
-                                <span>Date: {{ contextDate }}</span><br>
-                                <span>Outside Temperature: {{ contextOutsideTemperature }}</span><br>
-                                <span>Inside Temperature: {{ contextInsideTemperature }}</span>
-                            </div>
-                        </v-container>
-                        <v-expansion-panels>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    Edit Context
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form ref="contextForm" v-model="contextForm" @submit.prevent="submit">
-                                        <v-menu
-                                                ref="timeMenu"
-                                                v-model="timeMenu"
-                                                :close-on-content-click="false"
-                                                :nudge-right="40"
-                                                :return-value.sync="formTime"
-                                                transition="scale-transition"
-                                                offset-y
-                                                max-width="290px"
-                                                min-width="290px"
-
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field
-                                                        v-model="formTime"
-                                                        label="Time"
-                                                        prepend-icon="mdi-clock-time-four-outline"
-                                                        readonly
-                                                        :rules="[v => v!=null|| 'Time is required']"
-                                                        required
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                ></v-text-field>
-                                            </template>
-                                            <v-time-picker
-                                                    v-if="timeMenu"
-                                                    v-model="formTime"
-                                                    full-width
-                                                    required
-                                                    @click:minute="$refs.timeMenu.save(formTime)"
-                                            ></v-time-picker>
-                                        </v-menu>
-                                        <v-menu
-                                                ref="dateMenu"
-                                                v-model="dateMenu"
-                                                :close-on-content-click="false"
-                                                :return-value.sync="formDate"
-                                                transition="scale-transition"
-                                                offset-y
-                                                min-width="290px"
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field
-                                                        v-model="formDate"
-                                                        label="Date"
-                                                        prepend-icon="mdi-calendar"
-                                                        readonly
-                                                        :rules="[v => !!v || 'Date is required']"
-                                                        required
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                ></v-text-field>
-                                            </template>
-                                            <v-date-picker
-                                                    v-model="formDate"
-                                                    no-title
-                                                    scrollable
-                                            >
-                                                <v-spacer></v-spacer>
-                                                <v-btn
-                                                        text
-                                                        color="primary"
-                                                        @click="dateMenu = false"
-                                                >
-                                                    Cancel
-                                                </v-btn>
-                                                <v-btn
-                                                        text
-                                                        color="primary"
-                                                        @click="$refs.dateMenu.save(formDate)"
-                                                >
-                                                    OK
-                                                </v-btn>
-                                            </v-date-picker>
-                                        </v-menu>
-                                        <v-text-field
-                                                v-model.lazy="formOutsideTemperature"
-                                                :rules="temperatureRules"
-                                                label="Outside temperature"
-                                        ></v-text-field>
-                                        <v-text-field
-                                                v-model.lazy="formInsideTemperature"
-                                                :rules="temperatureRules"
-                                                label="Inside temperature"
-                                        ></v-text-field>
-                                        <div>
-                                            <v-btn
-
-                                                :disabled="!contextForm"
-                                                color="success"
-                                                class="mr-4"
-                                                @click="dispatchEvent('editContextParameters', {
-                                                    time: formTime,
-                                                    date: formDate,
-                                                    outsideTemperature: formOutsideTemperature,
-                                                    insideTemperature: formInsideTemperature,
-                                                });"
-
-                                            >
-                                                Submit
-                                            </v-btn>
-
-                                            <v-btn
-                                                    color="error"
-                                                    class="mr-4"
-                                                    @click="reset"
-                                            >
-                                                Reset Form
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
+                            <v-subheader>
+                                <v-icon class="mr-2">fa-thermometer-empty</v-icon>Outside temperature: <strong class="ml-2 white--text">{{ outsideTemperature }} &deg;C</strong>
+                            </v-subheader>
+                            <v-slider
+                                    color="info"
+                                    :min="-30"
+                                    :max="35"
+                                    :value="outsideTemperature"
+                                    thumb-label
+                                    @change="dispatchEvent('setOutsideTemp', { value: $event })"></v-slider>
+                            <v-subheader>
+                                <v-icon class="mr-2">fa-thermometer-half</v-icon>Inside temperature: <strong class="ml-2 white--text">{{ insideTemperature }} &deg;C</strong>
+                            </v-subheader>
+                            <v-slider
+                                    color="info"
+                                    :min="-30"
+                                    :max="35"
+                                    :value="insideTemperature"
+                                    thumb-label
+                                    @change="dispatchEvent('setInsideTemp', { value: $event })"></v-slider>
+                        </v-form>
                     </v-container>
                 </v-card>
             </v-col>
@@ -166,8 +119,7 @@
                         House Layout
                     </v-card-title>
                     <house-layout>
-                        <house-layout-room :key="room.name" v-for="room in houseLayoutRooms()"
-                                           :room="room"></house-layout-room>
+                        <house-layout-room :key="room.name" v-for="room in rooms" :room="room"></house-layout-room>
                     </house-layout>
                 </v-card>
                 <div style="flex: 3;" class="d-flex">
@@ -204,74 +156,52 @@
 <script>
     import HouseLayout from "../components/house-layout";
     import HouseLayoutRoom from "../components/house-layout-room";
-    import Popup from "./Popup";
-    import { convert } from "../helpers/array";
+
+    import validation from "../mixins/validation";
 
     export default {
-        components: {HouseLayoutRoom, HouseLayout, Popup},
+        components: { HouseLayout, HouseLayoutRoom },
         data() {
             return {
-                contextForm: false,
-                name: "dashboard",
-                tab: null,
                 smartModules: [
                     'SHC', 'SHP', 'SHH'
                 ],
-                showModal: false,
-                user: "",
-                simulationToggle: false,
-                formOutsideTemperature: null,
-                contextOutsideTemperature: null,
-                formInsideTemperature: null,
-                contextInsideTemperature: null,
-                temperatureRules: [
-                    v => !!v || 'Item is required',
-                    v => !isNaN(Number(v)) || 'Temperature must be a number.',
-                    v => (v < 100 && v > -100) || 'Invalid temperature. Valid range is -100 to 100.'
-                ],
-                formTime: null,
-                contextTime: null,
                 timeMenu: false,
-                formDate: null,
-                contextDate: null,
-
                 dateMenu: false,
-
             }
         },
-
-        created() {
-            this.$store.subscribe(mutation => {
-                if (mutation.type === 'update') {
-                    this.$forceUpdate();
-                    console.log(this.houseLayoutRooms().length);
-                }
-            });
-        },
-        methods: {
-            submit() {
-                this.contextTime = this.formTime;
-                this.contextDate = this.formDate;
-                this.contextOutsideTemperature = this.formOutsideTemperature;
-                this.contextInsideTemperature = this.formInsideTemperature;
-                this.$refs.contextForm.submit()
+        computed: {
+            simulation() {
+                return this.$store.state.simulation;
             },
-            reset() {
-                this.$refs.contextForm.reset()
+            simulationDate() {
+                return this.$store.state.simulation?.dateTime.split(/\s+/)[0];
             },
-            houseLayoutRooms() {
-                return convert(this.$store.state.houseLayout?.getRooms());
+            simulationTime() {
+                return this.$store.state.simulation?.dateTime.split(/\s+/)[1];
             },
-            updateUser: function (updatedUser) {
-                this.user = updatedUser;
+            simulationRunning() {
+                return this.$store.state.simulation?.running;
+            },
+            insideTemperature() {
+                return this.$store.state.simulation?.temperatureInside;
+            },
+            outsideTemperature() {
+                return this.$store.state.simulation?.temperatureOutside;
+            },
+            rooms() {
+                return this.$store.state.simulation?.houseLayout?.rooms || [];
+            },
+            activeUserProfile() {
+                return this.$store.state.simulation?.activeUserProfile;
+            },
+            userProfiles() {
+                return this.$store.state.simulation?.userProfiles || [];
             }
-        }
+        },
+        mixins: [validation]
     }
 </script>
 
 <style scoped>
-    h2 {
-        text-align: center;
-        width: 100%;
-    }
 </style>

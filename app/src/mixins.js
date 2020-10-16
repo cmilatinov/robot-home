@@ -11,8 +11,18 @@ Vue.mixin({
     },
     methods: {
         dispatchEvent(event, payload) {
-            if (window.javaBridge && window.javaBridge.dispatchEvent && typeof window.javaBridge.dispatchEvent === 'function')
-                window.javaBridge.dispatchEvent(event, payload);
+            if (typeof window.cefQuery === 'function') {
+                window.cefQuery({
+                    request: `${event},${JSON.stringify(payload)}`,
+                    persistent: false,
+                    onSuccess: () => {
+                        console.log('SUCCESS');
+                    },
+                    onFailure: (code, err) => {
+                        console.log(`ERROR ${code}: ${err}`);
+                    }
+                });
+            }
         },
         firstParentOfType(ref, tag) {
             while (ref.$options._componentTag !== tag && ref.$parent)

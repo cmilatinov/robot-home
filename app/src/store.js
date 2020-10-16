@@ -6,27 +6,31 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         houseLayout: null,
+        simulation: null,
         users: [
             {
-                id: 1,
-                title: "Parent"
+                getId: () => 1,
+                getName: () => "Parent"
             },
             {
-                id: 2,
-                title: "Child"
+                getId: () => 2,
+                getName: () => "Child"
             },
             {
-                id: 3,
-                title: "Guest"
+                getId: () => 3,
+                getName: () => "Guest"
             },
             {
-                id: 4,
-                title: "Strangers"
+                getId: () => 4,
+                getName: () => "Strangers"
             }
         ]
     },
     mutations: {
-        update() {}
+        update() {},
+        setSimulation(state, simulation) {
+            state.simulation = simulation;
+        }
     },
     actions: {
 
