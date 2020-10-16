@@ -2,6 +2,7 @@ package com.smarthome.simulator;
 
 import com.smarthome.simulator.models.*;
 import com.smarthome.simulator.web.JavaScriptQueryHandler;
+import com.smarthome.simulator.web.WebServer;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.browser.CefMessageRouter;
@@ -23,8 +24,12 @@ public class SmartHomeSimulator {
     private static JFrame frame;
 
     private static final Simulation simulation = new Simulation();
+    private static final WebServer server = new WebServer();
 
     public static void main(String[] args) {
+
+        // Start web server
+        server.start();
 
         // Use default web browser settings
         PandomiumSettings settings = PandomiumSettings.getDefaultSettingsBuilder().build();
@@ -33,7 +38,7 @@ public class SmartHomeSimulator {
         pandomium.initialize();
 
         PandomiumClient client = pandomium.createClient();
-        PandomiumBrowser browser = client.loadURL("http://localhost:3000");
+        PandomiumBrowser browser = client.loadURL("http://localhost:" + WebServer.SERVER_PORT);
 
         // Create JavaScript query handler
         handler = new JavaScriptQueryHandler(browser.getCefBrowser(), simulation);
