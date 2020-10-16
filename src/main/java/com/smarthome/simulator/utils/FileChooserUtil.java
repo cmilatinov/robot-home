@@ -1,7 +1,5 @@
 package com.smarthome.simulator.utils;
 
-import javafx.stage.FileChooser;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -10,7 +8,7 @@ public class FileChooserUtil {
 
     /**
      * Creates a prompt to choose a file and restricts it to JSON files only.
-     * @return The resulting {@link FileChooser} instance.
+     * @return The resulting {@link JFileChooser} instance.
      */
     public static JFileChooser createJSON() {
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
