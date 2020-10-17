@@ -4,24 +4,27 @@ package com.smarthome.simulator.models;
  * This class represents a Person with its functionalities.
  */
 public class Person extends IdentifiableObject {
+
     /**
      * Name of the person.
      */
     private String name;
+
     /**
      * The room in which the person is.
-     * This has a value of -1 if the person is outside the house.
+     * This has a value of null if the person is outside the house.
      */
-    private int roomId;
+    private String roomId;
 
     // ============================ CONSTRUCTORS ============================
 
     /**
      * Parameterized constructor.
-     * @param name Name of the person.
+     *
+     * @param name   Name of the person.
      * @param roomId Room in which the person should be.
      */
-    public Person(String name, int roomId) {
+    public Person(String name, String roomId) {
         super();
         this.name = name;
         this.roomId = roomId;
@@ -31,6 +34,7 @@ public class Person extends IdentifiableObject {
 
     /**
      * This function is meant to put all attributes of a person in a string format.
+     *
      * @return String representation of all the current attributes of the person.
      */
     @Override
@@ -42,22 +46,25 @@ public class Person extends IdentifiableObject {
 
     /**
      * This function gets the id of the room in which the person is.
+     *
      * @return Id of the room.
      */
-    public int getRoomId() {
+    public String getRoomId() {
         return roomId;
     }
 
     /**
      * This function sets in which room the person should be in.
+     *
      * @param roomId Id of the room.
      */
-    public void setRoomId(int roomId) {
+    public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
 
     /**
      * This function gets the name of the person
+     *
      * @return The name of the person.
      */
     public String getName() {
@@ -66,9 +73,11 @@ public class Person extends IdentifiableObject {
 
     /**
      * This function sets the name of the person.
+     *
      * @param name The name of the person.
      */
     public void setName(String name) {
         this.name = name;
     }
+
 }

@@ -77,7 +77,7 @@ public class Simulation {
         this.temperatureInside = 24.0f;
         this.temperatureOutside = 11.0f;
         this.houseLayout = null;
-        this.houseLocation = "";
+        this.houseLocation = null;
         this.people = new ArrayList<>();
     }
 
@@ -85,6 +85,7 @@ public class Simulation {
 
     /**
      * This function is meant to put all attributes of a simulation in a string format.
+     *
      * @return String representation of all the current attributes of the simulation.
      */
     @Override
@@ -106,6 +107,7 @@ public class Simulation {
 
     /**
      * This function gets the list of {@link UserProfile}.
+     *
      * @return The list of {@link UserProfile}.
      */
     public ArrayList<UserProfile> getUserProfiles() {
@@ -114,6 +116,7 @@ public class Simulation {
 
     /**
      * This function sets the list of {@link UserProfile}.
+     *
      * @param userProfiles The list of {@link UserProfile}.
      */
     public void setUserProfiles(ArrayList<UserProfile> userProfiles) {
@@ -122,6 +125,7 @@ public class Simulation {
 
     /**
      * This function gets the list of active {@link UserProfile}.
+     *
      * @return The list of active {@link UserProfile}.
      */
     public UserProfile getActiveUserProfile() {
@@ -130,6 +134,7 @@ public class Simulation {
 
     /**
      * This function sets the list of active {@link UserProfile}.
+     *
      * @param activeUserProfile The list of active {@link UserProfile}.
      */
     public void setActiveUserProfile(UserProfile activeUserProfile) {
@@ -138,6 +143,7 @@ public class Simulation {
 
     /**
      * Returns the formatted date time.
+     *
      * @return String The date time of the simulation in the "yyyy-MM-dd HH:mm" format.
      */
     public String getDateTime() {
@@ -146,6 +152,7 @@ public class Simulation {
 
     /**
      * This function sets the date time of the simulation.
+     *
      * @param dateTime The date time string in the "yyyy-MM-dd HH:mm" format.
      */
     public void setDateTime(String dateTime) {
@@ -154,6 +161,7 @@ public class Simulation {
 
     /**
      * This function shows if the simulation is running or not.
+     *
      * @return Boolean representation of it.
      */
     public boolean isRunning() {
@@ -162,6 +170,7 @@ public class Simulation {
 
     /**
      * This function sets the state of the simulation to running or not running.
+     *
      * @param running New state of the simulation.
      */
     public void setRunning(boolean running) {
@@ -170,6 +179,7 @@ public class Simulation {
 
     /**
      * This function gets the temperature of inside the house.
+     *
      * @return The temperature of inside the house.
      */
     public float getTemperatureInside() {
@@ -178,6 +188,7 @@ public class Simulation {
 
     /**
      * This function sets the temperature of inside the house.
+     *
      * @param temperatureInside The temperature of inside the house.
      */
     public void setTemperatureInside(float temperatureInside) {
@@ -186,6 +197,7 @@ public class Simulation {
 
     /**
      * This function gets the temperature of outside the house.
+     *
      * @return The temperature of outside the house.
      */
     public float getTemperatureOutside() {
@@ -194,6 +206,7 @@ public class Simulation {
 
     /**
      * This function sets the temperature of outside the house.
+     *
      * @param temperatureOutside The temperature of outside the house.
      */
     public void setTemperatureOutside(float temperatureOutside) {
@@ -202,6 +215,7 @@ public class Simulation {
 
     /**
      * This function gets the {@link HouseLayout} of this simulation.
+     *
      * @return The {@link HouseLayout} of this simulation.
      */
     public HouseLayout getHouseLayout() {
@@ -210,6 +224,7 @@ public class Simulation {
 
     /**
      * This function sets the {@link HouseLayout} of this simulation.
+     *
      * @param houseLayout The {@link HouseLayout} of this simulation.
      */
     public void setHouseLayout(HouseLayout houseLayout) {
@@ -218,6 +233,7 @@ public class Simulation {
 
     /**
      * This function gets the house location.
+     *
      * @return The house location.
      */
     public String getHouseLocation() {
@@ -226,6 +242,7 @@ public class Simulation {
 
     /**
      * This function sets the house location.
+     *
      * @param houseLocation The house location.
      */
     public void setHouseLocation(String houseLocation) {
@@ -234,6 +251,7 @@ public class Simulation {
 
     /**
      * This function gets the list of {@link Person} in this simulation.
+     *
      * @return The list of {@link Person} in this simulation.
      */
     public ArrayList<Person> getPeople() {
@@ -242,6 +260,7 @@ public class Simulation {
 
     /**
      * This function sets the list of {@link Person} in this simulation.
+     *
      * @param people The list of {@link Person} in this simulation.
      */
     public void setPeople(ArrayList<Person> people) {
@@ -252,6 +271,7 @@ public class Simulation {
 
     /**
      * This function adds a new {@link Person} in the list of people in this simulation.
+     *
      * @param person The {@link Person} to be added.
      */
     public void addPerson(Person person) {
@@ -260,6 +280,7 @@ public class Simulation {
 
     /**
      * This function removes a new {@link Person} in the list of people in this simulation.
+     *
      * @param person The {@link Person} to be removed.
      */
     public void removePerson(Person person) {

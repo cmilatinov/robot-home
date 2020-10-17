@@ -6,6 +6,7 @@ import java.util.ArrayList;
  * This class represents a user profile with its functionalities.
  */
 public class UserProfile extends IdentifiableObject {
+
     /**
      * Name of the user profile.
      */
@@ -20,6 +21,7 @@ public class UserProfile extends IdentifiableObject {
 
     /**
      * Constructor for a profile with an empty permission list.
+     *
      * @param name The name of the user profile.
      */
     public UserProfile(String name) {
@@ -29,7 +31,8 @@ public class UserProfile extends IdentifiableObject {
 
     /**
      * Parameterized constructor.
-     * @param name The name of the user profile.
+     *
+     * @param name        The name of the user profile.
      * @param permissions The list of {@link String} representing the permissions of the user profile.
      */
     public UserProfile(String name, ArrayList<String> permissions) {
@@ -42,6 +45,7 @@ public class UserProfile extends IdentifiableObject {
 
     /**
      * This function is meant to put all attributes of a user profile in a string format.
+     *
      * @return String representation of all the current attributes of the user profile.
      */
     @Override
@@ -57,6 +61,7 @@ public class UserProfile extends IdentifiableObject {
 
     /**
      * This function gets the name of the user profile.
+     *
      * @return The name of the user profile.
      */
     public String getName() {
@@ -65,6 +70,7 @@ public class UserProfile extends IdentifiableObject {
 
     /**
      * This function sets the name of the user profile.
+     *
      * @param name The name of the user profile.
      */
     public void setName(String name) {
@@ -73,6 +79,7 @@ public class UserProfile extends IdentifiableObject {
 
     /**
      * This function gets the list of {@link String} representing the permissions of the user profile.
+     *
      * @return The list of {@link String} representing the permissions of the user profile.
      */
     public ArrayList<String> getPermissions() {
@@ -81,6 +88,7 @@ public class UserProfile extends IdentifiableObject {
 
     /**
      * This function sets the list of {@link String} representing the permissions of the user profile.
+     *
      * @param permissions The list of {@link String} representing the permissions of the user profile.
      */
     public void setPermissions(ArrayList<String> permissions) {

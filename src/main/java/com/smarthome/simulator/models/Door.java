@@ -4,6 +4,7 @@ package com.smarthome.simulator.models;
  * This class represents a door with its functionalities.
  */
 public class Door extends IdentifiableObject {
+
     /**
      * Is the door open or not.
      */
@@ -12,7 +13,7 @@ public class Door extends IdentifiableObject {
     /**
      * Is the door locked or not.
      */
-    private boolean lock;
+    private boolean locked;
 
     // ============================ CONSTRUCTORS ============================
 
@@ -20,24 +21,26 @@ public class Door extends IdentifiableObject {
      * Default constructor.
      */
     public Door() {
-        super();
+        this.open = true;
+        this.locked = false;
     }
 
     /**
      * Parameterized constructor.
+     *
      * @param open If the door should be open or not.
      * @param lock If the door should be locked or not.
      */
     public Door(boolean open, boolean lock) {
-        super();
         this.open = open;
-        this.lock = lock;
+        this.locked = lock;
     }
 
     // ============================ OVERRIDES ============================
 
     /**
      * This function is meant to put all attributes of a door in a string format.
+     *
      * @return String representation of all the current attributes of the door.
      */
     @Override
@@ -45,31 +48,15 @@ public class Door extends IdentifiableObject {
         return "Door{" +
                 "id='" + getId() + '\'' +
                 "open=" + open +
-                "lock=" + lock +
+                "locked=" + locked +
                 '}';
     }
 
-    /**
-     * This function is meant to compare two Door objects and to verify if they are the same.
-     * @param other Door object that represents the door being compared too.
-     * @return Boolean value confirming or not if the two doors are the same.
-     */
-    public boolean equals(Door other)
-    {
-        if(this.open == other.open)
-        {
-            if(this.lock == other.lock)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-  
     // ============================ GETTERS/SETTERS ============================
 
     /**
      * This function shows if a door is open or not.
+     *
      * @return Boolean representation of it.
      */
     public boolean isOpen() {
@@ -78,6 +65,7 @@ public class Door extends IdentifiableObject {
 
     /**
      * This function sets the door to be open or closed.
+     *
      * @param open New state of the door.
      */
     public void setOpen(boolean open) {
@@ -86,19 +74,20 @@ public class Door extends IdentifiableObject {
 
     /**
      * This function tells if a door is locked or not.
+     *
      * @return Boolean representation of it.
      */
-    public boolean isLock() {
-        return lock;
+    public boolean isLocked() {
+        return locked;
     }
 
     /**
      * This function sets the door to be locked or unlocked.
+     *
      * @param lock New state of the lock.
      */
-    public void setLock(boolean lock) {
-        this.lock = lock;
+    public void setLocked(boolean lock) {
+        this.locked = lock;
     }
-
 
 }

@@ -133,12 +133,6 @@
                 profileSearch: ''
             }
         },
-        created() {
-            this.$store.subscribe(mutation => {
-                if (mutation.type === 'update')
-                    this.$forceUpdate();
-            });
-        },
         methods: {
             onEditProfile(profile) {
                 this.editProfile = {

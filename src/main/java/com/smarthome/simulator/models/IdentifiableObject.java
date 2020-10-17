@@ -18,16 +18,18 @@ public class IdentifiableObject {
      * Default constructor
      */
     public IdentifiableObject() {
-         id = UUID.randomUUID().toString();
+        id = UUID.randomUUID().toString();
     }
 
     // ============================ GETTERS/SETTERS ============================
 
     /**
      * This function gives the id of this object
+     *
      * @return String representation of the id
      */
     public String getId() {
         return id;
     }
+
 }

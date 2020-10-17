@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 public class SmartHomeSimulator {
 
@@ -29,7 +30,7 @@ public class SmartHomeSimulator {
     public static void main(String[] args) {
 
         // Start web server
-        server.start();
+        //server.start();
 
         // Use default web browser settings
         PandomiumSettings settings = PandomiumSettings.getDefaultSettingsBuilder().build();
@@ -38,7 +39,7 @@ public class SmartHomeSimulator {
         pandomium.initialize();
 
         PandomiumClient client = pandomium.createClient();
-        PandomiumBrowser browser = client.loadURL("http://localhost:" + WebServer.SERVER_PORT);
+        PandomiumBrowser browser = client.loadURL("http://localhost:3001");
 
         // Create JavaScript query handler
         handler = new JavaScriptQueryHandler(browser.getCefBrowser(), simulation);
@@ -101,6 +102,9 @@ public class SmartHomeSimulator {
 
     }
 
+    /**
+     * Registers all listeners for events fired from the front-end.
+     */
     private static void addListeners() {
 
         // User clicks on upload layout button
@@ -278,6 +282,93 @@ public class SmartHomeSimulator {
             handler.updateViews();
 
         });
+
+        // User toggles a light
+        handler.addEventListener("toggleLightState", (event) -> {
+
+            // Get payload
+            String id = (String) event.get("id");
+            boolean on = (boolean) event.get("on");
+
+            // Change light state if exists
+            simulation.getHouseLayout()
+                    .getRooms()
+                    .stream()
+                    .map(Room::getLights)
+                    .reduce(new ArrayList<>(), (list, roomLights) -> {
+                        list.addAll(roomLights);
+                        return list;
+                    })
+                    .stream()
+                    .filter(l -> l.getId().equals(id))
+                    .findFirst()
+                    .ifPresent(l -> l.setOn(on));
+
+            // Update front-end
+            handler.updateViews();
+
+        });
+
+        // User toggles a door
+        handler.addEventListener("toggleDoorState", (event) -> {
+
+            // Get payload
+            String id = (String) event.get("id");
+            boolean locked = (boolean) event.get("locked");
+            boolean open = !locked && (boolean) event.get("open");
+
+            // Change door state if exists
+            simulation.getHouseLayout()
+                    .getRooms()
+                    .stream()
+                    .map(Room::getDoors)
+                    .reduce(new ArrayList<>(), (list, roomDoors) -> {
+                        list.addAll(roomDoors);
+                        return list;
+                    })
+                    .stream()
+                    .filter(d -> d.getId().equals(id))
+                    .findFirst()
+                    .ifPresent(d -> {
+                        d.setOpen(open);
+                        d.setLocked(locked);
+                    });
+
+            // Update front-end
+            handler.updateViews();
+
+        });
+
+        // User toggles a window
+        handler.addEventListener("toggleWindowState", (event) -> {
+
+            // Get payload
+            String id = (String) event.get("id");
+            boolean blocked = (boolean) event.get("blocked");
+            boolean open = !blocked && (boolean) event.get("open");
+
+            // Change window state if exists
+            simulation.getHouseLayout()
+                    .getRooms()
+                    .stream()
+                    .map(Room::getWindows)
+                    .reduce(new ArrayList<>(), (list, roomWindows) -> {
+                        list.addAll(roomWindows);
+                        return list;
+                    })
+                    .stream()
+                    .filter(w -> w.getId().equals(id))
+                    .findFirst()
+                    .ifPresent(w -> {
+                        w.setOpen(open);
+                        w.setBlocked(blocked);
+                    });
+
+            // Update front-end
+            handler.updateViews();
+
+        });
+
     }
 
 }

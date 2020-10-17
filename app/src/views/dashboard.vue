@@ -1,9 +1,5 @@
 <template>
     <v-container fluid class="h-100 py-0 d-flex flex-column">
-<!--        <v-btn color="primary" @click="showModal = true">Choose Profile</v-btn>-->
-<!--        <Popup v-if="showModal" @close="showModal = false" v-on:chosenProfile="updateUser($event)">-->
-<!--        </Popup>-->
-
         <v-row style="flex: 5;">
             <v-col cols="3" class="h-100 pr-0">
                 <v-card class="h-100 main-card" flat outlined>
@@ -13,17 +9,27 @@
                     </v-card-title>
 
                     <v-subheader class="text-uppercase">Active Profile</v-subheader>
-                    <v-select class="mx-4 mt-0 pt-0" outlined dense v-if="activeUserProfile" :value="activeUserProfile.id" @change="dispatchEvent('setActiveProfile', { id: $event })" item-value="id" item-text="name" :items="userProfiles">
+                    <v-select outlined dense class="mx-4 mt-0 pt-0"
+                              v-if="activeUserProfile"
+                              :value="activeUserProfile.id"
+                              @change="dispatchEvent('setActiveProfile', { id: $event })"
+                              item-value="id"
+                              item-text="name"
+                              :items="userProfiles">
                     </v-select>
 
-                    <v-subheader class="text-uppercase">Simulation</v-subheader>
+                    <v-subheader class="px-4 text-uppercase w-100">
+                        <div class="w-100">
+                            Simulation<strong class="float-right white--text">{{simulationRunning ? 'Running' : 'Stopped'}}</strong>
+                        </div>
+                    </v-subheader>
                     <v-container fluid class="h-100 py-0 d-flex flex-column">
-                        <v-btn class="mx-3 mb-4" :color="simulationRunning ? 'primary' : 'red'" @click="dispatchEvent('toggleSimulation', { value: !simulationRunning })">
+                        <v-btn class="mx-3 mb-4" :color="simulationRunning ? 'red darken-4' : 'primary darken-1'" @click="dispatchEvent('toggleSimulation', { value: !simulationRunning })">
                             <template v-if="simulationRunning">
-                                <v-icon class="mr-2">fa-play</v-icon> Running
+                                <v-icon class="mr-2">fa-stop</v-icon> Stop
                             </template>
                             <template v-else>
-                                <v-icon class="mr-2">fa-stop</v-icon> Stopped
+                                <v-icon class="mr-2">fa-play</v-icon> Start
                             </template>
                         </v-btn>
                         <v-form>
@@ -88,8 +94,10 @@
                                 </v-date-picker>
                             </v-menu>
 
+                            <v-subheader class="text-uppercase mt-3" style="margin-left: -12px">Temperature</v-subheader>
                             <v-subheader>
-                                <v-icon class="mr-2">fa-thermometer-empty</v-icon>Outside temperature: <strong class="ml-2 white--text">{{ outsideTemperature }} &deg;C</strong>
+                                <v-icon class="mr-3">fa-thermometer-empty</v-icon>
+                                <span class="f-10 w-100">Outside<strong class="float-right white--text">{{ outsideTemperature }} &deg;C</strong></span>
                             </v-subheader>
                             <v-slider
                                     color="info"
@@ -99,7 +107,8 @@
                                     thumb-label
                                     @change="dispatchEvent('setOutsideTemp', { value: $event })"></v-slider>
                             <v-subheader>
-                                <v-icon class="mr-2">fa-thermometer-half</v-icon>Inside temperature: <strong class="ml-2 white--text">{{ insideTemperature }} &deg;C</strong>
+                                <v-icon class="mr-3">fa-thermometer-half</v-icon>
+                                <span class="f-10 w-100">Inside<strong class="float-right white--text">{{ insideTemperature }} &deg;C</strong></span>
                             </v-subheader>
                             <v-slider
                                     color="info"
