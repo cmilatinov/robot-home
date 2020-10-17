@@ -79,6 +79,7 @@
                 .diagram-room {
                     position: absolute;
                     display: flex;
+                    flex-direction: column;
                     justify-content: center;
                     align-items: center;
                     background-color: var(--v-secondary-darken2);

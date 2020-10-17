@@ -6,9 +6,14 @@
          class="diagram-room"
          :style="`left: ${left}px; top: ${top}px; width: ${width}px; height: ${height}px;`">
         <h1>{{room.name}}</h1>
+        <div class="diagram-room-status">
+            <v-icon class="ma-1 light" :key="`l-${i}`" v-for="i in (0, numLightsOn)">fa-lightbulb</v-icon>
+            <v-icon class="ma-1 lock" :key="`dl-${i}`" v-for="i in (0, numDoorsLocked)">fa-lock</v-icon>
+            <v-icon class="ma-1 lock" :key="`wb-${i}`" v-for="i in (0, numWindowsBlocked)">fa-ban</v-icon>
+        </div>
         <div @mousedown.stop="onResizeMouseDown" class="diagram-room-resize"></div>
         <div class="diagram-room-controls">
-            <v-menu auto offset-y :close-on-content-click="false">
+            <v-menu offset-y :close-on-content-click="false">
                 <template #activator="{ on, attrs }">
                     <v-btn icon class="ma-2" v-bind="attrs" v-on="on">
                         <v-icon>fa-lightbulb</v-icon>
@@ -16,14 +21,14 @@
                 </template>
                 <v-card>
                     <v-list class="py-0 menu-list">
-                        <v-list-item link :key="light.id" v-for="(light, index) in room.lights" class="pl-1" @click="dispatchEvent('toggleLightState', { id: light.id, on: !light.on })">
+                        <v-list-item link :key="light.id" v-for="(light, index) in room.lights" class="pl-2" @click="dispatchEvent('toggleLightState', { id: light.id, on: !light.on })">
                             <v-icon class="icon-lightbulb" :class="{ active: light.on }">{{!light.on ? 'far' : 'fas'}} fa-lightbulb</v-icon> Light {{ index + 1 }}
                         </v-list-item>
                     </v-list>
                 </v-card>
             </v-menu>
 
-            <v-menu auto offset-y :close-on-content-click="false">
+            <v-menu offset-y :close-on-content-click="false">
                 <template #activator="{ on, attrs }">
                     <v-btn icon class="ma-2" v-bind="attrs" v-on="on">
                         <v-icon>fa-door-open</v-icon>
@@ -31,7 +36,7 @@
                 </template>
                 <v-card>
                     <v-list class="py-0 menu-list">
-                        <v-list-item link :key="door.id" v-for="(door, index) in room.doors">
+                        <v-list-item link :key="door.id" v-for="(door, index) in room.doors" class="pl-2">
                             <div class="d-flex">
                                 <v-btn icon class="mr-1" @mousedown.stop @click="dispatchEvent('toggleDoorState', { id: door.id, open: !door.open, locked: door.locked })">
                                     <v-icon class="icon-door" :class="{ active: door.open }">fa-{{door.open ? 'door-open' : 'door-closed'}}</v-icon>
@@ -48,7 +53,7 @@
                 </v-card>
             </v-menu>
 
-            <v-menu auto offset-y :close-on-content-click="false">
+            <v-menu offset-y :close-on-content-click="false">
                 <template #activator="{ on, attrs }">
                     <v-btn icon class="ma-2" v-bind="attrs" v-on="on">
                         <v-icon>fab fa-windows</v-icon>
@@ -56,7 +61,7 @@
                 </template>
                 <v-card>
                     <v-list class="py-0 menu-list">
-                        <v-list-item link :key="window.id" v-for="(window, index) in room.windows">
+                        <v-list-item link :key="window.id" v-for="(window, index) in room.windows" class="pl-2">
                             <div class="d-flex">
                                 <v-btn icon class="mr-1" @mousedown.stop @click="dispatchEvent('toggleWindowState', { id: window.id, open: !window.open, blocked: window.blocked })">
                                     <v-icon class="icon-door" :class="{ active: window.open }">fa-{{window.open ? 'door-open' : 'door-closed'}}</v-icon>
@@ -153,6 +158,17 @@
                 this.height = this.room.dimensions.height;
             }
         },
+        computed: {
+            numLightsOn() {
+                return this.room.lights.filter(l => l.on).length;
+            },
+            numDoorsLocked() {
+                return this.room.doors.filter(d => d.locked).length;
+            },
+            numWindowsBlocked() {
+                return this.room.windows.filter(w => w.blocked).length;
+            }
+        },
         watch: {
             room() {
                 this.updateRoomDimensions();
@@ -183,7 +199,7 @@
         opacity: 0.3;
 
         &.active {
-            color: #FFD600;
+            color: #FFD600 !important;
             opacity: 1;
             text-shadow: 0 0 30px rgba(#FFD600, 0.6);
         }
@@ -209,7 +225,6 @@
             text-shadow: 0 0 30px rgba(#DD2C00, 0.6);
         }
     }
-
 </style>
 
 <style lang="scss" scoped>
@@ -240,5 +255,26 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+    }
+
+    .diagram-room-status {
+        display: flex;
+        flex-wrap: wrap;
+        opacity: 0.7;
+
+        i {
+            font-size: 9pt !important;
+
+        }
+
+        .light {
+            color: #FFD600;
+            text-shadow: 0 0 15px rgba(#FFD600, 0.3);
+        }
+
+        .lock {
+            color: #DD2C00;
+            text-shadow: 0 0 15px rgba(#DD2C00, 0.3);
+        }
     }
 </style>
