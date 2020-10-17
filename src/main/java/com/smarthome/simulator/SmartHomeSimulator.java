@@ -30,7 +30,7 @@ public class SmartHomeSimulator {
     public static void main(String[] args) {
 
         // Start web server
-        //server.start();
+        server.start();
 
         // Use default web browser settings
         PandomiumSettings settings = PandomiumSettings.getDefaultSettingsBuilder().build();
@@ -39,7 +39,7 @@ public class SmartHomeSimulator {
         pandomium.initialize();
 
         PandomiumClient client = pandomium.createClient();
-        PandomiumBrowser browser = client.loadURL("http://localhost:3001");
+        PandomiumBrowser browser = client.loadURL("http://localhost:" + WebServer.SERVER_PORT);
 
         // Create JavaScript query handler
         handler = new JavaScriptQueryHandler(browser.getCefBrowser(), simulation);
