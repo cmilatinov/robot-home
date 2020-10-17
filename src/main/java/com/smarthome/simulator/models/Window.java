@@ -4,10 +4,16 @@ package com.smarthome.simulator.models;
  * This class represents a window with its functionalities.
  */
 public class Window extends IdentifiableObject {
+
     /**
-     * The state of the window.
+     * Is the window open or not.
      */
-    private String state;
+    private boolean open;
+
+    /**
+     * Is the window blocked or not.
+     */
+    private boolean blocked;
 
     // ============================ CONSTRUCTORS ============================
 
@@ -15,62 +21,73 @@ public class Window extends IdentifiableObject {
      * Default constructor.
      */
     public Window() {
-        super();
+        this.open = false;
+        this.blocked = false;
     }
 
     /**
      * Parameterized constructor.
-     * @param state The state of the window.
+     *
+     * @param open If the window should be open or not.
+     * @param blocked If the window should be blocked or not.
      */
-    public Window(String state) {
-        super();
-        this.state = state;
+    public Window(boolean open, boolean blocked) {
+        this.open = open;
+        this.blocked = blocked;
     }
 
     // ============================ OVERRIDES ============================
 
     /**
      * This function is meant to put all attributes of a window in a string format.
+     *
      * @return String representation of all the current attributes of the window.
      */
     @Override
     public String toString() {
         return "Window{" +
                 "id='" + getId() + '\'' +
-                "state='" + state + '\'' +
+                "open=" + open +
+                "blocked=" + blocked +
                 '}';
-    }
-
-    /**
-     * This function is meant to compare two Window objects and to verify if they are the same.
-     * @param other Window object that represents the window being compared too.
-     * @return Boolean value confirming or not if the two windows are the same.
-     */
-    public boolean equals(Window other)
-    {
-        if(state.equalsIgnoreCase(other.state))
-        {
-            return true;
-        }
-
-        return false;
     }
 
     // ============================ GETTERS/SETTERS ============================
 
     /**
-     * This function gets the state of the window.
-     * @return The state of the window.
+     * This function shows if a window is open or not.
+     *
+     * @return Boolean representation of it.
      */
-    public String getState() {
-        return state;
+    public boolean isOpen() {
+        return open;
     }
 
     /**
-     * This function sets the state of the window.
-     * @param state The state of the window.
+     * This function sets the window to be open or closed.
+     *
+     * @param open New state of the door.
      */
-    public void setState(String state) {
-        this.state = state;
+    public void setOpen(boolean open) {
+        this.open = open;
     }
+
+    /**
+     * This function tells if a window is blocked or not.
+     *
+     * @return Boolean representation of it.
+     */
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    /**
+     * This function sets the window to be blocked or unblocked.
+     *
+     * @param blocked New state of the lock.
+     */
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
 }

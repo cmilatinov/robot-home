@@ -2,8 +2,8 @@
 @import "cards";
 @import "tabs";
 
-html {
-  overflow: auto !important;
+html, body {
+  overflow: hidden !important;
 }
 
 .h-100 {
@@ -30,4 +30,8 @@ html {
 
 div:focus {
   outline: 0 solid transparent !important;
+}
+
+.fa {
+  font-size: 15pt !important;
 }

@@ -1,12 +1,12 @@
 package com.smarthome.simulator.models;
 
 import com.smarthome.simulator.utils.FileChooserUtil;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import java.awt.geom.Rectangle2D;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -30,7 +30,8 @@ public class HouseLayout extends IdentifiableObject {
 
     /**
      * Parameterized constructor.
-     * @param name The name of the house layout.
+     *
+     * @param name  The name of the house layout.
      * @param rooms The list of {@link Room} inside the house layout.
      */
     public HouseLayout(String name, ArrayList<Room> rooms) {
@@ -42,6 +43,7 @@ public class HouseLayout extends IdentifiableObject {
 
     /**
      * This function is meant to put all attributes of a house layout in a string format.
+     *
      * @return String representation of all the current attributes of the house layout.
      */
     @Override
@@ -55,15 +57,13 @@ public class HouseLayout extends IdentifiableObject {
 
     /**
      * This function is meant to compare two HouseLayout objects and to verify if they are the same.
+     *
      * @param other HouseLayout object that represents the house layout being compared too.
      * @return Boolean value confirming or not if the two house layouts are the same.
      */
-    public boolean equals(HouseLayout other)
-    {
-        if(this.name.equalsIgnoreCase(other.name))
-        {
-            if(this.rooms.equals(other.rooms))
-            {
+    public boolean equals(HouseLayout other) {
+        if (this.name.equalsIgnoreCase(other.name)) {
+            if (this.rooms.equals(other.rooms)) {
                 return true;
             }
         }
@@ -75,6 +75,7 @@ public class HouseLayout extends IdentifiableObject {
 
     /**
      * This function gets the name of the house layout.
+     *
      * @return Name of the house layout.
      */
     public String getName() {
@@ -83,6 +84,7 @@ public class HouseLayout extends IdentifiableObject {
 
     /**
      * This function sets the name of the house layout.
+     *
      * @param name Name of the house layout.
      */
     public void setName(String name) {
@@ -91,6 +93,7 @@ public class HouseLayout extends IdentifiableObject {
 
     /**
      * This function gets the list of {@link Room} of the house layout.
+     *
      * @return The list of {@link Room} of the house layout.
      */
     public ArrayList<Room> getRooms() {
@@ -99,6 +102,7 @@ public class HouseLayout extends IdentifiableObject {
 
     /**
      * This function sets the list of {@link Room} of the house layout.
+     *
      * @param rooms The list of {@link Room} of the house layout.
      */
     public void setRooms(ArrayList<Room> rooms) {
@@ -109,57 +113,59 @@ public class HouseLayout extends IdentifiableObject {
 
     /**
      * This static function creates a new list of {@link Window} and sets them all as closed.
+     *
      * @param nbOfWindows Number of {@link Window} to be created.
      * @return The new list of {@link Window} created.
      */
     public static ArrayList<Window> createWindowList(int nbOfWindows) {
+
         // Creating the number of windows specified in the layout and storing them in a list
-        ArrayList<Window> window = new ArrayList<Window>();
-        for (int i = 0; i < nbOfWindows; i++) {
-            Window window1 = new Window("Close");
-            window.add(window1);
-        }
-        return window;
+        return new ArrayList<Window>() {{
+            for (int i = 0; i < nbOfWindows; i++)
+                add(new Window());
+        }};
     }
 
     /**
      * This static function creates a new list of {@link Door} and sets them all as closed and unlocked.
+     *
      * @param nbOfDoors Number of {@link Door} to be created.
      * @return The new list of {@link Door} created.
      */
     public static ArrayList<Door> createDoorList(int nbOfDoors) {
+
         // Creating the number of doors specified in the layout and storing them in a list
-        ArrayList<Door> door = new ArrayList<Door>();
-        for (int i = 0; i < nbOfDoors; i++) {
-            Door door1 = new Door(false, false);
-            door.add(door1);
-        }
-        return door;
+        return new ArrayList<Door>() {{
+            for (int i = 0; i < nbOfDoors; i++)
+                add(new Door());
+        }};
     }
 
     /**
      * This static function creates a new list of {@link Light} and sets them all as turned on.
+     *
      * @param nbOfLights Number of {@link Light} to be created.
      * @return The new list of {@link Light} created.
      */
     public static ArrayList<Light> createLightList(int nbOfLights) {
+
         // Creating the number of lights specified in the layout and storing them in a list
-        ArrayList<Light> light = new ArrayList<Light>();
-        for (int i = 0; i < nbOfLights; i++) {
-            Light light1 = new Light(true);
-            light.add(light1);
-        }
-        return light;
+        return new ArrayList<Light>() {{
+            for (int i = 0; i < nbOfLights; i++)
+                add(new Light());
+        }};
     }
 
     /**
      * Method to parse a JSON file selected
+     *
      * @param selectedFile File object that contains the JSON file that will be parsed
      * @return ArrayList of rooms that are in the HouseLayout
      */
-    public static ArrayList<Room> parseJSONFile(File selectedFile)
-    {
-        Object obj = null;
+    public static ArrayList<Room> parseJSONFile(File selectedFile) {
+
+        // Resulting obj from parsing
+        Object obj;
 
         // Parsing file
         try {
@@ -231,7 +237,7 @@ public class HouseLayout extends IdentifiableObject {
                 ArrayList<Light> lights = createLightList(nbOfLights);
 
                 // Setting the dimensions of the room
-                Rectangle2D.Float dimensions = new Rectangle2D.Float(positionX, positionY, width, height);
+                RoomDimensions dimensions = new RoomDimensions(positionX, positionY, width, height);
 
                 // Creating the room with the information gathered above
                 Room room1 = new Room(name, dimensions, windows, doors, lights);
@@ -243,6 +249,7 @@ public class HouseLayout extends IdentifiableObject {
             return roomsList;
 
         } catch (Exception e) {
+            System.out.println("An error has occurred while parsing the house layout file.");
             return null;
         }
     }
@@ -252,27 +259,27 @@ public class HouseLayout extends IdentifiableObject {
      *
      * @return The resulting {@link HouseLayout} instance, or null if the user has not selected a file or any other error occurs during parsing.
      */
-    public static HouseLayout promptForLayout(Stage stage) {
+    public static HouseLayout promptForLayout(Component main) {
 
         // Choosing a file
-        FileChooser fileChooser = FileChooserUtil.createJSON();
-        File selectedFile = fileChooser.showOpenDialog(stage);
+        JFileChooser fileChooser = FileChooserUtil.createJSON();
+        int returnValue = fileChooser.showOpenDialog(main);
 
         // Verifying if the user chose a file
-        if (selectedFile == null) {
+        if (returnValue != JFileChooser.APPROVE_OPTION) {
             System.out.println("No file selected");
             return null;
         }
 
+        File selectedFile = fileChooser.getSelectedFile();
         ArrayList<Room> roomsList = parseJSONFile(selectedFile);
 
-        if(roomsList == null)
-        {
+        if (roomsList == null) {
             return null;
         }
 
         // Return a new HouseLayout instance
-        return new HouseLayout(selectedFile.getName(), roomsList);
+        return new HouseLayout(selectedFile.getName().replace("\\..*$", ""), roomsList);
 
     }
 
