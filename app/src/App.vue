@@ -3,8 +3,6 @@
         <v-app-bar flat>
             <h2 class="d-flex align-center">Smart Home Simulator</h2>
             <v-spacer></v-spacer>
-            <h2>{{ user }}</h2>
-            <v-spacer></v-spacer>
             <profile-manager class="mr-4"></profile-manager>
             <v-btn color="primary" @click="dispatchEvent('uploadHouseLayout', null)">
                 <v-icon class="f-10 mr-2">fa-upload</v-icon>
@@ -21,12 +19,7 @@
     import ProfileManager from "./views/profile-manager";
     export default {
         name: 'App',
-        components: {ProfileManager},
-        data() {
-            return {
-                user: ''
-            }
-        }
+        components: {ProfileManager}
     }
 </script>
 
