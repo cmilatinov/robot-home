@@ -191,6 +191,7 @@ public class SmartHomeSimulator {
 
             // Set active user profile to first if it is being deleted
             if (simulation.getActiveUserProfile().getId().equals(id))
+
                 simulation.setActiveUserProfile(simulation.getUserProfiles().get(0));
 
             // Update front-end
@@ -205,6 +206,7 @@ public class SmartHomeSimulator {
             String id = (String) event.get("id");
 
             // Set active profile if present
+
             simulation.getUserProfiles()
                     .stream()
                     .filter(p -> p.getId().equals(id))
