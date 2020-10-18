@@ -137,8 +137,13 @@ public class Simulation {
      *
      * @param activeUserProfile The list of active {@link UserProfile}.
      */
-    public void setActiveUserProfile(UserProfile activeUserProfile) {
-        this.activeUserProfile = activeUserProfile;
+    public boolean setActiveUserProfile(UserProfile activeUserProfile) {
+
+        if (userProfiles.contains(activeUserProfile)) {
+            this.activeUserProfile = activeUserProfile;
+            return true;
+        }
+        return false;
     }
 
     /**

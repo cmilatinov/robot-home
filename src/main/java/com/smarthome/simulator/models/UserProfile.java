@@ -1,6 +1,7 @@
 package com.smarthome.simulator.models;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * This class represents a user profile with its functionalities.
@@ -95,5 +96,12 @@ public class UserProfile extends IdentifiableObject {
         this.permissions = permissions;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserProfile)) return false;
+        UserProfile that = (UserProfile) o;
+        return this.getId().equals(that.getId());
+    }
 
 }
