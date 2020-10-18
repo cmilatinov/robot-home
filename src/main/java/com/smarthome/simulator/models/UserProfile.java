@@ -24,9 +24,14 @@ public class UserProfile extends IdentifiableObject {
      *
      * @param name The name of the user profile.
      */
-    public UserProfile(String name) {
-        this.name = name;
-        this.permissions = new ArrayList<>();
+    public UserProfile(String name) throws Exception {
+        if(name != null && !name.matches("\\s+") && name.matches("[a-zA-Z0-9\\s]+") && name.length()<=16) {
+            this.name = name;
+            this.permissions = new ArrayList<>();
+        }
+        else{
+            throw new Exception();
+        }
     }
 
     /**
@@ -73,8 +78,13 @@ public class UserProfile extends IdentifiableObject {
      *
      * @param name The name of the user profile.
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String name) throws Exception {
+        if(name != null && !name.matches("\\s+") && name.matches("[a-zA-Z0-9\\s]+") && name.length()<=16) {
+            this.name = name;
+        }
+        else{
+            throw new Exception();
+        }
     }
 
     /**
@@ -94,6 +104,5 @@ public class UserProfile extends IdentifiableObject {
     public void setPermissions(ArrayList<String> permissions) {
         this.permissions = permissions;
     }
-
 
 }

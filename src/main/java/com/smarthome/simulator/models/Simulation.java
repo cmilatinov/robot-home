@@ -67,10 +67,12 @@ public class Simulation {
         this.running = false;
 
         this.userProfiles = new ArrayList<UserProfile>() {{
-            add(new UserProfile("Parents"));
-            add(new UserProfile("Children"));
-            add(new UserProfile("Guests"));
-            add(new UserProfile("Strangers"));
+            try {
+                add(new UserProfile("Parents"));
+                add(new UserProfile("Children"));
+                add(new UserProfile("Guests"));
+                add(new UserProfile("Strangers"));
+            }catch(Exception e){}
         }};
 
         this.activeUserProfile = this.userProfiles.get(0);

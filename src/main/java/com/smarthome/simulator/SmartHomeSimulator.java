@@ -139,9 +139,12 @@ public class SmartHomeSimulator {
             String name = (String) event.get("name");
 
             // Add new profile if name not empty
-            if (name.length() > 0)
-                simulation.getUserProfiles()
-                    .add(new UserProfile(name));
+            if (name.length() > 0) {
+                try {
+                    simulation.getUserProfiles()
+                            .add(new UserProfile(name));
+                }catch (Exception e){}
+            }
 
             // Update front-end
             handler.updateViews();
@@ -162,7 +165,9 @@ public class SmartHomeSimulator {
                     .filter(p -> p.getId().equals(id))
                     .findFirst()
                     .ifPresent(p -> {
-                        p.setName(name);
+                        try {
+                            p.setName(name);
+                        }catch(Exception e){}
                     });
 
             // Update front-end
