@@ -2,7 +2,6 @@ package com.smarthome.simulator.models;
 
 import org.junit.Assert;
 import org.junit.*;
-import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
 import org.assertj.core.api.*;
