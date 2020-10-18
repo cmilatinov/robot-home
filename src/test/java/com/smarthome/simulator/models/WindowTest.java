@@ -6,7 +6,7 @@ import org.junit.*;
 /**
  * Block windows movement by putting an arbitrary object
  */
-public class BlockWindowsTest {
+public class WindowTest {
 
     Window window = new Window();
 
