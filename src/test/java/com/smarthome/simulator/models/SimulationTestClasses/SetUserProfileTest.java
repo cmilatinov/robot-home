@@ -1,5 +1,7 @@
-package com.smarthome.simulator.models;
+package com.smarthome.simulator.models.SimulationTestClasses;
 
+import com.smarthome.simulator.models.Simulation;
+import com.smarthome.simulator.models.UserProfile;
 import org.junit.Assert;
 import org.junit.*;
 import org.assertj.core.api.*;
