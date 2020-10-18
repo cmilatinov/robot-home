@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class SetUserProfileTest {
 
     private Simulation testSimulation = new Simulation ();
-    UserProfile testProfile = new UserProfile("testProfile");
 
     @Test
     public void TestDefaultProfile() {
@@ -33,6 +32,12 @@ public class SetUserProfileTest {
      */
     @Test
     public void InvalidProfileShouldReturnFalse() {
+
+        UserProfile testProfile = null;
+        try {
+            testProfile = new UserProfile("testProfile");
+        }catch(Exception e){}
+
         Assert.assertFalse(testSimulation.setActiveUserProfile(testProfile));
     }
 }

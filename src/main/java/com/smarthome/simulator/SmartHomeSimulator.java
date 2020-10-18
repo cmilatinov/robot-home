@@ -255,7 +255,9 @@ public class SmartHomeSimulator {
 
             System.out.println(value);
             // Set date time
-            simulation.setDateTime(value);
+            try {
+                simulation.setDateTime(value);
+            }catch(Exception e){}
 
             // Update front-end
             handler.updateViews();
