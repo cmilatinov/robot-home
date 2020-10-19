@@ -2,6 +2,7 @@ package com.smarthome.simulator.web;
 
 import com.sun.net.httpserver.HttpServer;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,11 +12,24 @@ import java.util.concurrent.Executors;
  */
 public class WebServer extends Thread {
 
-    private HttpServer httpServer;
+    /**
+     * The server's public directory.
+     */
+    private static final String SERVER_HOME = "./public";
 
-    private static final String serverHome = "./public";
+    /**
+     * The server port.
+     */
     public static final int SERVER_PORT = 8080;
 
+    /**
+     * The {@link HttpServer} instance used to handle requests.
+     */
+    private HttpServer httpServer;
+
+    /**
+     * {@inheritDoc}
+     */
     public void run() {
         try {
 
@@ -24,7 +38,7 @@ public class WebServer extends Thread {
 
             // Start the http server
             httpServer = HttpServer.create(new InetSocketAddress("localhost", SERVER_PORT), 0);
-            httpServer.createContext("/", new ServerResourceHandler(serverHome));
+            httpServer.createContext("/", new ServerResourceHandler(SERVER_HOME));
             httpServer.setExecutor(executor);
             httpServer.start();
 
@@ -43,6 +57,9 @@ public class WebServer extends Thread {
         }
     }
 
+    /**
+     * Stops the web server and kills all threads allocated to it.
+     */
     public void halt() {
         try {
             httpServer.stop(0);
@@ -50,7 +67,7 @@ public class WebServer extends Thread {
             e.printStackTrace();
         }
 
-        synchronized (this) {
+        synchronized (httpServer) {
             httpServer.notifyAll();
         }
     }

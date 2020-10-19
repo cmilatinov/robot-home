@@ -12,9 +12,9 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 /**
- * Class to set up the house layout
+ * Class describing a specific house layout.
  */
-public class HouseLayout extends IdentifiableObject {
+public class HouseLayout {
 
     /**
      * The name of the house layout.
@@ -49,26 +49,9 @@ public class HouseLayout extends IdentifiableObject {
     @Override
     public String toString() {
         return "HouseLayout{" +
-                "id='" + getId() + '\'' +
                 ", name='" + name + '\'' +
                 ", rooms=" + rooms +
                 '}';
-    }
-
-    /**
-     * This function is meant to compare two HouseLayout objects and to verify if they are the same.
-     *
-     * @param other HouseLayout object that represents the house layout being compared too.
-     * @return Boolean value confirming or not if the two house layouts are the same.
-     */
-    public boolean equals(HouseLayout other) {
-        if (this.name.equalsIgnoreCase(other.name)) {
-            if (this.rooms.equals(other.rooms)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     // ============================ GETTERS/SETTERS ============================
@@ -259,11 +242,11 @@ public class HouseLayout extends IdentifiableObject {
      *
      * @return The resulting {@link HouseLayout} instance, or null if the user has not selected a file or any other error occurs during parsing.
      */
-    public static HouseLayout promptForLayout(Component main) {
+    public static HouseLayout promptForLayout(Component mainComponent) {
 
         // Choosing a file
         JFileChooser fileChooser = FileChooserUtil.createJSON();
-        int returnValue = fileChooser.showOpenDialog(main);
+        int returnValue = fileChooser.showOpenDialog(mainComponent);
 
         // Verifying if the user chose a file
         if (returnValue != JFileChooser.APPROVE_OPTION) {

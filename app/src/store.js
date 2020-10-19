@@ -5,31 +5,30 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        houseLayout: null,
         simulation: null,
-        users: [
-            {
-                getId: () => 1,
-                getName: () => "Parent"
-            },
-            {
-                getId: () => 2,
-                getName: () => "Child"
-            },
-            {
-                getId: () => 3,
-                getName: () => "Guest"
-            },
-            {
-                getId: () => 4,
-                getName: () => "Strangers"
-            }
-        ]
+
+        showMovePerson: false,
+        showDeletePerson: false,
+
+        editPerson: null
     },
     mutations: {
-        update() {},
         setSimulation(state, simulation) {
             state.simulation = simulation;
+        },
+        setShowMovePerson(state, value) {
+            state.showMovePerson = !!value;
+        },
+        setShowDeletePerson(state, value) {
+            state.showDeletePerson = !!value;
+        },
+        onMovePerson(state, person) {
+            state.editPerson = { ...person };
+            state.showMovePerson = true;
+        },
+        onDeletePerson(state, person) {
+            state.editPerson = { ...person };
+            state.showDeletePerson = true;
         }
     },
     actions: {

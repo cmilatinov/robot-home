@@ -1,20 +1,37 @@
 package com.smarthome.simulator.models;
 
+import java.util.Random;
+
 /**
  * This class represents a Person with its functionalities.
  */
 public class Person extends IdentifiableObject {
 
     /**
+     * List of material design colors. Pick one at random to assign to a person in order to make them easily distinguishable.
+     */
+    private static final String[] MATERIAL_COLORS = {
+            "#D50000", "#C51162", "#AA00FF", "#6200EA",
+            "#304FFE", "#2962FF", "#0091EA", "#00B8D4",
+            "#00BFA5", "#00C853", "#64DD17", "#AEEA00",
+            "#FFD600", "#FFAB00", "#FF6D00", "#DD2C00" };
+
+    /**
      * Name of the person.
      */
-    private String name;
+    private final String name;
+
+    /**
+     * Color of the person's avatar.
+     */
+    private final String color;
 
     /**
      * The room in which the person is.
      * This has a value of null if the person is outside the house.
      */
     private String roomId;
+
 
     // ============================ CONSTRUCTORS ============================
 
@@ -27,6 +44,7 @@ public class Person extends IdentifiableObject {
     public Person(String name, String roomId) {
         super();
         this.name = name;
+        this.color = MATERIAL_COLORS[new Random().nextInt(MATERIAL_COLORS.length)];
         this.roomId = roomId;
     }
 
@@ -39,7 +57,10 @@ public class Person extends IdentifiableObject {
      */
     @Override
     public String toString() {
-        return "Person [id='" + getId() + ", name=" + name + ", roomId=" + roomId + "]";
+        return "Person {id='" + getId() +
+                ", name=" + name +
+                ", roomId=" + roomId +
+                "}";
     }
 
     // ============================ GETTERS/SETTERS ============================
@@ -72,12 +93,12 @@ public class Person extends IdentifiableObject {
     }
 
     /**
-     * This function sets the name of the person.
+     * This function gets the color of the person
      *
-     * @param name The name of the person.
+     * @return The color associated to this person.
      */
-    public void setName(String name) {
-        this.name = name;
+    public String getColor() {
+        return color;
     }
 
 }

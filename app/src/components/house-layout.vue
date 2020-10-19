@@ -3,7 +3,7 @@
          @mouseup="onMouseUp"
          @mouseleave="onMouseUp"
          @mousemove="onMouseMove">
-        <pan-zoom ref="panzoom" class="diagram" selector=".diagram-content" :options="{ minZoom: 0.5, initialZoom: 0.5 }">
+        <pan-zoom ref="panzoom" class="diagram" selector=".diagram-content" :options="{ minZoom: 0.3, initialX: 500, initialY: 500, initialZoom: 0.3 }">
             <div ref="content" class="diagram-content">
                 <slot />
             </div>

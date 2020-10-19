@@ -17,16 +17,37 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 
+/**
+ * Main program class.
+ */
 public class SmartHomeSimulator {
 
+    /**
+     * JavaScript handler used as a bridge between Java and the browser's JavaScript.
+     */
     private static JavaScriptQueryHandler handler;
+
+    /**
+     * The JFrame of the Swing application.
+     */
     private static JFrame frame;
 
+    /**
+     * The global simulation instance of the application.
+     */
     private static final Simulation simulation = new Simulation();
+
+    /**
+     * The web server serving the front-end files.
+     */
     private static final WebServer server = new WebServer();
 
+    /**
+     * Program entry point.
+     *
+     * @param args The command line arguments passed to the program.
+     */
     public static void main(String[] args) {
 
         // Start web server
@@ -52,22 +73,14 @@ public class SmartHomeSimulator {
         messageRouter.addHandler(handler, true);
         client.getCefClient().addMessageRouter(messageRouter);
 
-        // Add load handler to browser
+        // Add load end handler to browser
         client.getCefClient().addLoadHandler(new CefLoadHandler() {
-            public void onLoadingStateChange(CefBrowser cefBrowser, boolean b, boolean b1, boolean b2) {
-
-            }
-
-            public void onLoadStart(CefBrowser cefBrowser, CefFrame cefFrame, CefRequest.TransitionType transitionType) {
-
-            }
+            public void onLoadingStateChange(CefBrowser cefBrowser, boolean b, boolean b1, boolean b2) {}
+            public void onLoadStart(CefBrowser cefBrowser, CefFrame cefFrame, CefRequest.TransitionType transitionType) {}
+            public void onLoadError(CefBrowser cefBrowser, CefFrame cefFrame, ErrorCode errorCode, String s, String s1) {}
 
             public void onLoadEnd(CefBrowser cefBrowser, CefFrame cefFrame, int i) {
                 handler.updateViews();
-            }
-
-            public void onLoadError(CefBrowser cefBrowser, CefFrame cefFrame, ErrorCode errorCode, String s, String s1) {
-
             }
         });
 
@@ -76,11 +89,10 @@ public class SmartHomeSimulator {
         frame.getContentPane().add(browser.toAWTComponent(), BorderLayout.CENTER);
 
         // Close operation
-        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
-            @Override
             public void windowClosing(WindowEvent e) {
-                frame.dispose();
+                server.halt();
             }
         });
 
@@ -246,7 +258,6 @@ public class SmartHomeSimulator {
             // Get date string
             String value = (String) event.get("value");
 
-            System.out.println(value);
             // Set date time
             simulation.setDateTime(value);
 
@@ -291,14 +302,7 @@ public class SmartHomeSimulator {
             boolean on = (boolean) event.get("on");
 
             // Change light state if exists
-            simulation.getHouseLayout()
-                    .getRooms()
-                    .stream()
-                    .map(Room::getLights)
-                    .reduce(new ArrayList<>(), (list, roomLights) -> {
-                        list.addAll(roomLights);
-                        return list;
-                    })
+            simulation.getAllLights()
                     .stream()
                     .filter(l -> l.getId().equals(id))
                     .findFirst()
@@ -315,17 +319,12 @@ public class SmartHomeSimulator {
             // Get payload
             String id = (String) event.get("id");
             boolean locked = (boolean) event.get("locked");
+
+            // Door cannot be open if locked
             boolean open = !locked && (boolean) event.get("open");
 
             // Change door state if exists
-            simulation.getHouseLayout()
-                    .getRooms()
-                    .stream()
-                    .map(Room::getDoors)
-                    .reduce(new ArrayList<>(), (list, roomDoors) -> {
-                        list.addAll(roomDoors);
-                        return list;
-                    })
+            simulation.getAllDoors()
                     .stream()
                     .filter(d -> d.getId().equals(id))
                     .findFirst()
@@ -345,17 +344,12 @@ public class SmartHomeSimulator {
             // Get payload
             String id = (String) event.get("id");
             boolean blocked = (boolean) event.get("blocked");
+
+            // Window cannot be open if blocked
             boolean open = !blocked && (boolean) event.get("open");
 
             // Change window state if exists
-            simulation.getHouseLayout()
-                    .getRooms()
-                    .stream()
-                    .map(Room::getWindows)
-                    .reduce(new ArrayList<>(), (list, roomWindows) -> {
-                        list.addAll(roomWindows);
-                        return list;
-                    })
+            simulation.getAllWindows()
                     .stream()
                     .filter(w -> w.getId().equals(id))
                     .findFirst()
@@ -363,6 +357,70 @@ public class SmartHomeSimulator {
                         w.setOpen(open);
                         w.setBlocked(blocked);
                     });
+
+            // Update front-end
+            handler.updateViews();
+
+        });
+
+        // User sets their location in the house
+        handler.addEventListener("setUserLocation", (event) -> {
+
+            // Get location
+            String userLocation = (String) event.get("userLocation");
+
+            // Set the user's location in the house
+            simulation.setUserLocation(userLocation);
+
+            // Update front-end
+            handler.updateViews();
+
+        });
+
+        // User adds a new person to the simulation
+        handler.addEventListener("addPerson", (event) -> {
+
+            // Get payload
+            String name = (String) event.get("name");
+            String roomId = (String) event.get("roomId");
+
+            // Add person to simulation
+            simulation.getPeople()
+                    .add(new Person(name, roomId));
+
+            // Update front-end
+            handler.updateViews();
+
+        });
+
+        // User moves a person to a new location
+        handler.addEventListener("movePerson", (event) -> {
+
+            // Get payload
+            String id = (String) event.get("id");
+            String roomId = (String) event.get("roomId");
+
+            // Move person if exists
+            simulation.getPeople()
+                    .stream()
+                    .filter(p -> p.getId().equals(id))
+                    .findFirst()
+                    .ifPresent(p -> p.setRoomId(roomId));
+
+            // Update front-end
+            handler.updateViews();
+
+        });
+
+        // User removes a person from the simulation
+        handler.addEventListener("deletePerson", (event) -> {
+
+            // Get payload
+            String id = (String) event.get("id");
+
+            // Remove person if exists
+            simulation.getPeople()
+                    .removeIf(p -> p.getId().equals(id));
 
             // Update front-end
             handler.updateViews();

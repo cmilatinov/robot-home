@@ -11,12 +11,12 @@ public class FileChooserUtil {
      * @return The resulting {@link JFileChooser} instance.
      */
     public static JFileChooser createJSON() {
-        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        jfc.setDialogTitle("Select a house layout");
-        jfc.setAcceptAllFileFilterUsed(false);
+        JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        fileChooser.setDialogTitle("Select a house layout");
+        fileChooser.setAcceptAllFileFilterUsed(false);
         FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files (.json)", "json");
-        jfc.addChoosableFileFilter(filter);
-        return jfc;
+        fileChooser.addChoosableFileFilter(filter);
+        return fileChooser;
     }
 
 }

@@ -3,9 +3,6 @@ import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
 import '@mdi/font/css/materialdesignicons.css';
 
-import colors from 'vuetify/lib/util/colors'
-
-
 Vue.use(Vuetify);
 
 export default new Vuetify({
@@ -16,8 +13,7 @@ export default new Vuetify({
         },
         themes: {
             dark: {
-                primary: '#1db954',
-                accent: colors.yellow.darken2
+                primary: '#1db954'
             }
         }
     }

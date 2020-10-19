@@ -1,5 +1,7 @@
 package com.smarthome.simulator.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ public class Simulation {
     /**
      * The house location.
      */
-    private String houseLocation;
+    private String userLocation;
 
     /**
      * The list of {@link Person} present in the house.
@@ -77,7 +79,7 @@ public class Simulation {
         this.temperatureInside = 24.0f;
         this.temperatureOutside = 11.0f;
         this.houseLayout = null;
-        this.houseLocation = null;
+        this.userLocation = null;
         this.people = new ArrayList<>();
     }
 
@@ -98,7 +100,7 @@ public class Simulation {
                 ", temperatureInside=" + temperatureInside +
                 ", temperatureOutside=" + temperatureOutside +
                 ", houseLayout=" + houseLayout +
-                ", houseLocation='" + houseLocation + '\'' +
+                ", houseLocation='" +  + '\'' +
                 ", people=" + people +
                 '}';
     }
@@ -232,21 +234,21 @@ public class Simulation {
     }
 
     /**
-     * This function gets the house location.
+     * This function gets the user's location in the house (Room ID, or null if outside).
      *
-     * @return The house location.
+     * @return The user's location in the house.
      */
-    public String getHouseLocation() {
-        return houseLocation;
+    public String getUserLocation() {
+        return userLocation;
     }
 
     /**
-     * This function sets the house location.
+     * This function sets the user's location in the house.
      *
-     * @param houseLocation The house location.
+     * @param userLocation The user's new location in the house.
      */
-    public void setHouseLocation(String houseLocation) {
-        this.houseLocation = houseLocation;
+    public void setUserLocation(String userLocation) {
+        this.userLocation = userLocation;
     }
 
     /**
@@ -270,21 +272,60 @@ public class Simulation {
     // ============================ OTHER METHODS ============================
 
     /**
-     * This function adds a new {@link Person} in the list of people in this simulation.
+     * This function collects all of the existing lights of the house layout and returns them as a list.
      *
-     * @param person The {@link Person} to be added.
+     * @return The list of {@link Light} objects in this simulation's house layout.
      */
-    public void addPerson(Person person) {
-        people.add(person);
+    @JsonIgnore
+    public ArrayList<Light> getAllLights() {
+        if (houseLayout != null)
+            return houseLayout
+                .getRooms()
+                .stream()
+                .map(Room::getLights)
+                .reduce(new ArrayList<>(), (list, roomLights) -> {
+                    list.addAll(roomLights);
+                    return list;
+                });
+        return new ArrayList<>();
     }
 
     /**
-     * This function removes a new {@link Person} in the list of people in this simulation.
+     * This function collects all of the existing doors of the house layout and returns them as a list.
      *
-     * @param person The {@link Person} to be removed.
+     * @return The list of {@link Door} objects in this simulation's house layout.
      */
-    public void removePerson(Person person) {
-        people.remove(person);
+    @JsonIgnore
+    public ArrayList<Door> getAllDoors() {
+        if (houseLayout != null)
+            return houseLayout
+                .getRooms()
+                .stream()
+                .map(Room::getDoors)
+                .reduce(new ArrayList<>(), (list, roomDoors) -> {
+                    list.addAll(roomDoors);
+                    return list;
+                });
+        return new ArrayList<>();
+    }
+
+    /**
+     * This function collects all of the existing windows of the house layout and returns them as a list.
+     *
+     * @return The list of {@link Window} objects in this simulation's house layout.
+     */
+    @JsonIgnore
+    public ArrayList<Window> getAllWindows() {
+        if (houseLayout != null)
+            return houseLayout
+                .getRooms()
+                .stream()
+                .map(Room::getWindows)
+                .reduce(new ArrayList<>(), (list, roomWindows) -> {
+                    list.addAll(roomWindows);
+                    return list;
+                });
+        return new ArrayList<>();
     }
 
 }

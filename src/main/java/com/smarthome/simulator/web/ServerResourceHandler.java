@@ -15,9 +15,22 @@ import java.util.Set;
  */
 public class ServerResourceHandler implements HttpHandler {
 
+    /**
+     * The path to the directory of static files to serve.
+     */
     private final String rootPath;
+
+    /**
+     * The map associating paths to resources to serve.
+     */
     private final Map<String, Resource> resources = new HashMap<>();
 
+    /**
+     * Creates a new {@link ServerResourceHandler} instance serving the given root directory.
+     *
+     * @param rootPath The path to the static file directory.
+     * @throws IOException If processing a file in the directory fails.
+     */
     public ServerResourceHandler(String rootPath) throws IOException {
         this.rootPath = rootPath.endsWith("/") ? rootPath : rootPath + "/";
 
@@ -30,12 +43,17 @@ public class ServerResourceHandler implements HttpHandler {
         }
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void handle(HttpExchange httpExchange) throws IOException {
         String requestPath = httpExchange.getRequestURI().getPath();
         serveResource(httpExchange, requestPath);
     }
 
+    /**
+     * Represents a server resource.
+     */
     private static class Resource {
         public final byte[] content;
 
@@ -44,6 +62,13 @@ public class ServerResourceHandler implements HttpHandler {
         }
     }
 
+    /**
+     * Adds a file to the list of files to serve.
+     *
+     * @param path The path to the file relative to the root directory.
+     * @param file The file to process.
+     * @throws IOException If the file resource is inaccessible.
+     */
     private void processFile(String path, File file) throws IOException {
         if (!file.isDirectory()) {
             resources.put(path + file.getName(), new Resource(readResource(new FileInputStream(file))));
@@ -56,6 +81,13 @@ public class ServerResourceHandler implements HttpHandler {
         }
     }
 
+    /**
+     * Read the specified resource into a byte array.
+     *
+     * @param in The input stream to the corresponding resource.
+     * @return byte[] The content of the resource.
+     * @throws IOException If the resource is inaccessible.
+     */
     private byte[] readResource(final InputStream in) throws IOException {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         OutputStream gout = new DataOutputStream(bout);
@@ -70,6 +102,13 @@ public class ServerResourceHandler implements HttpHandler {
         return bout.toByteArray();
     }
 
+    /**
+     * Serves the requested resource in response to an HTTP request.
+     *
+     * @param httpExchange The {@link HttpExchange} taking place.
+     * @param requestPath  The requested URL path relative to the root.
+     * @throws IOException If the resource cannot be accessed.
+     */
     private void serveResource(HttpExchange httpExchange, String requestPath) throws IOException {
         requestPath = requestPath.substring(1);
         requestPath = requestPath.replaceAll("//", "/");
@@ -79,6 +118,13 @@ public class ServerResourceHandler implements HttpHandler {
         serveFile(httpExchange, rootPath + requestPath);
     }
 
+    /**
+     * Serves the requested file.
+     *
+     * @param httpExchange The {@link HttpExchange} taking place.
+     * @param resourcePath The requested resource path relative to the root directory.
+     * @throws IOException If the file cannot be accessed.
+     */
     private void serveFile(HttpExchange httpExchange, String resourcePath) throws IOException {
         File file = new File(resourcePath);
         if (file.exists()) {
@@ -99,6 +145,15 @@ public class ServerResourceHandler implements HttpHandler {
         }
     }
 
+    /**
+     * Writes the correct HTTP response headers and body in response to a request.
+     *
+     * @param httpExchange  The {@link HttpExchange} taking place.
+     * @param contentLength The size of the content in bytes.
+     * @param content       The content itself.
+     * @param contentType   The mime type of the content.
+     * @throws IOException If the response fails.
+     */
     private void writeOutput(HttpExchange httpExchange, int contentLength, byte[] content, String contentType)
             throws IOException {
         if (httpExchange.getRequestMethod().equals("HEAD")) {
@@ -118,6 +173,12 @@ public class ServerResourceHandler implements HttpHandler {
         httpExchange.getResponseBody().close();
     }
 
+    /**
+     * Displays a 404 error if the requested resource is not found.
+     *
+     * @param httpExchange The {@link HttpExchange} taking place.
+     * @throws IOException If the response fails.
+     */
     private void showError(HttpExchange httpExchange) throws IOException {
         String message = "HTTP error " + 404 + ": " + "The requested resource was not found on server";
         byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
@@ -130,6 +191,12 @@ public class ServerResourceHandler implements HttpHandler {
         os.close();
     }
 
+    /**
+     * Returns the file extension from a file path.
+     *
+     * @param path The full path to the file.
+     * @return String The extension of the file (ex: "/some/path/file.txt" would return "txt").
+     */
     public static String getFileExt(final String path) {
         int dotIndex = path.lastIndexOf('.');
         if (dotIndex >= 0) {
@@ -139,18 +206,29 @@ public class ServerResourceHandler implements HttpHandler {
         }
     }
 
+    /**
+     * Mime type map for files.
+     */
     private static final Map<String, String> MIME_MAP = new HashMap<>();
-    static {{
-        MIME_MAP.put("appcache", "text/cache-manifest");
-        MIME_MAP.put("css", "text/css");
-        MIME_MAP.put("html", "text/html");
-        MIME_MAP.put("js", "application/javascript");
-        MIME_MAP.put("jpg", "image/jpeg");
-        MIME_MAP.put("jpeg", "image/jpeg");
-        MIME_MAP.put("png", "image/png");
-        MIME_MAP.put("svg", "image/svg+xml");
-    }}
 
+    static {
+        {
+            MIME_MAP.put("css", "text/css");
+            MIME_MAP.put("html", "text/html");
+            MIME_MAP.put("js", "application/javascript");
+            MIME_MAP.put("jpg", "image/jpeg");
+            MIME_MAP.put("jpeg", "image/jpeg");
+            MIME_MAP.put("png", "image/png");
+            MIME_MAP.put("svg", "image/svg+xml");
+        }
+    }
+
+    /**
+     * Returns the mime type corresponding to a specific file.
+     *
+     * @param path The full path to the file.
+     * @return String The mime type of the file (ex: "/some/path/index.html" would return "text/html").
+     */
     private static String getFileMimeType(final String path) {
         String ext = getFileExt(path).toLowerCase();
         return MIME_MAP.getOrDefault(ext, "application/octet-stream");

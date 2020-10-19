@@ -5,13 +5,36 @@
          tabIndex="0"
          class="diagram-room"
          :style="`left: ${left}px; top: ${top}px; width: ${width}px; height: ${height}px;`">
+        <div class="diagram-room-people">
+            <v-menu offset-y :key="person.id" v-for="person in people">
+                <template #activator="{ on: menu, attrs }">
+                    <v-tooltip top>
+                        <template #activator="{ on: tooltip }">
+                            <v-btn icon v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+                                <v-icon :style="`color: ${person.color}`">fa-user</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>{{person.name}}</span>
+                    </v-tooltip>
+                </template>
+                <v-card>
+                    <v-list class="py-0">
+                        <v-list-item link @click="$emit('movePerson', person)">
+                            <v-icon class="mr-3" style="margin-left: -3px">mdi-crosshairs-gps</v-icon>Move
+                        </v-list-item>
+                        <v-list-item link @click="$emit('deletePerson', person)">
+                            <v-icon class="mr-3 red--text">fa-trash</v-icon>Remove
+                        </v-list-item>
+                    </v-list>
+                </v-card>
+            </v-menu>
+        </div>
         <h1>{{room.name}}</h1>
         <div class="diagram-room-status">
             <v-icon class="ma-1 light" :key="`l-${i}`" v-for="i in (0, numLightsOn)">fa-lightbulb</v-icon>
             <v-icon class="ma-1 lock" :key="`dl-${i}`" v-for="i in (0, numDoorsLocked)">fa-lock</v-icon>
             <v-icon class="ma-1 lock" :key="`wb-${i}`" v-for="i in (0, numWindowsBlocked)">fa-ban</v-icon>
         </div>
-        <div @mousedown.stop="onResizeMouseDown" class="diagram-room-resize"></div>
         <div class="diagram-room-controls">
             <v-menu offset-y :close-on-content-click="false">
                 <template #activator="{ on, attrs }">
@@ -78,6 +101,7 @@
                 </v-card>
             </v-menu>
         </div>
+        <div @mousedown.stop="onResizeMouseDown" class="diagram-room-resize"></div>
     </div>
 </template>
 
@@ -152,6 +176,8 @@
                 this.dispatchEvent('setRoomDimensions', { id: this.room.id, x: this.left, y: this.top, width: this.width, height: this.height });
             },
             updateRoomDimensions() {
+                if (!this.room.dimensions)
+                    return;
                 this.left = this.room.dimensions.x;
                 this.top = this.room.dimensions.y;
                 this.width = this.room.dimensions.width;
@@ -160,13 +186,16 @@
         },
         computed: {
             numLightsOn() {
-                return this.room.lights.filter(l => l.on).length;
+                return this.room.lights?.filter(l => l.on).length || 0;
             },
             numDoorsLocked() {
-                return this.room.doors.filter(d => d.locked).length;
+                return this.room.doors?.filter(d => d.locked).length || 0;
             },
             numWindowsBlocked() {
-                return this.room.windows.filter(w => w.blocked).length;
+                return this.room.windows?.filter(w => w.blocked).length || 0;
+            },
+            people() {
+                return this.$store.state.simulation?.people.filter(p => p.roomId === this.room.id) || [];
             }
         },
         watch: {
@@ -194,7 +223,7 @@
     }
 
     .icon-lightbulb {
-        margin: 15px;
+        margin: 15px 15px 15px 5px;
         color: white;
         opacity: 0.3;
 
@@ -257,6 +286,11 @@
         align-items: center;
     }
 
+    .diagram-room-people {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
     .diagram-room-status {
         display: flex;
         flex-wrap: wrap;
@@ -264,7 +298,6 @@
 
         i {
             font-size: 9pt !important;
-
         }
 
         .light {

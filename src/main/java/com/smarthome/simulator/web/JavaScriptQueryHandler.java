@@ -20,21 +20,35 @@ import java.util.function.Consumer;
  */
 public class JavaScriptQueryHandler implements CefMessageRouterHandler {
 
-    // JSON parser and mapper
+    /**
+     * Object mapper, used to convert Java class structures to JSON.
+     */
     private final ObjectMapper mapper = new ObjectMapper();
+
+    /**
+     * JSON parser, used to parse incoming events with their payload.
+     */
     private final JSONParser parser = new JSONParser();
 
-    // Browser and simulation instances
+    /**
+     * Browser instance, used to execute JavaScript on the web page.
+     */
     private final CefBrowser browser;
+
+    /**
+     * Simulation instance, used to set the state in the web page.
+     */
     private final Simulation simulation;
 
-    // Listener list
+    /**
+     * List of event listeners attached to this handler.
+     */
     private final Map<String, Consumer<JSONObject>> listeners = new HashMap<>();
 
     /**
-     * Creates a JavaScript
+     * Creates a JavaScript query handler for the given {@link CefBrowser} and {@link Simulation} instances.
      *
-     * @param browser    The {@link CefBrowser} instance used to access the web page.
+     * @param browser    The {@link CefBrowser} instance used to access the web page JavaScript.
      * @param simulation The {@link Simulation} instance to synchronize with the web page.
      */
     public JavaScriptQueryHandler(CefBrowser browser, Simulation simulation) {
@@ -46,8 +60,6 @@ public class JavaScriptQueryHandler implements CefMessageRouterHandler {
      * {@inheritDoc}
      */
     public boolean onQuery(CefBrowser browser, CefFrame frame, long queryID, String request, boolean persistent, CefQueryCallback callback) {
-
-        System.out.println("Query " + queryID + ": " + request);
 
         int eventIndex = request.indexOf(",");
         String event = request.substring(0, eventIndex);
@@ -72,34 +84,12 @@ public class JavaScriptQueryHandler implements CefMessageRouterHandler {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public void onQueryCanceled(CefBrowser cefBrowser, CefFrame cefFrame, long l) {
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setNativeRef(String s, long l) {
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public long getNativeRef(String s) {
-        return 0;
-    }
-
-    /**
      * Updates the frontend component views to properly display any changes made to object instances from the Java side.
      */
     public void updateViews() {
         try {
-            String obj = mapper.writeValueAsString(simulation);
-            System.out.println(obj);
-            browser.executeJavaScript("window.vm.$store.commit('setSimulation', JSON.parse('" + obj + "'))", browser.getURL(), 0);
+            String state = mapper.writeValueAsString(simulation);
+            browser.executeJavaScript("window.vm.$store.commit('setSimulation', JSON.parse('" + state + "'))", browser.getURL(), 0);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -108,11 +98,26 @@ public class JavaScriptQueryHandler implements CefMessageRouterHandler {
     /**
      * Registers an event listener executed when an event with the specified type is caught by the Java part of the app.
      *
-     * @param event    The name of the event to listen for. (Ex. "simulation.start")
+     * @param event    The name of the event to listen for. (Ex. "toggleSimulation")
      * @param listener The method executed whenever the event is fired by the frontend.
      */
     public void addEventListener(String event, Consumer<JSONObject> listener) {
         listeners.put(event, listener);
     }
+
+    /**
+     * Unused.
+     */
+    public void onQueryCanceled(CefBrowser cefBrowser, CefFrame cefFrame, long l) {}
+
+    /**
+     * Unused.
+     */
+    public void setNativeRef(String s, long l) {}
+
+    /**
+     * Unused.
+     */
+    public long getNativeRef(String s) { return 0; }
 
 }

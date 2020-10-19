@@ -15,12 +15,8 @@ Vue.mixin({
                 window.cefQuery({
                     request: `${event},${JSON.stringify(payload)}`,
                     persistent: false,
-                    onSuccess: () => {
-                        console.log('SUCCESS');
-                    },
-                    onFailure: (code, err) => {
-                        console.log(`ERROR ${code}: ${err}`);
-                    }
+                    onSuccess: () => {},
+                    onFailure: () => {}
                 });
             }
         },

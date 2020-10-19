@@ -1,11 +1,12 @@
 <template>
     <div>
+
         <!-- New user profile modal -->
         <v-dialog width="400" v-model="showNewProfile">
             <v-card>
                 <v-card-title>Create New User Profile</v-card-title>
                 <v-form ref="addForm" lazy-validation>
-                    <v-text-field v-model="newProfile.name" :rules="[validationRules.required]" color="primary" class="mx-5" placeholder="Name the profile" label="Profile Name"></v-text-field>
+                    <v-text-field v-model="newProfile.name" :rules="[validationRules.required]" color="primary" class="mx-5" placeholder="Name the profile" label="Name"></v-text-field>
                 </v-form>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -24,7 +25,7 @@
             <v-card v-if="editProfile">
                 <v-card-title>Edit User Profile</v-card-title>
                 <v-form ref="editForm" lazy-validation>
-                    <v-text-field v-model="editProfile.name" :rules="[validationRules.required]" color="primary" class="mx-5" placeholder="Rename the profile" label="Profile Name"></v-text-field>
+                    <v-text-field v-model="editProfile.name" :rules="[validationRules.required]" color="primary" class="mx-5" placeholder="Rename the profile" label="Name"></v-text-field>
                 </v-form>
                 <v-card-text>
                     <div class="subtitle-2" v-if="currentProfile">
@@ -79,21 +80,21 @@
                     <template v-if="filteredUserProfiles.length > 0">
                         <v-list-item class="px-4" link :key="user.id" v-for="user in filteredUserProfiles">
                             <v-list-item-icon>
-                                <v-icon>fa-user</v-icon>
+                                <v-icon>fa-user-tag</v-icon>
                             </v-list-item-icon>
                             <v-list-item-title>{{ user.name }}</v-list-item-title>
                             <div class="list-item-actions">
                                 <v-btn class="f-14 blue--text mr-3" style="opacity: 0.8;" icon @mousedown.stop @click.stop="onEditProfile(user)">
-                                    <v-icon>fa-pencil-alt</v-icon>
+                                    <v-icon>fa-edit</v-icon>
                                 </v-btn>
                                 <v-btn class="f-14 red--text" style="opacity: 0.8;" icon @mousedown.stop @click.stop="onDeleteProfile(user)" v-if="userProfiles.length > 1">
-                                    <v-icon>fa-trash-alt</v-icon>
+                                    <v-icon>fa-trash</v-icon>
                                 </v-btn>
                             </div>
                         </v-list-item>
                     </template>
                     <p class="mt-3 text-center grey--text" v-else>
-                        <em>No profiles matching "{{profileSearch}}".</em>
+                        <em>No profiles matching <strong>{{profileSearch}}</strong></em>
                     </p>
                 </v-list>
                 <v-card-actions>
@@ -170,7 +171,9 @@
                 return this.$store.state.simulation?.userProfiles || [];
             },
             currentProfile() {
-                return this.userProfiles.find(p => p.id === this.editProfile.id);
+                if (this.editProfile)
+                    return this.userProfiles.find(p => p.id === this.editProfile.id);
+                return null;
             },
             filteredUserProfiles() {
                 return this.userProfiles.filter(p => p.name.toLowerCase().includes(this.profileSearch));
