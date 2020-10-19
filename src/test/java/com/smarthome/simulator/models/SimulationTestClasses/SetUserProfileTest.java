@@ -12,6 +12,10 @@ public class SetUserProfileTest {
 
     private Simulation testSimulation = new Simulation ();
 
+    /**
+     * Use case 4
+     * Tests that default profile is loaded correctly.
+     */
     @Test
     public void TestDefaultProfile() {
         Assertions.assertThat(testSimulation.getUserProfiles().get(0))
@@ -19,8 +23,8 @@ public class SetUserProfileTest {
                 .isEqualTo(testSimulation.getActiveUserProfile().toString());
     }
 
-    /**
-     * Testing if setActiveProfile method sets correct profile
+    /**Use case 4
+     * Testing if setActiveProfile method sets correct profile.
      */
     @Test
     public void TestSetActiveProfile() {
@@ -29,8 +33,8 @@ public class SetUserProfileTest {
                 .isEqualTo(testSimulation.getActiveUserProfile());
     }
 
-    /**
-     * Testing if setActiveUserProfile method returns false when passed an invalid UserProfile
+    /**Use case 4
+     * Testing if setActiveUserProfile method returns false when passed an invalid UserProfile.
      */
     @Test
     public void InvalidProfileShouldReturnFalse() {

@@ -11,7 +11,7 @@ public class PersonTest {
 
     /**
      * Use case #6
-     * Tests that setRoomId() successfully changes the value of roomId
+     * Tests that setRoomId() successfully changes the value of roomId.
      */
     @Test
     public void setRoomIdTest() {
@@ -21,7 +21,7 @@ public class PersonTest {
 
     /**
      * Use case #6
-     * Tests that getRoomId() successfully returns the value of roomId
+     * Tests that getRoomId() successfully returns the value of roomId.
      */
     @Test
     public void getRoomIdTest() {
