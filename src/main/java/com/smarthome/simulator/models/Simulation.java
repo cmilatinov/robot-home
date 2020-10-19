@@ -203,9 +203,14 @@ public class Simulation {
      * This function sets the temperature of inside the house.
      *
      * @param temperatureInside The temperature of inside the house.
+     * @return boolean representation of whether the temperature changed or not.
      */
-    public void setTemperatureInside(float temperatureInside) {
-        this.temperatureInside = temperatureInside;
+    public boolean setTemperatureInside(float temperatureInside) {
+        if (temperatureInside <= 35 && temperatureInside >= -30) {
+            this.temperatureInside = temperatureInside;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -221,9 +226,14 @@ public class Simulation {
      * This function sets the temperature of outside the house.
      *
      * @param temperatureOutside The temperature of outside the house.
+     * @return boolean representation of whether the temperature changed or not.
      */
-    public void setTemperatureOutside(float temperatureOutside) {
-        this.temperatureOutside = temperatureOutside;
+    public boolean setTemperatureOutside(float temperatureOutside) {
+        if (temperatureOutside <= 35 && temperatureOutside >= -30) {
+            this.temperatureOutside = temperatureOutside;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -257,9 +267,17 @@ public class Simulation {
      * This function sets the user's location in the house.
      *
      * @param userLocation The user's new location in the house.
+     * @return boolean representation of whether the location changed or not.
      */
-    public void setUserLocation(String userLocation) {
-        this.userLocation = userLocation;
+    public boolean setUserLocation(String userLocation) {
+        ArrayList<Room> rooms = houseLayout.getRooms();
+        for (Room room: rooms) {
+            if (room.getName().equalsIgnoreCase(userLocation)) {
+                this.userLocation = userLocation;
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

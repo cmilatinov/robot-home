@@ -10,12 +10,16 @@ import java.time.format.DateTimeFormatter;
 public class SetDateAndTimeTest {
 
     /**
+     * test simulation object for the test
+     */
+    Simulation tester = new Simulation();
+
+    /**
      * 3. Set date and time
      * Testing if setting the date and time returns an exception when the date and time is null
      */
     @Test(expected = Exception.class)
     public void settingANullDateAndTimeShouldReturnAnException() throws Exception {
-        Simulation tester = new Simulation();
         tester.setDateTime(null);
     }
 
@@ -25,7 +29,6 @@ public class SetDateAndTimeTest {
      */
     @Test(expected = Exception.class)
     public void settingDateAndTimeWithEmptyStringShouldReturnAnException() throws Exception {
-        Simulation tester = new Simulation();
         tester.setDateTime("");
     }
 
@@ -35,7 +38,6 @@ public class SetDateAndTimeTest {
      */
     @Test(expected = Exception.class)
     public void settingDateAndTimeWithSpaceShouldReturnAnException() throws Exception {
-        Simulation tester = new Simulation();
         tester.setDateTime(" ");
     }
 
@@ -45,7 +47,6 @@ public class SetDateAndTimeTest {
      */
     @Test(expected = Exception.class)
     public void settingDateAndTimeWithWrongFormatShouldReturnAnException() throws Exception {
-        Simulation tester = new Simulation();
         tester.setDateTime("sadsadsa");
     }
 
@@ -55,7 +56,6 @@ public class SetDateAndTimeTest {
      */
     @Test
     public void settingDateAndTimeWithTheRightFormatShouldReturnTheDateAndTime() {
-        Simulation tester = new Simulation();
         try {
             tester.setDateTime("2020-01-01 12:30");
         } catch (Exception e) {
