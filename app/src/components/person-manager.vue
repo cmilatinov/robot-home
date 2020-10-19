@@ -114,8 +114,10 @@
             },
             filteredPeople() {
                 return this.people.filter(p => p.name.toLowerCase().includes(this.personSearch.toLowerCase())).map(p => {
-                    let location = this.roomLocations.find(r => r.id === p.roomId).name;
-                    return { ...p, location };
+                    let location = this.roomLocations.find(r => r.id === p.roomId)?.name;
+                    if (location)
+                        return { ...p, location };
+                    return p;
                 });
             }
         },
