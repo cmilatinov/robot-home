@@ -3,9 +3,7 @@
         <v-app-bar flat dense>
             <h2 class="d-flex align-center">Smart Home Simulator</h2>
             <v-spacer></v-spacer>
-            <h2>{{ user }}</h2>
-            <v-spacer></v-spacer>
-            <add-person class="mr-4"></add-person>
+            <person-manager class="mr-4"></person-manager>
             <profile-manager class="mr-4"></profile-manager>
             <v-btn color="primary" @click="dispatchEvent('uploadHouseLayout', null)">
                 <v-icon class="f-10 mr-2">fa-upload</v-icon>
@@ -20,15 +18,11 @@
 
 <script>
     import ProfileManager from "./components/profile-manager";
-    import AddPerson from "./components/person-manager";
+    import PersonManager from "./components/person-manager";
+
     export default {
         name: 'App',
-        components: {AddPerson, ProfileManager},
-        data() {
-            return {
-                user: ''
-            }
-        }
+        components: {PersonManager, ProfileManager}
     }
 </script>
 

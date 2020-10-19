@@ -69,10 +69,12 @@ public class Simulation {
         this.running = false;
 
         this.userProfiles = new ArrayList<UserProfile>() {{
-            add(new UserProfile("Parents"));
-            add(new UserProfile("Children"));
-            add(new UserProfile("Guests"));
-            add(new UserProfile("Strangers"));
+            try {
+                add(new UserProfile("Parents"));
+                add(new UserProfile("Children"));
+                add(new UserProfile("Guests"));
+                add(new UserProfile("Strangers"));
+            }catch(Exception e){}
         }};
 
         this.activeUserProfile = this.userProfiles.get(0);
@@ -139,8 +141,13 @@ public class Simulation {
      *
      * @param activeUserProfile The list of active {@link UserProfile}.
      */
-    public void setActiveUserProfile(UserProfile activeUserProfile) {
-        this.activeUserProfile = activeUserProfile;
+    public boolean setActiveUserProfile(UserProfile activeUserProfile) {
+
+        if (userProfiles.contains(activeUserProfile)) {
+            this.activeUserProfile = activeUserProfile;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -157,8 +164,14 @@ public class Simulation {
      *
      * @param dateTime The date time string in the "yyyy-MM-dd HH:mm" format.
      */
-    public void setDateTime(String dateTime) {
-        this.dateTime = LocalDateTime.parse(dateTime, formatter);
+    public void setDateTime(String dateTime) throws Exception {
+        if(dateTime != null && !dateTime.equals("") && !dateTime.equals(" ")) {
+            this.dateTime = LocalDateTime.parse(dateTime, formatter);
+        }
+        else
+        {
+            throw new Exception();
+        }
     }
 
     /**

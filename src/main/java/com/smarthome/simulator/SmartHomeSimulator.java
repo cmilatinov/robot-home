@@ -151,9 +151,12 @@ public class SmartHomeSimulator {
             String name = (String) event.get("name");
 
             // Add new profile if name not empty
-            if (name.length() > 0)
-                simulation.getUserProfiles()
-                    .add(new UserProfile(name));
+            if (name.length() > 0) {
+                try {
+                    simulation.getUserProfiles()
+                            .add(new UserProfile(name));
+                }catch (Exception e){}
+            }
 
             // Update front-end
             handler.updateViews();
@@ -174,7 +177,9 @@ public class SmartHomeSimulator {
                     .filter(p -> p.getId().equals(id))
                     .findFirst()
                     .ifPresent(p -> {
-                        p.setName(name);
+                        try {
+                            p.setName(name);
+                        }catch(Exception e){}
                     });
 
             // Update front-end
@@ -198,6 +203,7 @@ public class SmartHomeSimulator {
 
             // Set active user profile to first if it is being deleted
             if (simulation.getActiveUserProfile().getId().equals(id))
+
                 simulation.setActiveUserProfile(simulation.getUserProfiles().get(0));
 
             // Update front-end
@@ -212,6 +218,7 @@ public class SmartHomeSimulator {
             String id = (String) event.get("id");
 
             // Set active profile if present
+
             simulation.getUserProfiles()
                     .stream()
                     .filter(p -> p.getId().equals(id))
@@ -259,7 +266,9 @@ public class SmartHomeSimulator {
             String value = (String) event.get("value");
 
             // Set date time
-            simulation.setDateTime(value);
+            try {
+                simulation.setDateTime(value);
+            }catch(Exception e){}
 
             // Update front-end
             handler.updateViews();

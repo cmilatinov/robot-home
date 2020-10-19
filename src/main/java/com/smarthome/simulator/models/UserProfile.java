@@ -1,6 +1,7 @@
 package com.smarthome.simulator.models;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * This class represents a user profile with its functionalities.
@@ -24,9 +25,14 @@ public class UserProfile extends IdentifiableObject {
      *
      * @param name The name of the user profile.
      */
-    public UserProfile(String name) {
-        this.name = name;
-        this.permissions = new ArrayList<>();
+    public UserProfile(String name) throws Exception {
+        if(name != null && !name.matches("\\s+") && name.matches("[a-zA-Z0-9\\s]+") && name.length()<=16) {
+            this.name = name;
+            this.permissions = new ArrayList<>();
+        }
+        else{
+            throw new Exception();
+        }
     }
 
     /**
@@ -56,6 +62,19 @@ public class UserProfile extends IdentifiableObject {
                 ", permissions=" + permissions +
                 '}';
     }
+  
+    /**
+     * This function compares two UserProfiles.
+     * @param o The UserProfile being compared to.
+     * @return Boolean that represents if the UserProfile being compared to is the same or not.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserProfile)) return false;
+        UserProfile that = (UserProfile) o;
+        return this.getId().equals(that.getId());
+    }
 
     // ============================ GETTERS/SETTERS ============================
 
@@ -73,8 +92,13 @@ public class UserProfile extends IdentifiableObject {
      *
      * @param name The name of the user profile.
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String name) throws Exception {
+        if(name != null && !name.matches("\\s+") && name.matches("[a-zA-Z0-9\\s]+") && name.length()<=16) {
+            this.name = name;
+        }
+        else{
+            throw new Exception();
+        }
     }
 
     /**
@@ -94,6 +118,5 @@ public class UserProfile extends IdentifiableObject {
     public void setPermissions(ArrayList<String> permissions) {
         this.permissions = permissions;
     }
-
-
+  
 }
