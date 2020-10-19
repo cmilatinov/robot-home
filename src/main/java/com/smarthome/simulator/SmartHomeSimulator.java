@@ -155,7 +155,7 @@ public class SmartHomeSimulator {
                 try {
                     simulation.getUserProfiles()
                             .add(new UserProfile(name));
-                }catch (Exception e){}
+                } catch (Exception ignored) {}
             }
 
             // Update front-end
@@ -173,14 +173,15 @@ public class SmartHomeSimulator {
             // Update profile if exists and name not empty
             if (name.length() > 0)
                 simulation.getUserProfiles()
-                    .stream()
-                    .filter(p -> p.getId().equals(id))
-                    .findFirst()
-                    .ifPresent(p -> {
-                        try {
-                            p.setName(name);
-                        }catch(Exception e){}
-                    });
+                        .stream()
+                        .filter(p -> p.getId().equals(id))
+                        .findFirst()
+                        .ifPresent(p -> {
+                            try {
+                                p.setName(name);
+                            } catch (Exception ignored) {
+                            }
+                        });
 
             // Update front-end
             handler.updateViews();
@@ -199,7 +200,7 @@ public class SmartHomeSimulator {
 
             // Remove profile if exists
             simulation.getUserProfiles()
-                .removeIf(p -> p.getId().equals(id));
+                    .removeIf(p -> p.getId().equals(id));
 
             // Set active user profile to first if it is being deleted
             if (simulation.getActiveUserProfile().getId().equals(id))
@@ -252,7 +253,7 @@ public class SmartHomeSimulator {
                     .stream()
                     .filter(r -> r.getId().equals(id))
                     .findFirst()
-                    .ifPresent(room -> room.setDimensions(new RoomDimensions((float)x, (float)y, width, height)));
+                    .ifPresent(room -> room.setDimensions(new RoomDimensions((float) x, (float) y, width, height)));
 
             // Update front-end
             handler.updateViews();
@@ -268,7 +269,8 @@ public class SmartHomeSimulator {
             // Set date time
             try {
                 simulation.setDateTime(value);
-            }catch(Exception e){}
+            } catch (Exception ignored) {
+            }
 
             // Update front-end
             handler.updateViews();

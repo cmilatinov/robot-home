@@ -165,13 +165,11 @@ public class Simulation {
      * @param dateTime The date time string in the "yyyy-MM-dd HH:mm" format.
      */
     public void setDateTime(String dateTime) throws Exception {
-        if(dateTime != null && !dateTime.equals("") && !dateTime.equals(" ")) {
+        if (dateTime != null && !dateTime.equals("") && !dateTime.equals(" ")) {
             this.dateTime = LocalDateTime.parse(dateTime, formatter);
+            return;
         }
-        else
-        {
-            throw new Exception();
-        }
+        throw new Exception();
     }
 
     /**

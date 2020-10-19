@@ -4,6 +4,9 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
+/**
+ * This class is used as a helper to create file choosers.
+ */
 public class FileChooserUtil {
 
     /**
