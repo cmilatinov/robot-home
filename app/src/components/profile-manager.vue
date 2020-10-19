@@ -6,7 +6,9 @@
             <v-card>
                 <v-card-title>Create New User Profile</v-card-title>
                 <v-form ref="addForm" lazy-validation>
-                    <v-text-field v-model="newProfile.name" :rules="[validationRules.required]" color="primary" class="mx-5" placeholder="Name the profile" label="Name"></v-text-field>
+                    <v-text-field v-model="newProfile.name"
+                                  :rules="[validationRules.required, validationRules.format, validationRules.length]"
+                                  color="primary" class="mx-5" placeholder="Name the profile" label="Name"></v-text-field>
                 </v-form>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -25,7 +27,9 @@
             <v-card v-if="editProfile">
                 <v-card-title>Edit User Profile</v-card-title>
                 <v-form ref="editForm" lazy-validation>
-                    <v-text-field v-model="editProfile.name" :rules="[validationRules.required]" color="primary" class="mx-5" placeholder="Rename the profile" label="Name"></v-text-field>
+                    <v-text-field v-model="editProfile.name"
+                                  :rules="[validationRules.required, validationRules.format, validationRules.length]"
+                                  color="primary" class="mx-5" placeholder="Rename the profile" label="Name"></v-text-field>
                 </v-form>
                 <v-card-text>
                     <div class="subtitle-2" v-if="currentProfile">

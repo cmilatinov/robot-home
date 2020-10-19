@@ -7,7 +7,7 @@
                 <v-card-title>Add New Person</v-card-title>
                 <v-form ref="addForm" lazy-validation>
                     <v-text-field v-model="newPerson.name"
-                                  :rules="[validationRules.required]"
+                                  :rules="[validationRules.required, validationRules.format, validationRules.length]"
                                   color="primary"
                                   class="mx-5"
                                   placeholder="Name the person"
