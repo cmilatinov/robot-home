@@ -3,5 +3,6 @@ target/
 public/
 natives/
 out/
+src/main/resources/META-INF/
 *.iml
 *.log
