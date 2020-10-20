@@ -1,0 +1,5 @@
+com.smarthome.simulator
+com.smarthome.simulator.models
+com.smarthome.simulator.models.SimulationTestClasses
+com.smarthome.simulator.utils
+com.smarthome.simulator.web
