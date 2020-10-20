@@ -23,6 +23,7 @@
                     <v-select outlined dense class="mx-4 mt-0 pt-0"
                               prepend-inner-icon="fa-user-tag"
                               v-if="activeUserProfile"
+                              :disabled="simulationRunning"
                               :value="activeUserProfile.id"
                               @change="dispatchEvent('setActiveProfile', { id: $event })"
                               item-value="id"
@@ -37,7 +38,7 @@
                         </div>
                     </v-subheader>
                     <v-container fluid class="h-100 py-0 d-flex flex-column overflow-auto">
-                        <v-btn class="mx-3 mb-2" :color="simulationRunning ? 'red darken-4' : 'primary darken-1'" @click="dispatchEvent('toggleSimulation', { value: !simulationRunning })">
+                        <v-btn class="mx-3 mb-2" :color="simulationRunning ? 'red darken-4' : 'primary darken-1'" :disabled="!hasHouseLayout" @click="onToggleSimulation">
                             <template v-if="simulationRunning">
                                 <v-icon class="mr-2">fa-stop</v-icon> Stop
                             </template>
@@ -45,6 +46,9 @@
                                 <v-icon class="mr-2">fa-play</v-icon> Start
                             </template>
                         </v-btn>
+                        <span class="red--text mb-1" v-if="!hasHouseLayout">
+                            <v-icon style="font-size: 12pt !important;" class="mr-1 red--text">fa-info-circle</v-icon><em class="f-9">You must load a house layout before starting the simulation.</em>
+                        </span>
                         <v-form>
                             <v-menu v-model="timeMenu"
                                     :close-on-content-click="false"
@@ -246,12 +250,16 @@
                     'SHC', 'SHP', 'SHH'
                 ],
                 timeMenu: false,
-                dateMenu: false
+                dateMenu: false,
+                simulationInterval: null
             }
         },
         computed: {
             simulation() {
                 return this.$store.state.simulation;
+            },
+            simulationDateTime() {
+                return this.$store.state.simulation?.dateTime || '';
             },
             simulationDate() {
                 return this.$store.state.simulation?.dateTime.split(/\s+/)[0];
@@ -314,9 +322,27 @@
             },
             editPerson() {
                 return this.$store.state.editPerson;
+            },
+            hasHouseLayout() {
+                return !!this.$store.state.simulation?.houseLayout;
             }
         },
         methods: {
+            onToggleSimulation() {
+                // Increment simulation time every minute if starting
+                if (!this.simulationRunning) {
+                    this.simulationInterval = setInterval(() => {
+                        let newDateTime = this.$moment(this.simulationDateTime, 'YYYY-MM-DD HH:mm').add(1, 'minutes').format('YYYY-MM-DD HH:mm');
+                        this.dispatchEvent('setSimulationDateTime', { value: newDateTime });
+                    }, 60 * 1000);
+
+                // Clear interval if stopping
+                } else
+                    clearInterval(this.simulationInterval);
+
+                // Change simulation state
+                this.dispatchEvent('toggleSimulation', { value: !this.simulationRunning });
+            },
             onMovePerson(person) {
                 this.editPerson = { ...person };
                 this.showMovePerson = true;

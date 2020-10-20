@@ -5,7 +5,7 @@
             <v-spacer></v-spacer>
             <person-manager class="mr-4"></person-manager>
             <profile-manager class="mr-4"></profile-manager>
-            <v-btn color="primary" @click="dispatchEvent('uploadHouseLayout', null)">
+            <v-btn color="primary" :disabled="simulationRunning" @click="dispatchEvent('uploadHouseLayout', null)">
                 <v-icon class="f-10 mr-2">fa-upload</v-icon>
                 Load Layout
             </v-btn>
@@ -22,7 +22,12 @@
 
     export default {
         name: 'App',
-        components: {PersonManager, ProfileManager}
+        components: {PersonManager, ProfileManager},
+        computed: {
+            simulationRunning() {
+                return !!this.$store.state.simulation?.running;
+            }
+        }
     }
 </script>
 

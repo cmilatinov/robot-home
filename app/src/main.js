@@ -10,8 +10,10 @@ import './filters';
 import './mixins';
 
 import panzoom from 'vue-panzoom';
+import moment from 'vue-moment';
 
 Vue.use(panzoom);
+Vue.use(moment)
 
 Vue.config.productionTip = false;
 

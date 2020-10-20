@@ -10,7 +10,7 @@
                 <template #activator="{ on: menu, attrs }">
                     <v-tooltip top>
                         <template #activator="{ on: tooltip }">
-                            <v-btn icon v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+                            <v-btn icon :disabled="!simulationRunning" v-bind="attrs" v-on="{ ...tooltip, ...menu }">
                                 <v-icon :style="`color: ${person.color}`">fa-user</v-icon>
                             </v-btn>
                         </template>
@@ -38,7 +38,7 @@
         <div class="diagram-room-controls">
             <v-menu offset-y :close-on-content-click="false">
                 <template #activator="{ on, attrs }">
-                    <v-btn icon class="ma-2" v-bind="attrs" v-on="on">
+                    <v-btn icon :disabled="!simulationRunning" class="ma-2" v-bind="attrs" v-on="on">
                         <v-icon>fa-lightbulb</v-icon>
                     </v-btn>
                 </template>
@@ -53,7 +53,7 @@
 
             <v-menu offset-y :close-on-content-click="false">
                 <template #activator="{ on, attrs }">
-                    <v-btn icon class="ma-2" v-bind="attrs" v-on="on">
+                    <v-btn icon :disabled="!simulationRunning" class="ma-2" v-bind="attrs" v-on="on">
                         <v-icon>fa-door-open</v-icon>
                     </v-btn>
                 </template>
@@ -78,7 +78,7 @@
 
             <v-menu offset-y :close-on-content-click="false">
                 <template #activator="{ on, attrs }">
-                    <v-btn icon class="ma-2" v-bind="attrs" v-on="on">
+                    <v-btn icon :disabled="!simulationRunning" class="ma-2" v-bind="attrs" v-on="on">
                         <v-icon>fab fa-windows</v-icon>
                     </v-btn>
                 </template>
@@ -196,6 +196,9 @@
             },
             people() {
                 return this.$store.state.simulation?.people.filter(p => p.roomId === this.room.id) || [];
+            },
+            simulationRunning() {
+                return !!this.$store.state.simulation?.running;
             }
         },
         watch: {

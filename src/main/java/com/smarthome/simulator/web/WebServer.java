@@ -20,7 +20,7 @@ public class WebServer extends Thread {
     /**
      * The server port.
      */
-    public static final int SERVER_PORT = 8080;
+    public static final int SERVER_PORT = 8081;
 
     /**
      * The {@link HttpServer} instance used to handle requests.

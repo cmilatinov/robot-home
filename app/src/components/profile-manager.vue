@@ -71,7 +71,7 @@
         <v-dialog v-model="showProfileManager" width="600">
             <template #activator="{ on, attrs }">
                 <div class="d-flex justify-center">
-                    <v-btn class="px-4" color="primary" v-bind="attrs" v-on="on">
+                    <v-btn class="px-4" color="primary" :disabled="simulationRunning" v-bind="attrs" v-on="on">
                         <v-icon class="mr-2">fa-users-cog</v-icon>User profiles
                     </v-btn>
                 </div>
@@ -181,6 +181,9 @@
             },
             filteredUserProfiles() {
                 return this.userProfiles.filter(p => p.name.toLowerCase().includes(this.profileSearch));
+            },
+            simulationRunning() {
+                return !!this.$store.state.simulation?.running;
             }
         },
         mixins: [validation]

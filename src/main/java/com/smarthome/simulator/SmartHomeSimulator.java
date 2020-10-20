@@ -355,9 +355,7 @@ public class SmartHomeSimulator {
             // Get payload
             String id = (String) event.get("id");
             boolean blocked = (boolean) event.get("blocked");
-
-            // Window cannot be open if blocked
-            boolean open = !blocked && (boolean) event.get("open");
+            boolean open = (boolean) event.get("open");
 
             // Change window state if exists
             simulation.getAllWindows()
@@ -365,8 +363,9 @@ public class SmartHomeSimulator {
                     .filter(w -> w.getId().equals(id))
                     .findFirst()
                     .ifPresent(w -> {
-                        w.setOpen(open);
                         w.setBlocked(blocked);
+                        if (w.isOpen() != open && !blocked)
+                            w.setOpen(open);
                     });
 
             // Update front-end

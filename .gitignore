@@ -1,7 +1,7 @@
 .idea/
 target/
-src/main/java/com/smarthome/simulator/models/test.java
 public/
 natives/
+out/
 *.iml
 *.log
