@@ -190,7 +190,12 @@ public class UserProfile extends IdentifiableObject {
         //Writing the JSON file with the JSON object and array
         FileWriter file = null;
         try{
-            file = new FileWriter(selectedFile.getPath() + ".json");
+            if(selectedFile.getPath().contains(".json")) {
+                file = new FileWriter(selectedFile.getPath());
+            }
+            else {
+                file = new FileWriter(selectedFile.getPath() + ".json");
+            }
             file.write(users.toJSONString());
             file.close();
         }catch(Exception e)
