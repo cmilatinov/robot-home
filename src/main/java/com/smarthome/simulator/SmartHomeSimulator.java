@@ -17,6 +17,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Main program class.
@@ -136,6 +139,10 @@ public class SmartHomeSimulator {
             // Get new value
             boolean value = (boolean) event.get("value");
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("value", value);
+
             // Set simulation running
             simulation.setRunning(value);
 
@@ -149,6 +156,10 @@ public class SmartHomeSimulator {
 
             // Get name
             String name = (String) event.get("name");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("name", name);
 
             // Add new profile if name not empty
             if (name.length() > 0) {
@@ -169,6 +180,11 @@ public class SmartHomeSimulator {
             // Get attributes
             String id = (String) event.get("id");
             String name = (String) event.get("name");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+            eventMap.put("name", name);
 
             // Update profile if exists and name not empty
             if (name.length() > 0)
@@ -194,6 +210,10 @@ public class SmartHomeSimulator {
             // Get id
             String id = (String) event.get("id");
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+
             // Never delete last profile
             if (simulation.getUserProfiles().size() <= 1)
                 return;
@@ -217,6 +237,10 @@ public class SmartHomeSimulator {
 
             // Get id
             String id = (String) event.get("id");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
 
             // Set active profile if present
 
@@ -243,6 +267,14 @@ public class SmartHomeSimulator {
             float width = Float.parseFloat(event.get("width").toString());
             float height = Float.parseFloat(event.get("height").toString());
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+            eventMap.put("x", x);
+            eventMap.put("y", y);
+            eventMap.put("width", width);
+            eventMap.put("height", height);
+
             // Check layout exists
             HouseLayout layout = simulation.getHouseLayout();
             if (layout == null)
@@ -266,6 +298,10 @@ public class SmartHomeSimulator {
             // Get date string
             String value = (String) event.get("value");
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("value", value);
+
             // Set date time
             try {
                 simulation.setDateTime(value);
@@ -283,6 +319,10 @@ public class SmartHomeSimulator {
             // Get value
             float value = Float.parseFloat(event.get("value").toString());
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("value", value);
+
             // Set outside temperature
             simulation.setTemperatureOutside(value);
 
@@ -296,6 +336,10 @@ public class SmartHomeSimulator {
 
             // Get value
             float value = Float.parseFloat(event.get("value").toString());
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("value", value);
 
             // Set outside temperature
             simulation.setTemperatureInside(value);
@@ -311,6 +355,11 @@ public class SmartHomeSimulator {
             // Get payload
             String id = (String) event.get("id");
             boolean on = (boolean) event.get("on");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+            eventMap.put("on", on);
 
             // Change light state if exists
             simulation.getAllLights()
@@ -333,6 +382,12 @@ public class SmartHomeSimulator {
 
             // Door cannot be open if locked
             boolean open = !locked && (boolean) event.get("open");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+            eventMap.put("locked", locked);
+            eventMap.put("open", open);
 
             // Change door state if exists
             simulation.getAllDoors()
@@ -357,6 +412,12 @@ public class SmartHomeSimulator {
             boolean blocked = (boolean) event.get("blocked");
             boolean open = (boolean) event.get("open");
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+            eventMap.put("blocked", blocked);
+            eventMap.put("open", open);
+
             // Change window state if exists
             simulation.getAllWindows()
                     .stream()
@@ -379,6 +440,10 @@ public class SmartHomeSimulator {
             // Get location
             String userLocation = (String) event.get("userLocation");
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("userLocation", userLocation);
+
             // Set the user's location in the house
             simulation.setUserLocation(userLocation);
 
@@ -393,6 +458,11 @@ public class SmartHomeSimulator {
             // Get payload
             String name = (String) event.get("name");
             String roomId = (String) event.get("roomId");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("name", name);
+            eventMap.put("roomId", roomId);
 
             // Add person to simulation
             simulation.getPeople()
@@ -409,6 +479,11 @@ public class SmartHomeSimulator {
             // Get payload
             String id = (String) event.get("id");
             String roomId = (String) event.get("roomId");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+            eventMap.put("roomId", roomId);
 
             // Move person if exists
             simulation.getPeople()
@@ -427,6 +502,10 @@ public class SmartHomeSimulator {
 
             // Get payload
             String id = (String) event.get("id");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
 
             // Remove person if exists
             simulation.getPeople()
