@@ -1,4 +1,8 @@
-package com.smarthome.simulator.models;
+package com.smarthome.simulator.modules;
+
+import com.smarthome.simulator.models.Light;
+import com.smarthome.simulator.models.Person;
+import com.smarthome.simulator.models.Simulation;
 
 import java.util.ArrayList;
 
