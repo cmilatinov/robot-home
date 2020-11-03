@@ -40,30 +40,14 @@ public class SHC extends Module{
 
     @Override
     public void executeCommand(String command, Map<String, String> payload, boolean sentByUser) {
-        boolean allowed;
 
-        if (sentByUser) {
-            allowed = checkPermission(command);
-        } else {
-            allowed = true;
-        }
-
-        if (!allowed) {
-            System.out.println("Permission Denied for " + command);
-            return;
-        }
+        super.executeCommand(command, payload, sentByUser);
 
         switch (command) {
             case P_REMOTE_LIGHT_ACTIVATION:
 
         }
 
-    }
-
-    private boolean checkPermission(String command) {
-        return simulation.getActiveUserProfile().getPermissions().stream().anyMatch(p ->
-           p.equals(command)
-        );
     }
 
 }

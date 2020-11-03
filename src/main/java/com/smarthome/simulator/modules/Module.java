@@ -16,5 +16,24 @@ public abstract class Module {
 
     public abstract List<String> getPermissions();
 
-    public abstract void executeCommand(String name, Map<String, String> payload, boolean sentByUser);
+    public void executeCommand(String command, Map<String, String> payload, boolean sentByUser) {
+        boolean allowed;
+
+        if (sentByUser) {
+            allowed = checkPermission(command);
+        } else {
+            allowed = true;
+        }
+
+        if (!allowed) {
+            System.out.println("Permission Denied for " + command);
+            return;
+        }
+    }
+
+    private boolean checkPermission(String command) {
+        return simulation.getActiveUserProfile().getPermissions().stream().anyMatch(p ->
+                p.equals(command)
+        );
+    }
 }
