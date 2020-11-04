@@ -375,10 +375,17 @@ public class SmartHomeSimulator {
                     .ifPresent(r -> {
                         Optional<Light> light = r.getLights().stream().filter(l -> l.getId().equals(id))
                                 .findFirst();
+
+                        Module module;
+
                         if (light.isPresent()) {
-                            shc.executeCommand("ControlLights", eventMap, true);
+                            module = simulation.getModule("ControlLights");
+                            if (module != null)
+                                module.executeCommand("ControlLights", eventMap, true);
                         } else {
-                            shc.executeCommand("RemoteControlLights", eventMap, true);
+                            module = simulation.getModule("RemoteControlLights");
+                            if (module != null)
+                                module.executeCommand("RemoteControlLights", eventMap, true);
                         }
                     });
 
@@ -412,10 +419,17 @@ public class SmartHomeSimulator {
                     .ifPresent(r -> {
                         Optional<Door> door = r.getDoors().stream().filter(d -> d.getId().equals(id))
                                 .findFirst();
+
+                        Module module;
+
                         if (door.isPresent()) {
-                            shc.executeCommand("ControlDoors", eventMap, true);
+                            module = simulation.getModule("ControlDoors");
+                            if (module != null)
+                                module.executeCommand("ControlDoors", eventMap, true);
                         } else {
-                            shc.executeCommand("RemoteControlDoors", eventMap, true);
+                            module = simulation.getModule("RemoteControlDoors");
+                            if (module != null)
+                                module.executeCommand("RemoteControlDoors", eventMap, true);
                         }
                     });
 
@@ -447,10 +461,17 @@ public class SmartHomeSimulator {
                     .ifPresent(r -> {
                         Optional<Window> window = r.getWindows().stream().filter(w -> w.getId().equals(id))
                                 .findFirst();
+
+                        Module module;
+
                         if (window.isPresent()) {
-                            shc.executeCommand("ControlWindows", eventMap, true);
+                            module = simulation.getModule("ControlWindows");
+                            if (module != null)
+                                module.executeCommand("ControlWindows", eventMap, true);
                         } else {
-                            shc.executeCommand("RemoteControlWindows", eventMap, true);
+                            module = simulation.getModule("RemoteControlWindows");
+                            if (module != null)
+                                module.executeCommand("RemoteControlWindows", eventMap, true);
                         }
                     });
 
@@ -589,7 +610,9 @@ public class SmartHomeSimulator {
             HashMap eventMap = new HashMap<String, Object>();
             eventMap.put("on", on);
 
-            shc.executeCommand(SHC.P_CONTROL_AUTO_MODE, eventMap, true);
+            Module module = simulation.getModule("ControlAutoMode");
+            if (module != null)
+                module.executeCommand("ControlAutoMode", eventMap, true);
 
             // Update front-end
             handler.updateViews();
