@@ -1,6 +1,7 @@
 package com.smarthome.simulator;
 
 import com.smarthome.simulator.models.*;
+import com.smarthome.simulator.models.Window;
 import com.smarthome.simulator.modules.*;
 import com.smarthome.simulator.web.JavaScriptQueryHandler;
 import com.smarthome.simulator.web.WebServer;
@@ -18,9 +19,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Main program class.
@@ -366,12 +366,21 @@ public class SmartHomeSimulator {
             eventMap.put("id", id);
             eventMap.put("on", on);
 
-            // Change light state if exists
-            simulation.getAllLights()
+            // Checks if it's a "Remote" command or not
+            String currentUserRoomId = simulation.getUserLocation();
+            simulation.getHouseLayout().getRooms()
                     .stream()
-                    .filter(l -> l.getId().equals(id))
+                    .filter(r -> r.getId().equals(currentUserRoomId))
                     .findFirst()
-                    .ifPresent(l -> l.setOn(on));
+                    .ifPresent(r -> {
+                        Optional<Light> light = r.getLights().stream().filter(l -> l.getId().equals(id))
+                                .findFirst();
+                        if (light.isPresent()) {
+                            shc.executeCommand("ControlLights", eventMap, true);
+                        } else {
+                            shc.executeCommand("RemoteControlLights", eventMap, true);
+                        }
+                    });
 
             // Update front-end
             handler.updateViews();
@@ -394,14 +403,20 @@ public class SmartHomeSimulator {
             eventMap.put("locked", locked);
             eventMap.put("open", open);
 
-            // Change door state if exists
-            simulation.getAllDoors()
+            // Checks if it's a "Remote" command or not
+            String currentUserRoomId = simulation.getUserLocation();
+            simulation.getHouseLayout().getRooms()
                     .stream()
-                    .filter(d -> d.getId().equals(id))
+                    .filter(r -> r.getId().equals(currentUserRoomId))
                     .findFirst()
-                    .ifPresent(d -> {
-                        d.setOpen(open);
-                        d.setLocked(locked);
+                    .ifPresent(r -> {
+                        Optional<Door> door = r.getDoors().stream().filter(d -> d.getId().equals(id))
+                                .findFirst();
+                        if (door.isPresent()) {
+                            shc.executeCommand("ControlDoors", eventMap, true);
+                        } else {
+                            shc.executeCommand("RemoteControlDoors", eventMap, true);
+                        }
                     });
 
             // Update front-end
@@ -423,15 +438,20 @@ public class SmartHomeSimulator {
             eventMap.put("blocked", blocked);
             eventMap.put("open", open);
 
-            // Change window state if exists
-            simulation.getAllWindows()
+            // Checks if it's a "Remote" command or not
+            String currentUserRoomId = simulation.getUserLocation();
+            simulation.getHouseLayout().getRooms()
                     .stream()
-                    .filter(w -> w.getId().equals(id))
+                    .filter(r -> r.getId().equals(currentUserRoomId))
                     .findFirst()
-                    .ifPresent(w -> {
-                        w.setBlocked(blocked);
-                        if (w.isOpen() != open && !blocked)
-                            w.setOpen(open);
+                    .ifPresent(r -> {
+                        Optional<Window> window = r.getWindows().stream().filter(w -> w.getId().equals(id))
+                                .findFirst();
+                        if (window.isPresent()) {
+                            shc.executeCommand("ControlWindows", eventMap, true);
+                        } else {
+                            shc.executeCommand("RemoteControlWindows", eventMap, true);
+                        }
                     });
 
             // Update front-end
@@ -449,8 +469,13 @@ public class SmartHomeSimulator {
             HashMap eventMap = new HashMap<String, Object>();
             eventMap.put("userLocation", userLocation);
 
+            String currentUserRoomId = simulation.getUserLocation();
+
             // Set the user's location in the house
             simulation.setUserLocation(userLocation);
+
+            // this helps to implement to "auto mode"
+            updateRooms(currentUserRoomId, userLocation);
 
             // Update front-end
             handler.updateViews();
@@ -469,9 +494,14 @@ public class SmartHomeSimulator {
             eventMap.put("name", name);
             eventMap.put("roomId", roomId);
 
+
+
             // Add person to simulation
             simulation.getPeople()
                     .add(new Person(name, roomId));
+
+            // this helps to implement to "auto mode"
+            updateRooms(null, roomId);
 
             // Update front-end
             handler.updateViews();
@@ -490,12 +520,20 @@ public class SmartHomeSimulator {
             eventMap.put("id", id);
             eventMap.put("roomId", roomId);
 
+            AtomicReference<String> currentUserRoomId = null;
+
             // Move person if exists
             simulation.getPeople()
                     .stream()
                     .filter(p -> p.getId().equals(id))
                     .findFirst()
-                    .ifPresent(p -> p.setRoomId(roomId));
+                    .ifPresent(p -> {
+                        currentUserRoomId.set(p.getRoomId());
+                        p.setRoomId(roomId);
+                    });
+
+            // this helps to implement to "auto mode"
+            updateRooms(currentUserRoomId.get(), roomId);
 
             // Update front-end
             handler.updateViews();
@@ -512,9 +550,14 @@ public class SmartHomeSimulator {
             HashMap eventMap = new HashMap<String, Object>();
             eventMap.put("id", id);
 
-            // Remove person if exists
             simulation.getPeople()
-                    .removeIf(p -> p.getId().equals(id));
+                    .stream()
+                    .filter(person -> person.getId().equals(id))
+                    .findFirst()
+                    .ifPresent(p -> {
+                        simulation.getPeople().remove(p);
+                        updateRooms(p.getRoomId(), null);
+                    });
 
             // Update front-end
             handler.updateViews();
@@ -537,6 +580,31 @@ public class SmartHomeSimulator {
             handler.updateViews();
         });
 
+        //User enable the "auto mode"
+        handler.addEventListener("toggleAutoMode", (event) -> {
+            // Get payload
+            boolean on = (Boolean) event.get("on");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("on", on);
+
+            shc.executeCommand(SHC.P_CONTROL_AUTO_MODE, eventMap, true);
+
+            // Update front-end
+            handler.updateViews();
+        });
+
     }
+
+    private static void updateRooms(String oldRoom, String newRoom) {
+        // for the room that we are leaving
+        simulation.getHouseLayout().getRooms()
+                .stream()
+                .filter(room -> room.getId().equals(oldRoom) || room.getId().equals(newRoom))
+                .forEach(room -> shc.updateRoom(room));
+    }
+
+
 
 }

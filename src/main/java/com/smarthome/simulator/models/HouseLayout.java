@@ -245,7 +245,7 @@ public class HouseLayout {
     public static HouseLayout promptForLayout(Component mainComponent) {
 
         // Choosing a file
-        JFileChooser fileChooser = FileChooserUtil.createJSON();
+        JFileChooser fileChooser = FileChooserUtil.promptUser("Select a house layout");
         int returnValue = fileChooser.showOpenDialog(mainComponent);
 
         // Verifying if the user chose a file

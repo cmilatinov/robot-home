@@ -284,7 +284,7 @@ public class Simulation {
     public boolean setUserLocation(String userLocation) {
         ArrayList<Room> rooms = houseLayout.getRooms();
         for (Room room: rooms) {
-            if (room.getName().equalsIgnoreCase(userLocation)) {
+            if (room.getId().equals(userLocation)) {
                 this.userLocation = userLocation;
                 return true;
             }
