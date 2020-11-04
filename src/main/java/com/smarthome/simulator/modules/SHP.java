@@ -14,17 +14,15 @@ public class SHP extends Module{
     private float alertDelay;
     private SHC shc;
 
-    public SHP (boolean _away, float _alertDelay, SHC _shc, Simulation _simulation) {
+    public SHP (boolean _away, float _alertDelay, Simulation _simulation) {
         super("SHP", _simulation);
         this.away = _away;
         this.alertDelay = _alertDelay;
-        this.shc = _shc;
     }
-    public SHP (SHC _shc, Simulation _simulation) {
+    public SHP (Simulation _simulation) {
         super("SHP", _simulation);
         this.away = false;
         this.alertDelay = 0;
-        this.shc = _shc;
     }
 
     /**
@@ -75,6 +73,13 @@ public class SHP extends Module{
         }
         else if (!_away)
             this.away = false;
+    }
+
+    @Override
+    public ArrayList<String> getCommands() {
+        return new ArrayList<String>() {{
+            add("setAwayLights");
+        }};
     }
 
     public float getAlertDelay() {

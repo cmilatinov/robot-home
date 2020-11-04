@@ -1,10 +1,14 @@
 package com.smarthome.simulator.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.smarthome.simulator.modules.Module;
+import com.smarthome.simulator.modules.SHC;
+import com.smarthome.simulator.modules.SHP;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Simulation {
 
@@ -58,6 +62,11 @@ public class Simulation {
      */
     private ArrayList<Person> people;
 
+    /**
+     * The list of active {@link Module} in the simulation.
+     */
+    private ArrayList<Module> modules;
+
     // ============================ CONSTRUCTORS ============================
 
     /**
@@ -83,6 +92,9 @@ public class Simulation {
         this.houseLayout = null;
         this.userLocation = null;
         this.people = new ArrayList<>();
+        this.modules = new ArrayList<Module>();
+        modules.add(new SHC(this));
+        modules.add(new SHP(this));
     }
 
     // ============================ OVERRIDES ============================
@@ -355,6 +367,17 @@ public class Simulation {
                     return list;
                 });
         return new ArrayList<>();
+    }
+
+    public Module getModule(String command) {
+        String name;
+        for (int i=0; i<modules.size(); i++) {
+            if (modules.get(i).getCommands() != null) {
+                if (modules.get(i).getCommands().contains(command))
+                    return modules.get(i);
+            }
+        }
+        return null;
     }
 
 }

@@ -2,11 +2,14 @@ package com.smarthome.simulator.modules;
 
 import com.smarthome.simulator.models.Simulation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public abstract class Module {
+
     private final String name;
+
     protected final Simulation simulation;
 
     public Module(String name, Simulation simulation) {
@@ -17,6 +20,8 @@ public abstract class Module {
     public abstract List<String> getPermissions();
 
     public abstract void executeCommand(String command, Map<String, Object> payload, boolean sentByUser);
+
+    public abstract ArrayList<String> getCommands();
 
     public boolean checkPermission(String command, boolean sentByUser) {
         boolean allowed;
@@ -35,4 +40,5 @@ public abstract class Module {
 
         return allowed;
     }
+
 }
