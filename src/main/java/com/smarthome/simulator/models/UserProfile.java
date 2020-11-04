@@ -36,6 +36,9 @@ public class UserProfile extends IdentifiableObject {
             add("RemoteControlPerson");
             add("RemoteControlRooms");
             add("RemoteControlRoomDimensions");
+
+            add("SetAwayLights");
+            add("SetAwayMode");
         }
     };
 

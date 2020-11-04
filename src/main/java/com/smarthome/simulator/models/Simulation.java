@@ -372,8 +372,8 @@ public class Simulation {
     public Module getModule(String command) {
         String name;
         for (int i=0; i<modules.size(); i++) {
-            if (modules.get(i).getCommands() != null) {
-                if (modules.get(i).getCommands().contains(command))
+            if (modules.get(i).getPermissions() != null) {
+                if (modules.get(i).getPermissions().contains(command))
                     return modules.get(i);
             }
         }

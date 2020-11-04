@@ -14,6 +14,9 @@ public class SHP extends Module{
     private float alertDelay;
     private SHC shc;
 
+    public static final String P_SET_AWAY_LIGHTS = "SetAwayLights";
+    public static final String P_SET_AWAY_MODE = "SetAwayMode";
+
     public SHP (boolean _away, float _alertDelay, Simulation _simulation) {
         super("SHP", _simulation);
         this.away = _away;
@@ -75,13 +78,6 @@ public class SHP extends Module{
             this.away = false;
     }
 
-    @Override
-    public ArrayList<String> getCommands() {
-        return new ArrayList<String>() {{
-            add("setAwayLights");
-        }};
-    }
-
     public float getAlertDelay() {
         return alertDelay;
     }
@@ -102,10 +98,8 @@ public class SHP extends Module{
     @Override
     public List<String> getPermissions() {
         return new ArrayList<String> () {{
-            add("ControlDoors");
-            add("ControlLights");
-            add("RemoteControlDoors");
-            add("RemoteControlLights");
+            add(P_SET_AWAY_MODE);
+            add(P_SET_AWAY_LIGHTS);
         }};
     }
 

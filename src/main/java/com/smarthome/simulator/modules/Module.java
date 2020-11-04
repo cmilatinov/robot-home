@@ -21,8 +21,6 @@ public abstract class Module {
 
     public abstract void executeCommand(String command, Map<String, Object> payload, boolean sentByUser);
 
-    public abstract ArrayList<String> getCommands();
-
     public boolean checkPermission(String command, boolean sentByUser) {
         boolean allowed;
 
