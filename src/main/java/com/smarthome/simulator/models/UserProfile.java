@@ -17,6 +17,7 @@ public class UserProfile extends IdentifiableObject {
             add("ControlPerson");
             add("ControlRooms");
             add("ControlRoomDimensions");
+            add("ControlAutoMode");
 
             add("RemoteControlDoors");
             add("RemoteControlLights");
