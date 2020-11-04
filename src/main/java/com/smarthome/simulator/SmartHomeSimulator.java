@@ -572,9 +572,9 @@ public class SmartHomeSimulator {
             HashMap eventMap = new HashMap<String, Object>();
 
             // Get module and pass command
-            Module module = simulation.getModule("setAwayLights");
+            Module module = simulation.getModule("SetAwayLights");
             if (module != null)
-                module.executeCommand("setAwayLights", eventMap, true);
+                module.executeCommand("SetAwayLights", eventMap, true);
 
             // Update front-end
             handler.updateViews();
