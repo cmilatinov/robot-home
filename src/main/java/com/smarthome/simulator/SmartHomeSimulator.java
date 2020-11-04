@@ -1,6 +1,8 @@
 package com.smarthome.simulator;
 
 import com.smarthome.simulator.models.*;
+import com.smarthome.simulator.models.Window;
+import com.smarthome.simulator.modules.*;
 import com.smarthome.simulator.web.JavaScriptQueryHandler;
 import com.smarthome.simulator.web.WebServer;
 import org.cef.browser.CefBrowser;
@@ -17,6 +19,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Main program class.
@@ -38,10 +42,14 @@ public class SmartHomeSimulator {
      */
     private static final Simulation simulation = new Simulation();
 
+
     /**
      * The web server serving the front-end files.
      */
     private static final WebServer server = new WebServer();
+
+    private static SHC shc;
+    private static SHP shp;
 
     /**
      * Program entry point.
@@ -109,6 +117,10 @@ public class SmartHomeSimulator {
             e.printStackTrace();
         }
 
+        // Create Modules
+        shc = new SHC (simulation);
+        shp = new SHP (shc, simulation);
+
         // Add browser listeners
         addListeners();
 
@@ -136,6 +148,10 @@ public class SmartHomeSimulator {
             // Get new value
             boolean value = (boolean) event.get("value");
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("value", value);
+
             // Set simulation running
             simulation.setRunning(value);
 
@@ -149,6 +165,10 @@ public class SmartHomeSimulator {
 
             // Get name
             String name = (String) event.get("name");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("name", name);
 
             // Add new profile if name not empty
             if (name.length() > 0) {
@@ -169,6 +189,11 @@ public class SmartHomeSimulator {
             // Get attributes
             String id = (String) event.get("id");
             String name = (String) event.get("name");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+            eventMap.put("name", name);
 
             // Update profile if exists and name not empty
             if (name.length() > 0)
@@ -194,6 +219,10 @@ public class SmartHomeSimulator {
             // Get id
             String id = (String) event.get("id");
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+
             // Never delete last profile
             if (simulation.getUserProfiles().size() <= 1)
                 return;
@@ -217,6 +246,10 @@ public class SmartHomeSimulator {
 
             // Get id
             String id = (String) event.get("id");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
 
             // Set active profile if present
 
@@ -243,6 +276,14 @@ public class SmartHomeSimulator {
             float width = Float.parseFloat(event.get("width").toString());
             float height = Float.parseFloat(event.get("height").toString());
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+            eventMap.put("x", x);
+            eventMap.put("y", y);
+            eventMap.put("width", width);
+            eventMap.put("height", height);
+
             // Check layout exists
             HouseLayout layout = simulation.getHouseLayout();
             if (layout == null)
@@ -266,6 +307,10 @@ public class SmartHomeSimulator {
             // Get date string
             String value = (String) event.get("value");
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("value", value);
+
             // Set date time
             try {
                 simulation.setDateTime(value);
@@ -283,6 +328,10 @@ public class SmartHomeSimulator {
             // Get value
             float value = Float.parseFloat(event.get("value").toString());
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("value", value);
+
             // Set outside temperature
             simulation.setTemperatureOutside(value);
 
@@ -296,6 +345,10 @@ public class SmartHomeSimulator {
 
             // Get value
             float value = Float.parseFloat(event.get("value").toString());
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("value", value);
 
             // Set outside temperature
             simulation.setTemperatureInside(value);
@@ -312,12 +365,26 @@ public class SmartHomeSimulator {
             String id = (String) event.get("id");
             boolean on = (boolean) event.get("on");
 
-            // Change light state if exists
-            simulation.getAllLights()
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+            eventMap.put("on", on);
+
+            // Checks if it's a "Remote" command or not
+            String currentUserRoomId = simulation.getUserLocation();
+            simulation.getHouseLayout().getRooms()
                     .stream()
-                    .filter(l -> l.getId().equals(id))
+                    .filter(r -> r.getId().equals(currentUserRoomId))
                     .findFirst()
-                    .ifPresent(l -> l.setOn(on));
+                    .ifPresent(r -> {
+                        Optional<Light> light = r.getLights().stream().filter(l -> l.getId().equals(id))
+                                .findFirst();
+                        if (light.isPresent()) {
+                            shc.executeCommand("ControlLights", eventMap, true);
+                        } else {
+                            shc.executeCommand("RemoteControlLights", eventMap, true);
+                        }
+                    });
 
             // Update front-end
             handler.updateViews();
@@ -334,14 +401,26 @@ public class SmartHomeSimulator {
             // Door cannot be open if locked
             boolean open = !locked && (boolean) event.get("open");
 
-            // Change door state if exists
-            simulation.getAllDoors()
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+            eventMap.put("locked", locked);
+            eventMap.put("open", open);
+
+            // Checks if it's a "Remote" command or not
+            String currentUserRoomId = simulation.getUserLocation();
+            simulation.getHouseLayout().getRooms()
                     .stream()
-                    .filter(d -> d.getId().equals(id))
+                    .filter(r -> r.getId().equals(currentUserRoomId))
                     .findFirst()
-                    .ifPresent(d -> {
-                        d.setOpen(open);
-                        d.setLocked(locked);
+                    .ifPresent(r -> {
+                        Optional<Door> door = r.getDoors().stream().filter(d -> d.getId().equals(id))
+                                .findFirst();
+                        if (door.isPresent()) {
+                            shc.executeCommand("ControlDoors", eventMap, true);
+                        } else {
+                            shc.executeCommand("RemoteControlDoors", eventMap, true);
+                        }
                     });
 
             // Update front-end
@@ -357,15 +436,26 @@ public class SmartHomeSimulator {
             boolean blocked = (boolean) event.get("blocked");
             boolean open = (boolean) event.get("open");
 
-            // Change window state if exists
-            simulation.getAllWindows()
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+            eventMap.put("blocked", blocked);
+            eventMap.put("open", open);
+
+            // Checks if it's a "Remote" command or not
+            String currentUserRoomId = simulation.getUserLocation();
+            simulation.getHouseLayout().getRooms()
                     .stream()
-                    .filter(w -> w.getId().equals(id))
+                    .filter(r -> r.getId().equals(currentUserRoomId))
                     .findFirst()
-                    .ifPresent(w -> {
-                        w.setBlocked(blocked);
-                        if (w.isOpen() != open && !blocked)
-                            w.setOpen(open);
+                    .ifPresent(r -> {
+                        Optional<Window> window = r.getWindows().stream().filter(w -> w.getId().equals(id))
+                                .findFirst();
+                        if (window.isPresent()) {
+                            shc.executeCommand("ControlWindows", eventMap, true);
+                        } else {
+                            shc.executeCommand("RemoteControlWindows", eventMap, true);
+                        }
                     });
 
             // Update front-end
@@ -379,8 +469,17 @@ public class SmartHomeSimulator {
             // Get location
             String userLocation = (String) event.get("userLocation");
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("userLocation", userLocation);
+
+            String currentUserRoomId = simulation.getUserLocation();
+
             // Set the user's location in the house
             simulation.setUserLocation(userLocation);
+
+            // this helps to implement to "auto mode"
+            updateRooms(currentUserRoomId, userLocation);
 
             // Update front-end
             handler.updateViews();
@@ -394,9 +493,19 @@ public class SmartHomeSimulator {
             String name = (String) event.get("name");
             String roomId = (String) event.get("roomId");
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("name", name);
+            eventMap.put("roomId", roomId);
+
+
+
             // Add person to simulation
             simulation.getPeople()
                     .add(new Person(name, roomId));
+
+            // this helps to implement to "auto mode"
+            updateRooms(null, roomId);
 
             // Update front-end
             handler.updateViews();
@@ -410,12 +519,25 @@ public class SmartHomeSimulator {
             String id = (String) event.get("id");
             String roomId = (String) event.get("roomId");
 
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+            eventMap.put("roomId", roomId);
+
+            AtomicReference<String> currentUserRoomId = null;
+
             // Move person if exists
             simulation.getPeople()
                     .stream()
                     .filter(p -> p.getId().equals(id))
                     .findFirst()
-                    .ifPresent(p -> p.setRoomId(roomId));
+                    .ifPresent(p -> {
+                        currentUserRoomId.set(p.getRoomId());
+                        p.setRoomId(roomId);
+                    });
+
+            // this helps to implement to "auto mode"
+            updateRooms(currentUserRoomId.get(), roomId);
 
             // Update front-end
             handler.updateViews();
@@ -428,15 +550,63 @@ public class SmartHomeSimulator {
             // Get payload
             String id = (String) event.get("id");
 
-            // Remove person if exists
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("id", id);
+
             simulation.getPeople()
-                    .removeIf(p -> p.getId().equals(id));
+                    .stream()
+                    .filter(person -> person.getId().equals(id))
+                    .findFirst()
+                    .ifPresent(p -> {
+                        simulation.getPeople().remove(p);
+                        updateRooms(p.getRoomId(), null);
+                    });
 
             // Update front-end
             handler.updateViews();
 
         });
 
+        //User sets lights to stay on during away mode
+        handler.addEventListener("setAwayLights", (event) -> {
+            // Get payload
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+
+            // Remove person if exists
+            shp.executeCommand("setAwayLights", eventMap, true);
+
+            // Update front-end
+            handler.updateViews();
+        });
+
+        //User enable the "auto mode"
+        handler.addEventListener("toggleAutoMode", (event) -> {
+            // Get payload
+            boolean on = (Boolean) event.get("on");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("on", on);
+
+            shc.executeCommand(SHC.P_CONTROL_AUTO_MODE, eventMap, true);
+
+            // Update front-end
+            handler.updateViews();
+        });
+
     }
+
+    private static void updateRooms(String oldRoom, String newRoom) {
+        // for the room that we are leaving
+        simulation.getHouseLayout().getRooms()
+                .stream()
+                .filter(room -> room.getId().equals(oldRoom) || room.getId().equals(newRoom))
+                .forEach(room -> shc.updateRoom(room));
+    }
+
+
 
 }

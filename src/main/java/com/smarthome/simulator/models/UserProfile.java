@@ -16,6 +16,28 @@ import java.util.ArrayList;
  * This class represents a user profile with its functionalities.
  */
 public class UserProfile extends IdentifiableObject {
+    public static final ArrayList<String> ALL_PERMISSIONS = new ArrayList<String>() {
+        {
+            add("ControlDoors");
+            add("ControlLights");
+            add("ControlWindows");
+            add("ControlTemperatureOutside");
+            add("ControlTemperatureOutside");
+            add("ControlPerson");
+            add("ControlRooms");
+            add("ControlRoomDimensions");
+            add("ControlAutoMode");
+
+            add("RemoteControlDoors");
+            add("RemoteControlLights");
+            add("RemoteControlWindows");
+            add("RemoteControlTemperatureOutside");
+            add("RemoteControlTemperatureOutside");
+            add("RemoteControlPerson");
+            add("RemoteControlRooms");
+            add("RemoteControlRoomDimensions");
+        }
+    };
 
     /**
      * Name of the user profile.
@@ -123,9 +145,18 @@ public class UserProfile extends IdentifiableObject {
      * This function sets the list of {@link String} representing the permissions of the user profile.
      *
      * @param permissions The list of {@link String} representing the permissions of the user profile.
+     * @return Boolean representation of whether or not the setPermissions was successful.
      */
-    public void setPermissions(ArrayList<String> permissions) {
+    public boolean setPermissions(ArrayList<String> permissions) {
+        for (String permission: permissions) {
+            if (!UserProfile.ALL_PERMISSIONS.contains(permission))
+            {
+                return false;
+            }
+        }
+
         this.permissions = permissions;
+        return true;
     }
 
     /**
@@ -288,5 +319,4 @@ public class UserProfile extends IdentifiableObject {
             return null;
         }
     }
-  
 }
