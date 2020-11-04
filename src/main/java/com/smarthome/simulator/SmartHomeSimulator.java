@@ -1,6 +1,7 @@
 package com.smarthome.simulator;
 
 import com.smarthome.simulator.models.*;
+import com.smarthome.simulator.modules.*;
 import com.smarthome.simulator.web.JavaScriptQueryHandler;
 import com.smarthome.simulator.web.WebServer;
 import org.cef.browser.CefBrowser;
@@ -41,10 +42,14 @@ public class SmartHomeSimulator {
      */
     private static final Simulation simulation = new Simulation();
 
+
     /**
      * The web server serving the front-end files.
      */
     private static final WebServer server = new WebServer();
+
+    private static SHC shc;
+    private static SHP shp;
 
     /**
      * Program entry point.
@@ -111,6 +116,10 @@ public class SmartHomeSimulator {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Create Modules
+        shc = new SHC (simulation);
+        shp = new SHP (shc, simulation);
 
         // Add browser listeners
         addListeners();
@@ -514,6 +523,20 @@ public class SmartHomeSimulator {
             // Update front-end
             handler.updateViews();
 
+        });
+
+        //User sets lights to stay on during away mode
+        handler.addEventListener("setAwayLights", (event) -> {
+            // Get payload
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+
+            // Remove person if exists
+            shp.executeCommand("setAwayLights", eventMap, true);
+
+            // Update front-end
+            handler.updateViews();
         });
 
     }

@@ -5,28 +5,26 @@ import com.smarthome.simulator.models.Person;
 import com.smarthome.simulator.models.Simulation;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class SHP {
+public class SHP extends Module{
 
     private boolean away;
     private float alertDelay;
-    private ArrayList<Light> awayLights;
-    private Simulation simulation;
-    //private SHC shc;
+    private SHC shc;
 
-    public SHP (boolean _away, float _alertDelay, Simulation _simulation /*, SHC _shc*/) {
+    public SHP (boolean _away, float _alertDelay, SHC _shc, Simulation _simulation) {
+        super("SHP", _simulation);
         this.away = _away;
         this.alertDelay = _alertDelay;
-        this.awayLights = new ArrayList<Light>();
-        this.simulation = _simulation;
-        //this.shc = _shc
+        this.shc = _shc;
     }
-    public SHP (Simulation _simulation/* SHC _shc*/) {
+    public SHP (SHC _shc, Simulation _simulation) {
+        super("SHP", _simulation);
         this.away = false;
         this.alertDelay = 0;
-        this.awayLights = new ArrayList<Light>();
-        this.simulation = _simulation;
-        /*this.shc = _shc;*/
+        this.shc = _shc;
     }
 
     /**
@@ -87,20 +85,33 @@ public class SHP {
         this.alertDelay = alertDelay;
     }
 
-    public ArrayList<Light> getAwayLights() {
-        return awayLights;
+    private void toggleAwayLight(String lightId) {
+        Light light;
+        simulation.getAllLights()
+                .stream()
+                .filter(l -> l.getId().equals(lightId))
+                .findFirst()
+                .ifPresent(l -> l.setAwayLight(!l.isAwayLight()));
     }
 
-    public void setAwayLights(ArrayList<Light> awayLights) {
-        this.awayLights = awayLights;
+    @Override
+    public List<String> getPermissions() {
+        return new ArrayList<String> () {{
+            add("ControlDoors");
+            add("ControlLights");
+            add("RemoteControlDoors");
+            add("RemoteControlLights");
+        }};
     }
 
-    public void toggleAwayLight(Light light) {
-        if (!awayLights.contains(light)) {
-            awayLights.add(light);
+    @Override
+    public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
+        if (!checkPermission(command, sentByUser)) {
+            return;
         }
-        else {
-            awayLights.remove(light);
+        switch (command) {
+            case "setAwayLights":
+                System.out.println("setting away lights");
         }
     }
 }

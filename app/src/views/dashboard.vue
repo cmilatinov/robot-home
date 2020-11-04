@@ -161,7 +161,7 @@
                                 Modules
                             </v-card-title>
                             <div>
-                                <v-tabs class="main-tabs">
+                                <v-tabs class="main-tabs" v-model="moduleTab">
                                     <v-tab :key="module" v-for="module in smartModules">{{module}}</v-tab>
                                 </v-tabs>
                             </div>
@@ -170,6 +170,27 @@
                                     <v-icon>mdi-plus</v-icon>
                                 </v-btn>
                             </div>
+                        </div>
+                        <div class="d-flex flex-row align-stretch">
+                            <v-tabs-items v-model="moduleTab">
+                                <v-tab-item :key="module" v-for="module in smartModules">
+                                    <v-container v-if="module=='SHP'">
+                                        <v-btn
+                                            class="ma-2"
+                                            color="primary"
+                                            @click="dispatchEvent('setAwayLights', {$event})"
+                                        >
+                                            Set Away Lights
+                                        </v-btn>
+                                    </v-container>
+                                    <v-container v-if="module=='SHC'">
+                                        SHC TAB
+                                    </v-container>
+                                    <v-container v-if="module=='SHH'">
+                                        SHH TAB
+                                    </v-container>
+                                </v-tab-item>
+                            </v-tabs-items>
                         </div>
                     </v-card>
                     <v-card style="margin-left: 6px !important;" class="h-100 main-card flex-1" flat outlined>
@@ -246,6 +267,7 @@
         components: { HouseLayout, HouseLayoutRoom },
         data() {
             return {
+                moduleTab: null,
                 smartModules: [
                     'SHC', 'SHP', 'SHH'
                 ],
