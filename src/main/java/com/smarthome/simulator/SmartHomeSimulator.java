@@ -117,10 +117,6 @@ public class SmartHomeSimulator {
             e.printStackTrace();
         }
 
-        // Create Modules
-        shc = new SHC (simulation);
-        shp = new SHP (shc, simulation);
-
         // Add browser listeners
         addListeners();
 
@@ -532,8 +528,10 @@ public class SmartHomeSimulator {
             // Create Argument Map for module command execution
             HashMap eventMap = new HashMap<String, Object>();
 
-            // Remove person if exists
-            shp.executeCommand("setAwayLights", eventMap, true);
+            // Get module and pass command
+            Module module = simulation.getModule("setAwayLights");
+            if (module != null)
+                module.executeCommand("setAwayLights", eventMap, true);
 
             // Update front-end
             handler.updateViews();

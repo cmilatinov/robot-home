@@ -35,6 +35,13 @@ public class SHC extends Module{
         }};
     }
 
+    @Override
+    public ArrayList<String> getCommands() {
+        return new ArrayList<String>() {{
+            add("exampleCommand");
+        }};
+    }
+
     // SHC shc = new SHC(simulation)
     // shc.executeCommand("RemoteLightActivation", which light? on or off? , true)
     // shc.executeCommand("RemoteLightActivation", new Hashmap() , true)
