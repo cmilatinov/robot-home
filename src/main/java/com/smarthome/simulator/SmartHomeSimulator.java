@@ -625,6 +625,7 @@ public class SmartHomeSimulator {
         handler.addEventListener("toggleAutoMode", (event) -> {
             // Get payload
             boolean on = (Boolean) event.get("on");
+            boolean sentByUser = (Boolean) event.get("sentByUser");
 
             // Create Argument Map for module command execution
             HashMap eventMap = new HashMap<String, Object>();
@@ -632,7 +633,7 @@ public class SmartHomeSimulator {
 
             Module module = simulation.getModule("ControlAutoMode");
             if (module != null)
-                module.executeCommand("ControlAutoMode", eventMap, true);
+                module.executeCommand("ControlAutoMode", eventMap, sentByUser);
 
             // Update front-end
             handler.updateViews();
