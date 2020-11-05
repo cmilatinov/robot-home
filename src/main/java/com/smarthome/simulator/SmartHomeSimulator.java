@@ -361,6 +361,8 @@ public class SmartHomeSimulator {
             String id = (String) event.get("id");
             boolean on = (boolean) event.get("on");
 
+            System.out.println("toggling light");
+
             // Create Argument Map for module command execution
             HashMap eventMap = new HashMap<String, Object>();
             eventMap.put("id", id);
@@ -596,6 +598,24 @@ public class SmartHomeSimulator {
             Module module = simulation.getModule("SetAwayLights");
             if (module != null)
                 module.executeCommand("SetAwayLights", eventMap, true);
+
+            // Update front-end
+            handler.updateViews();
+        });
+
+        //User toggles away mode
+        handler.addEventListener("toggleAway", (event) -> {
+            // Get payload
+            boolean value = (boolean) event.get("value");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("value", value);
+
+            // Get module and pass command
+            Module module = simulation.getModule("SetAwayMode");
+            if (module != null)
+                module.executeCommand("SetAwayMode", eventMap, true);
 
             // Update front-end
             handler.updateViews();

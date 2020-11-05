@@ -157,6 +157,37 @@ public class UserProfile extends IdentifiableObject {
         return true;
     }
 
+    public boolean setPermissions(String clearance) {
+        switch (clearance) {
+            case "Parent":
+                return this.setPermissions(new ArrayList<String>(){{
+                    add("ControlDoors");
+                    add("ControlLights");
+                    add("ControlWindows");
+                    add("ControlTemperatureOutside");
+                    add("ControlTemperatureOutside");
+                    add("ControlPerson");
+                    add("ControlRooms");
+                    add("ControlRoomDimensions");
+                    add("ControlAutoMode");
+
+                    add("RemoteControlDoors");
+                    add("RemoteControlLights");
+                    add("RemoteControlWindows");
+                    add("RemoteControlTemperatureOutside");
+                    add("RemoteControlTemperatureOutside");
+                    add("RemoteControlPerson");
+                    add("RemoteControlRooms");
+                    add("RemoteControlRoomDimensions");
+
+                    add("SetAwayLights");
+                    add("SetAwayMode");
+                }});
+            default:
+                return false;
+        }
+    }
+
     /**
      * Prompts the user to choose the location where they want to save the {@link UserProfile}
      *

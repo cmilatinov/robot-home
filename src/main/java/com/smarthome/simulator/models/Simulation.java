@@ -85,7 +85,7 @@ public class Simulation {
                 add(new UserProfile("Strangers"));
             }catch(Exception e){}
         }};
-
+        this.userProfiles.get(0).setPermissions("Parent");
         this.activeUserProfile = this.userProfiles.get(0);
         this.temperatureInside = 24.0f;
         this.temperatureOutside = 11.0f;
@@ -160,6 +160,16 @@ public class Simulation {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Returns whether or not the simulation is in away mode.
+     *
+     * @return Boolean
+     */
+    public boolean isAway() {
+        SHP shp = (SHP) modules.get(1);
+        return shp.isAway();
     }
 
     /**
