@@ -175,13 +175,26 @@
                             <v-tabs-items v-model="moduleTab">
                                 <v-tab-item :key="module" v-for="module in smartModules">
                                     <v-container v-if="module=='SHP'">
-                                        <v-btn
-                                            class="ma-2"
-                                            color="primary"
-                                            @click="dispatchEvent('setAwayLights', {$event})"
-                                        >
-                                            Set Away Lights
-                                        </v-btn>
+                                            <v-subheader class="px-4 text-uppercase w-100 form-subheader">
+                                                <div class="w-100">
+                                                    Away Mode<strong class="float-right white--text">{{awayMode ? 'On' : 'Off'}}</strong>
+                                                </div>
+                                            </v-subheader>
+                                            <v-btn
+                                                class="ma-2"
+                                                color="primary"
+                                                @click="dispatchEvent('setAwayLights', {$event})"
+                                            >
+                                                Set Away Lights
+                                            </v-btn>
+                                            <v-btn class="ma-2" :color="awayMode ? 'red darken-4' : 'primary darken-1'" @click="onToggleAwayMode">
+                                                <template v-if="awayMode">
+                                                    <v-icon class="mr-2">fa-stop</v-icon> Stop Away Mode
+                                                </template>
+                                                <template v-else>
+                                                    <v-icon class="mr-2">fa-play</v-icon> Start Away Mode
+                                                </template>
+                                            </v-btn>
                                     </v-container>
                                     <v-container v-if="module=='SHC'">
                                         SHC TAB
@@ -292,6 +305,9 @@
             simulationRunning() {
                 return this.$store.state.simulation?.running;
             },
+            awayMode() {
+                return this.$store.state.simulation?.away;
+            },
             insideTemperature() {
                 return this.$store.state.simulation?.temperatureInside;
             },
@@ -372,6 +388,9 @@
             onDeletePerson(person) {
                 this.editPerson = { ...person };
                 this.showDeletePerson = true;
+            },
+            onToggleAwayMode () {
+                this.dispatchEvent('toggleAway', { value: !this.awayMode});
             }
         },
         mixins: [validation]
