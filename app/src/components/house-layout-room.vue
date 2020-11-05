@@ -44,7 +44,7 @@
                 </template>
                 <v-card>
                     <v-list class="py-0 menu-list">
-                        <v-list-item link :key="light.id" v-for="(light, index) in room.lights" class="pl-2" @click="dispatchEvent('toggleLightState', { id: light.id, on: !light.on })">
+                        <v-list-item link :key="light.id" v-for="(light, index) in room.lights" class="pl-2" @click="dispatchEvent('toggleLightState', { id: light.id, on: !light.on, sentByUser: true })">
                             <v-icon class="icon-lightbulb" :class="{ active: light.on }">{{!light.on ? 'far' : 'fas'}} fa-lightbulb</v-icon> Light {{ index + 1 }}
                         </v-list-item>
                     </v-list>
@@ -61,10 +61,10 @@
                     <v-list class="py-0 menu-list">
                         <v-list-item link :key="door.id" v-for="(door, index) in room.doors" class="pl-2">
                             <div class="d-flex">
-                                <v-btn icon class="mr-1" @mousedown.stop @click="dispatchEvent('toggleDoorState', { id: door.id, open: !door.open, locked: door.locked })">
+                                <v-btn icon class="mr-1" @mousedown.stop @click="dispatchEvent('toggleDoorState', { id: door.id, open: !door.open, locked: door.locked, sentByUser: true })">
                                     <v-icon class="icon-door" :class="{ active: door.open }">fa-{{door.open ? 'door-open' : 'door-closed'}}</v-icon>
                                 </v-btn>
-                                <v-btn icon class="mr-2" @mousedown.stop @click="dispatchEvent('toggleDoorState', { id: door.id, open: door.open, locked: !door.locked })">
+                                <v-btn icon class="mr-2" @mousedown.stop @click="dispatchEvent('toggleDoorState', { id: door.id, open: door.open, locked: !door.locked, sentByUser: true })">
                                     <v-icon class="icon-lock" :class="{ active: door.locked }">fa-{{door.locked ? 'lock' : 'unlock'}}</v-icon>
                                 </v-btn>
                                 <v-list-item-title>
@@ -86,10 +86,10 @@
                     <v-list class="py-0 menu-list">
                         <v-list-item link :key="window.id" v-for="(window, index) in room.windows" class="pl-2">
                             <div class="d-flex">
-                                <v-btn icon class="mr-1" @mousedown.stop @click="dispatchEvent('toggleWindowState', { id: window.id, open: !window.open, blocked: window.blocked })">
+                                <v-btn icon class="mr-1" @mousedown.stop @click="dispatchEvent('toggleWindowState', { id: window.id, open: !window.open, blocked: window.blocked, sentByUser: true })">
                                     <v-icon class="icon-door" :class="{ active: window.open }">fa-{{window.open ? 'door-open' : 'door-closed'}}</v-icon>
                                 </v-btn>
-                                <v-btn icon class="mr-2" @mousedown.stop @click="dispatchEvent('toggleWindowState', { id: window.id, open: window.open, blocked: !window.blocked })">
+                                <v-btn icon class="mr-2" @mousedown.stop @click="dispatchEvent('toggleWindowState', { id: window.id, open: window.open, blocked: !window.blocked, sentByUser: true })">
                                     <v-icon class="icon-lock" :class="{ active: window.blocked }">{{window.blocked ? 'fa-ban' : 'far fa-circle'}}</v-icon>
                                 </v-btn>
                                 <v-list-item-title>
