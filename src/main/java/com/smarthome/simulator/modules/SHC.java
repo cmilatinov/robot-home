@@ -145,7 +145,10 @@ public class SHC extends Module{
                 .filter(d -> d.getId().equals(id))
                 .findFirst()
                 .ifPresent(d -> {
-                    if (!locked && open) {
+                    if (!locked && open && !d.isHouseEntrance()) {
+                        d.setLocked(false);
+                        d.setOpen(true);
+                    } else if (open && d.isHouseEntrance()) {
                         d.setLocked(false);
                         d.setOpen(true);
                     } else if (!open) {
