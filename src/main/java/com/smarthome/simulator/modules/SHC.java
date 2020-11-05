@@ -145,12 +145,17 @@ public class SHC extends Module{
                 .filter(d -> d.getId().equals(id))
                 .findFirst()
                 .ifPresent(d -> {
-                    d.setOpen(open);
-                    d.setLocked(locked);
+                    if (!locked && open) {
+                        d.setLocked(false);
+                        d.setOpen(true);
+                    } else if (!open) {
+                        d.setOpen(false);
+                        d.setLocked(locked);
 
-                    // automatically sets a door of type houseEntrance to locked if it's closed.
-                    if (d.isHouseEntrance() && !open && !locked) {
-                        d.setLocked(true);
+                        // if it's a door of type houseEntrance, then lock automatically once closed.
+                        if (d.isHouseEntrance()) {
+                            d.setLocked(true);
+                        }
                     }
                 });
     }

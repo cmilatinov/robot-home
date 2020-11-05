@@ -360,6 +360,7 @@ public class SmartHomeSimulator {
             // Get payload
             String id = (String) event.get("id");
             boolean on = (boolean) event.get("on");
+            boolean sentByUser = (boolean) event.get("sentByUser") ;
             
             // Create Argument Map for module command execution
             HashMap eventMap = new HashMap<String, Object>();
@@ -381,11 +382,11 @@ public class SmartHomeSimulator {
                         if (light.isPresent()) {
                             module = simulation.getModule("ControlLights");
                             if (module != null)
-                                module.executeCommand("ControlLights", eventMap, true);
+                                module.executeCommand("ControlLights", eventMap, sentByUser);
                         } else {
                             module = simulation.getModule("RemoteControlLights");
                             if (module != null)
-                                module.executeCommand("RemoteControlLights", eventMap, true);
+                                module.executeCommand("RemoteControlLights", eventMap, sentByUser);
                         }
                     });
 
@@ -400,15 +401,15 @@ public class SmartHomeSimulator {
             // Get payload
             String id = (String) event.get("id");
             boolean locked = (boolean) event.get("locked");
-
-            // Door cannot be open if locked
-            boolean open = !locked && (boolean) event.get("open");
+            boolean open = (boolean) event.get("open");
+            boolean sentByUser = (boolean) event.get("sentByUser") ;
 
             // Create Argument Map for module command execution
             HashMap eventMap = new HashMap<String, Object>();
             eventMap.put("id", id);
             eventMap.put("locked", locked);
             eventMap.put("open", open);
+
 
             // Checks if it's a "Remote" command or not
             String currentUserRoomId = simulation.getUserLocation();
@@ -425,11 +426,11 @@ public class SmartHomeSimulator {
                         if (door.isPresent()) {
                             module = simulation.getModule("ControlDoors");
                             if (module != null)
-                                module.executeCommand("ControlDoors", eventMap, true);
+                                module.executeCommand("ControlDoors", eventMap, sentByUser);
                         } else {
                             module = simulation.getModule("RemoteControlDoors");
                             if (module != null)
-                                module.executeCommand("RemoteControlDoors", eventMap, true);
+                                module.executeCommand("RemoteControlDoors", eventMap, sentByUser);
                         }
                     });
 
@@ -445,6 +446,7 @@ public class SmartHomeSimulator {
             String id = (String) event.get("id");
             boolean blocked = (boolean) event.get("blocked");
             boolean open = (boolean) event.get("open");
+            boolean sentByUser = (boolean) event.get("sentByUser") ;
 
             // Create Argument Map for module command execution
             HashMap eventMap = new HashMap<String, Object>();
@@ -467,11 +469,11 @@ public class SmartHomeSimulator {
                         if (window.isPresent()) {
                             module = simulation.getModule("ControlWindows");
                             if (module != null)
-                                module.executeCommand("ControlWindows", eventMap, true);
+                                module.executeCommand("ControlWindows", eventMap, sentByUser);
                         } else {
                             module = simulation.getModule("RemoteControlWindows");
                             if (module != null)
-                                module.executeCommand("RemoteControlWindows", eventMap, true);
+                                module.executeCommand("RemoteControlWindows", eventMap, sentByUser);
                         }
                     });
 
