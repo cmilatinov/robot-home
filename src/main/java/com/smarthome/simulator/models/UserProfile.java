@@ -25,7 +25,7 @@ public class UserProfile extends IdentifiableObject {
             add(SHC.P_CONTROL_LIGHTS);
             add(SHC.P_CONTROL_AUTO_MODE);
             add(SHC.P_CLOSE_ALL_WINDOWS);
-            add(SHC.P_CLOSE_ALL_DOORS);
+            add(SHC.P_LOCK_ALL_DOORS);
             add(SHC.P_UPDATE_ROOM);
 
             add(SHC.P_REMOTE_CONTROL_DOORS);

@@ -18,7 +18,7 @@ public class SHC extends Module{
     public static final String P_CONTROL_LIGHTS = "ControlLights";
     public static final String P_CONTROL_AUTO_MODE = "ControlAutoMode";
     public static final String P_CLOSE_ALL_WINDOWS = "CloseAllWindows";
-    public static final String P_CLOSE_ALL_DOORS = "CloseAllDoors";
+    public static final String P_LOCK_ALL_DOORS = "LockAllDoors";
     public static final String P_UPDATE_ROOM = "UpdateRoom";
 
     public static final String P_REMOTE_CONTROL_DOORS = "RemoteControlDoors";
@@ -38,7 +38,7 @@ public class SHC extends Module{
             add(P_CONTROL_LIGHTS);
             add(P_CONTROL_AUTO_MODE);
             add(P_CLOSE_ALL_WINDOWS);
-            add(P_CLOSE_ALL_DOORS);
+            add(P_LOCK_ALL_DOORS);
             add(P_UPDATE_ROOM);
 
             add(P_REMOTE_CONTROL_DOORS);
@@ -73,8 +73,8 @@ public class SHC extends Module{
             case P_CLOSE_ALL_WINDOWS:
                 closeAllWindows();
                 break;
-            case P_CLOSE_ALL_DOORS:
-                closeAllDoors();
+            case P_LOCK_ALL_DOORS:
+                lockAllDoors();
                 break;
             case P_UPDATE_ROOM:
                 updateRoom(payload);
@@ -84,7 +84,7 @@ public class SHC extends Module{
 
     }
 
-    private void closeAllDoors() {
+    private void lockAllDoors() {
         simulation.getAllDoors()
                 .stream()
                 .forEach(door -> {
