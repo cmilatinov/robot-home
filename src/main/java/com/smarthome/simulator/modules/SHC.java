@@ -148,7 +148,7 @@ public class SHC extends Module{
                     if (!locked && open && !d.isHouseEntrance()) {
                         d.setLocked(false);
                         d.setOpen(true);
-                    } else if (open && d.isHouseEntrance()) {
+                    } else if (!locked && d.isHouseEntrance()) {
                         d.setLocked(false);
                         d.setOpen(true);
                     } else if (!open) {
