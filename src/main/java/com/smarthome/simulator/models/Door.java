@@ -15,6 +15,11 @@ public class Door extends IdentifiableObject {
      */
     private boolean locked;
 
+    /**
+     * Is the door special (if it's a building entrance, backyard or garage door)
+     */
+    private boolean houseEntrance;
+
     // ============================ CONSTRUCTORS ============================
 
     /**
@@ -23,6 +28,7 @@ public class Door extends IdentifiableObject {
     public Door() {
         this.open = true;
         this.locked = false;
+        this.houseEntrance = false;
     }
 
     /**
@@ -30,10 +36,12 @@ public class Door extends IdentifiableObject {
      *
      * @param open If the door should be open or not.
      * @param lock If the door should be locked or not.
+     * @param houseEntrance If the door is of special kind (building entrance, backyard and garage).
      */
-    public Door(boolean open, boolean lock) {
+    public Door(boolean open, boolean lock, boolean houseEntrance) {
         this.open = open;
         this.locked = lock;
+        this.houseEntrance = houseEntrance;
     }
 
     // ============================ OVERRIDES ============================
@@ -90,4 +98,21 @@ public class Door extends IdentifiableObject {
         this.locked = lock;
     }
 
+    /**
+     * This function tells if a door is a house entrance door (garage, building entrance or backyard).
+     *
+     * @return Boolean representation of it.
+     */
+    public boolean isHouseEntrance() {
+        return houseEntrance;
+    }
+
+    /**
+     * This function sets the door to be of type house entrance or not.
+     *
+     * @param houseEntrance New state of the lock.
+     */
+    public void setHouseEntrance(boolean houseEntrance) {
+        this.houseEntrance = houseEntrance;
+    }
 }

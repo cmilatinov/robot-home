@@ -115,11 +115,18 @@ public class Room extends IdentifiableObject {
 
     /**
      * This function sets the name of the room.
+     * It also updates the door type if the room is of houseEntrance type.
      *
      * @param name The name of the room.
      */
     public void setName(String name) {
         this.name = name;
+        if (name.equalsIgnoreCase("garage") ||
+                name.equalsIgnoreCase("building entrance") ||
+                name.equalsIgnoreCase("backyard"))
+        {
+            this.getDoors().stream().forEach(door -> door.setHouseEntrance(true));
+        }
     }
 
     /**

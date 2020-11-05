@@ -225,6 +225,14 @@ public class HouseLayout {
                 // Creating the room with the information gathered above
                 Room room1 = new Room(name, dimensions, windows, doors, lights);
 
+                // if the room is any of those 3 types, then its door should be of type houseEntrance
+                if (room1.getName().equalsIgnoreCase("garage") ||
+                        room1.getName().equalsIgnoreCase("building entrance") ||
+                        room1.getName().equalsIgnoreCase("backyard"))
+                {
+                    room1.getDoors().stream().forEach(door -> door.setHouseEntrance(true));
+                }
+
                 // Adding the room to the list of rooms in the house
                 roomsList.add(room1);
             }
