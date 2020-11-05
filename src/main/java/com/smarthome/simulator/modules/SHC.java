@@ -17,6 +17,9 @@ public class SHC extends Module{
     public static final String P_CONTROL_WINDOWS = "ControlWindows";
     public static final String P_CONTROL_LIGHTS = "ControlLights";
     public static final String P_CONTROL_AUTO_MODE = "ControlAutoMode";
+    public static final String P_CLOSE_ALL_WINDOWS = "CloseAllWindows";
+    public static final String P_CLOSE_ALL_DOORS = "CloseAllDoors";
+    public static final String P_UPDATE_ROOM = "UpdateRoom";
 
     public static final String P_REMOTE_CONTROL_DOORS = "RemoteControlDoors";
     public static final String P_REMOTE_CONTROL_WINDOWS = "RemoteControlWindows";
@@ -34,6 +37,10 @@ public class SHC extends Module{
             add(P_CONTROL_WINDOWS);
             add(P_CONTROL_LIGHTS);
             add(P_CONTROL_AUTO_MODE);
+            add(P_CLOSE_ALL_WINDOWS);
+            add(P_CLOSE_ALL_DOORS);
+            add(P_UPDATE_ROOM);
+
             add(P_REMOTE_CONTROL_DOORS);
             add(P_REMOTE_CONTROL_WINDOWS);
             add(P_REMOTE_CONTROL_LIGHTS);
@@ -63,9 +70,36 @@ public class SHC extends Module{
             case P_CONTROL_AUTO_MODE:
                 manageAutoMode(payload);
                 break;
+            case P_CLOSE_ALL_WINDOWS:
+                closeAllWindows();
+                break;
+            case P_CLOSE_ALL_DOORS:
+                closeAllDoors();
+                break;
+            case P_UPDATE_ROOM:
+                updateRoom(payload);
+                break;
 
         }
 
+    }
+
+    private void closeAllDoors() {
+        simulation.getAllDoors()
+                .stream()
+                .forEach(door -> {
+                    door.setOpen(false);
+                    door.setLocked(true);
+                });
+    }
+
+    private void closeAllWindows() {
+        simulation.getAllWindows()
+                .stream()
+                .forEach(window -> {
+                    window.setBlocked(false);
+                    window.setOpen(false);
+                });
     }
 
     private void manageLightCommand(Map<String, Object> payload) {
@@ -94,6 +128,9 @@ public class SHC extends Module{
                     w.setBlocked(blocked);
                     if (w.isOpen() != open && !blocked)
                         w.setOpen(open);
+                    else if (w.isOpen() != open && blocked)
+                        System.out.println("COMMAND CANNOT BE EXECUTED!" +
+                                " Window cannot be opened/closed because its path is blocked");
                 });
     }
 
@@ -110,6 +147,11 @@ public class SHC extends Module{
                 .ifPresent(d -> {
                     d.setOpen(open);
                     d.setLocked(locked);
+
+                    // automatically sets a door of type houseEntrance to locked if it's closed.
+                    if (d.isHouseEntrance() && !open) {
+                        d.setLocked(true);
+                    }
                 });
     }
 
@@ -117,8 +159,9 @@ public class SHC extends Module{
         autoMode = (Boolean) payload.get("on");
     }
 
-    public void updateRoom(Room room) {
+    public void updateRoom(Map<String, Object> payload) {
         if (!autoMode) return;
+        Room room = (Room) payload.get("room");
         Optional<Person> person = simulation.getPeople()
                 .stream()
                 .filter(p -> p.getRoomId().equals(room.getId()))

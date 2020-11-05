@@ -1,5 +1,7 @@
 package com.smarthome.simulator.models;
 
+import com.smarthome.simulator.modules.SHC;
+import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.FileChooserUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,27 +20,20 @@ import java.util.ArrayList;
 public class UserProfile extends IdentifiableObject {
     public static final ArrayList<String> ALL_PERMISSIONS = new ArrayList<String>() {
         {
-            add("ControlDoors");
-            add("ControlLights");
-            add("ControlWindows");
-            add("ControlTemperatureOutside");
-            add("ControlTemperatureOutside");
-            add("ControlPerson");
-            add("ControlRooms");
-            add("ControlRoomDimensions");
-            add("ControlAutoMode");
+            add(SHC.P_CONTROL_DOORS);
+            add(SHC.P_CONTROL_WINDOWS);
+            add(SHC.P_CONTROL_LIGHTS);
+            add(SHC.P_CONTROL_AUTO_MODE);
+            add(SHC.P_CLOSE_ALL_WINDOWS);
+            add(SHC.P_CLOSE_ALL_DOORS);
+            add(SHC.P_UPDATE_ROOM);
 
-            add("RemoteControlDoors");
-            add("RemoteControlLights");
-            add("RemoteControlWindows");
-            add("RemoteControlTemperatureOutside");
-            add("RemoteControlTemperatureOutside");
-            add("RemoteControlPerson");
-            add("RemoteControlRooms");
-            add("RemoteControlRoomDimensions");
+            add(SHC.P_REMOTE_CONTROL_DOORS);
+            add(SHC.P_REMOTE_CONTROL_WINDOWS);
+            add(SHC.P_REMOTE_CONTROL_LIGHTS);
 
-            add("SetAwayLights");
-            add("SetAwayMode");
+            add(SHP.P_SET_AWAY_LIGHTS);
+            add(SHP.P_SET_AWAY_MODE);
         }
     };
 

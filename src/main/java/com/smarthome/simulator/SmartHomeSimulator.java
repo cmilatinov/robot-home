@@ -625,7 +625,13 @@ public class SmartHomeSimulator {
         simulation.getHouseLayout().getRooms()
                 .stream()
                 .filter(room -> room.getId().equals(oldRoom) || room.getId().equals(newRoom))
-                .forEach(room -> shc.updateRoom(room));
+                .forEach(room -> {
+                    HashMap eventMap = new HashMap<String, Object>();
+                    eventMap.put("room", room);
+                    Module module = simulation.getModule("UpdateRoom");
+                    if (module != null)
+                        module.executeCommand("UpdateRoom", eventMap, true);
+                });
     }
 
 

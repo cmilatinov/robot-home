@@ -33,7 +33,8 @@ public abstract class Module {
         }
 
         if (!allowed) {
-            System.out.println("Permission Denied for " + command);
+            System.out.println("PERMISSION DENIED. '" + simulation.getActiveUserProfile().getName() + "' doesn't have " +
+                    "the permission: '" + command + "'");
         }
 
         return allowed;
