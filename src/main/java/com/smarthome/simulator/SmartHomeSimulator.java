@@ -360,9 +360,7 @@ public class SmartHomeSimulator {
             // Get payload
             String id = (String) event.get("id");
             boolean on = (boolean) event.get("on");
-
-            System.out.println("toggling light");
-
+            
             // Create Argument Map for module command execution
             HashMap eventMap = new HashMap<String, Object>();
             eventMap.put("id", id);
@@ -543,7 +541,7 @@ public class SmartHomeSimulator {
             eventMap.put("id", id);
             eventMap.put("roomId", roomId);
 
-            AtomicReference<String> currentUserRoomId = null;
+            AtomicReference<String> currentUserRoomId = new AtomicReference<String>();
 
             // Move person if exists
             simulation.getPeople()
@@ -650,7 +648,7 @@ public class SmartHomeSimulator {
                     eventMap.put("room", room);
                     Module module = simulation.getModule("UpdateRoom");
                     if (module != null)
-                        module.executeCommand("UpdateRoom", eventMap, true);
+                        module.executeCommand("UpdateRoom", eventMap, false);
                 });
     }
 

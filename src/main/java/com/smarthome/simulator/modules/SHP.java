@@ -133,7 +133,7 @@ public class SHP extends Module{
 
         Module shc = simulation.getModule("RemoteControlDoors");
 
-        ArrayList<Door> doors = simulation.getAllDoors();
+        /*ArrayList<Door> doors = simulation.getAllDoors();
         for (int i=0; i < doors.size(); i++) {
             Door door = doors.get(i);
             HashMap doorPayLoad = new HashMap<String, Object>() {{
@@ -143,7 +143,10 @@ public class SHP extends Module{
             }};
             System.out.println(doorPayLoad);
             shc.executeCommand("RemoteControlDoors", doorPayLoad, false);
-        }
+        }*/
+
+        shc.executeCommand("LockAllDoors", null, false);
+        shc.executeCommand("CloseAllWindows", null, false);
 
         //TODO check if within allotted time to set away lights on or off
         if (true)

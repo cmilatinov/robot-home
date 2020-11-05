@@ -85,7 +85,12 @@ public class Simulation {
                 add(new UserProfile("Strangers"));
             }catch(Exception e){}
         }};
+
         this.userProfiles.get(0).setPermissions("Parent");
+        this.userProfiles.get(1).setPermissions("Child");
+        this.userProfiles.get(2).setPermissions("Guest");
+        this.userProfiles.get(3).setPermissions("Stranger");
+
         this.activeUserProfile = this.userProfiles.get(0);
         this.temperatureInside = 24.0f;
         this.temperatureOutside = 11.0f;

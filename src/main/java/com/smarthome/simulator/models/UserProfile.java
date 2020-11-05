@@ -161,30 +161,39 @@ public class UserProfile extends IdentifiableObject {
         switch (clearance) {
             case "Parent":
                 return this.setPermissions(new ArrayList<String>(){{
-                    add("ControlDoors");
-                    add("ControlLights");
-                    add("ControlWindows");
-                    add("ControlTemperatureOutside");
-                    add("ControlTemperatureOutside");
-                    add("ControlPerson");
-                    add("ControlRooms");
-                    add("ControlRoomDimensions");
-                    add("ControlAutoMode");
+                    add(SHC.P_CONTROL_DOORS);
+                    add(SHC.P_CONTROL_WINDOWS);
+                    add(SHC.P_CONTROL_LIGHTS);
+                    add(SHC.P_CONTROL_AUTO_MODE);
+                    add(SHC.P_CLOSE_ALL_WINDOWS);
+                    add(SHC.P_LOCK_ALL_DOORS);
 
-                    add("RemoteControlDoors");
-                    add("RemoteControlLights");
-                    add("RemoteControlWindows");
-                    add("RemoteControlTemperatureOutside");
-                    add("RemoteControlTemperatureOutside");
-                    add("RemoteControlPerson");
-                    add("RemoteControlRooms");
-                    add("RemoteControlRoomDimensions");
+                    add(SHC.P_REMOTE_CONTROL_DOORS);
+                    add(SHC.P_REMOTE_CONTROL_WINDOWS);
+                    add(SHC.P_REMOTE_CONTROL_LIGHTS);
 
-                    add("SetAwayLights");
-                    add("SetAwayMode");
+                    add(SHP.P_SET_AWAY_LIGHTS);
+                    add(SHP.P_SET_AWAY_MODE);
                 }});
+            case "Child":
+                return this.setPermissions(new ArrayList<String>(){{
+                    add(SHC.P_CONTROL_DOORS);
+                    add(SHC.P_CONTROL_WINDOWS);
+                    add(SHC.P_CONTROL_LIGHTS);
+
+                    add(SHP.P_SET_AWAY_MODE);
+                }});
+            case "Guest":
+                return this.setPermissions(new ArrayList<String>(){{
+                    add(SHC.P_CONTROL_DOORS);
+                    add(SHC.P_CONTROL_LIGHTS);
+                    add(SHC.P_CONTROL_WINDOWS);
+                }});
+
+            case "Stranger":
             default:
-                return false;
+                return this.setPermissions(new ArrayList<String>(){{
+                }});
         }
     }
 

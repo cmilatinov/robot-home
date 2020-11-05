@@ -11,6 +11,16 @@
          "position-y": 0
       },
       {
+         "name": "Garage",
+         "nbOfWindows": 0,
+         "nbOfDoors": 1,
+         "nbOfLights": 2,
+         "height": 300,
+         "width": 400,
+         "position-x": 400,
+         "position-y": 400
+      },
+      {
          "name": "Bedroom 1",
          "nbOfWindows": 1,
          "nbOfDoors": 1,

@@ -149,7 +149,7 @@ public class SHC extends Module{
                     d.setLocked(locked);
 
                     // automatically sets a door of type houseEntrance to locked if it's closed.
-                    if (d.isHouseEntrance() && !open) {
+                    if (d.isHouseEntrance() && !open && !locked) {
                         d.setLocked(true);
                     }
                 });
