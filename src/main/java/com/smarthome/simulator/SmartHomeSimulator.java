@@ -307,6 +307,8 @@ public class SmartHomeSimulator {
             HashMap eventMap = new HashMap<String, Object>();
             eventMap.put("value", value);
 
+            System.out.println(value);
+
             // Set date time
             try {
                 simulation.setDateTime(value);
@@ -433,6 +435,12 @@ public class SmartHomeSimulator {
                         }
                     });
 
+            //If simulation is away then intruder detected, so alert user
+            if (simulation.isAway()) {
+                Module module = simulation.getModule("AlertUser");
+                module.executeCommand("AlertUser", null, false);
+            }
+
             // Update front-end
             handler.updateViews();
 
@@ -474,6 +482,12 @@ public class SmartHomeSimulator {
                                 module.executeCommand("RemoteControlWindows", eventMap, true);
                         }
                     });
+
+            //If simulation is away then intruder detected, so alert user
+            if (simulation.isAway()) {
+                Module module = simulation.getModule("AlertUser");
+                module.executeCommand("AlertUser", null, false);
+            }
 
             // Update front-end
             handler.updateViews();
@@ -524,6 +538,12 @@ public class SmartHomeSimulator {
             // this helps to implement to "auto mode"
             updateRooms(null, roomId);
 
+            //If simulation is away then intruder detected, so alert user
+            if (simulation.isAway()) {
+                Module module = simulation.getModule("AlertUser");
+                module.executeCommand("AlertUser", null, false);
+            }
+
             // Update front-end
             handler.updateViews();
 
@@ -555,6 +575,12 @@ public class SmartHomeSimulator {
 
             // this helps to implement to "auto mode"
             updateRooms(currentUserRoomId.get(), roomId);
+
+            //If simulation is away then intruder detected, so alert user
+            if (simulation.isAway()) {
+                Module module = simulation.getModule("AlertUser");
+                module.executeCommand("AlertUser", null, false);
+            }
 
             // Update front-end
             handler.updateViews();
@@ -596,6 +622,44 @@ public class SmartHomeSimulator {
             Module module = simulation.getModule("SetAwayLights");
             if (module != null)
                 module.executeCommand("SetAwayLights", eventMap, true);
+
+            // Update front-end
+            handler.updateViews();
+        });
+
+        //Set the time delay before alerting authorities when motion is detected during away mode
+        handler.addEventListener("setAlertDelay", (event) -> {
+            // Get payload
+            float delay = (float) event.get("delay");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("delay", delay);
+
+            // Get module and pass command
+            Module module = simulation.getModule("SetAlertDelay");
+            if (module != null)
+                module.executeCommand("SetAlertDelay", eventMap, true);
+
+            // Update front-end
+            handler.updateViews();
+        });
+
+        //Set the time window for selected lights to remain on during away mode
+        handler.addEventListener("setAwayTime", (event) -> {
+            // Get payload
+            float startTime = (float) event.get("startTime");
+            float endTime = (float) event.get("endTime");
+
+            // Create Argument Map for module command execution
+            HashMap eventMap = new HashMap<String, Object>();
+            eventMap.put("startTime", startTime);
+            eventMap.put("endTime", endTime);
+
+            // Get module and pass command
+            Module module = simulation.getModule("SetAwayTime");
+            if (module != null)
+                module.executeCommand("SetAwayTime", eventMap, true);
 
             // Update front-end
             handler.updateViews();

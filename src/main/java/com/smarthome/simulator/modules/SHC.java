@@ -26,6 +26,7 @@ public class SHC extends Module{
     public static final String P_REMOTE_CONTROL_LIGHTS = "RemoteControlLights";
 
 
+
     public SHC(Simulation simulation) {
         super("SHC", simulation);
     }

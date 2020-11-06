@@ -18,6 +18,10 @@ import java.util.ArrayList;
  * This class represents a user profile with its functionalities.
  */
 public class UserProfile extends IdentifiableObject {
+
+    /**
+     * List of all possible permission identifiers a user could have.
+     */
     public static final ArrayList<String> ALL_PERMISSIONS = new ArrayList<String>() {
         {
             add(SHC.P_CONTROL_DOORS);
@@ -34,6 +38,8 @@ public class UserProfile extends IdentifiableObject {
 
             add(SHP.P_SET_AWAY_LIGHTS);
             add(SHP.P_SET_AWAY_MODE);
+            add(SHP.P_SET_ALERT_DELAY);
+            add(SHP.P_SET_AWAY_TIME);
         }
     };
 
@@ -157,6 +163,12 @@ public class UserProfile extends IdentifiableObject {
         return true;
     }
 
+    /**
+     * This function sets the list of {@link String} representing the permissions of the user profile, based on preset profile permission levels.
+     *
+     * @param clearance The type of profile permission level.
+     * @return Boolean representation of whether or not the setPermissions was successful.
+     */
     public boolean setPermissions(String clearance) {
         switch (clearance) {
             case "Parent":
@@ -174,6 +186,8 @@ public class UserProfile extends IdentifiableObject {
 
                     add(SHP.P_SET_AWAY_LIGHTS);
                     add(SHP.P_SET_AWAY_MODE);
+                    add(SHP.P_SET_ALERT_DELAY);
+                    add(SHP.P_SET_AWAY_TIME);
                 }});
             case "Child":
                 return this.setPermissions(new ArrayList<String>(){{
