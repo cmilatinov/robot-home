@@ -384,6 +384,11 @@ public class Simulation {
         return new ArrayList<>();
     }
 
+    /**
+     * This function searches for the module responsible for a given command.
+     * @param command The command to be searched.
+     * @return Module corresponding to the command. Null if module not found.
+     */
     public Module getModule(String command) {
         String name;
         for (int i=0; i<modules.size(); i++) {
