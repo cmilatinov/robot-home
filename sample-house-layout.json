@@ -8,17 +8,8 @@
          "height": 300,
          "width": 200,
          "position-x": 0,
-         "position-y": 0
-      },
-      {
-         "name": "Garage",
-         "nbOfWindows": 0,
-         "nbOfDoors": 1,
-         "nbOfLights": 2,
-         "height": 300,
-         "width": 400,
-         "position-x": 400,
-         "position-y": 400
+         "position-y": 0,
+         "isHouseEntrance": false
       },
       {
          "name": "Bedroom 1",
@@ -28,7 +19,8 @@
          "height": 300,
          "width": 400,
          "position-x": 500,
-         "position-y": 500
+         "position-y": 500,
+         "isHouseEntrance": false
       },
       {
          "name": "Bedroom 2",
@@ -38,7 +30,19 @@
          "height": 300,
          "width": 300,
          "position-x": 300,
-         "position-y": 100
+         "position-y": 100,
+         "isHouseEntrance": false
+      },
+      {
+         "name": "Garage",
+         "nbOfWindows": 0,
+         "nbOfDoors": 1,
+         "nbOfLights": 2,
+         "height": 300,
+         "width": 400,
+         "position-x": 400,
+         "position-y": 400,
+         "isHouseEntrance": true
       }
    ]
 }
