@@ -249,7 +249,7 @@ public class SHP extends Module{
         ArrayList<Person> people = simulation.getPeople();
 
         for (int i=0; i<people.size(); i++) {
-            if (people.get(i).getRoomId() == null);
+            if (people.get(i).getRoomId() != null)
             return false;
         }
         return true;
