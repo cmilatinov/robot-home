@@ -195,6 +195,7 @@ public class HouseLayout {
                 float width = 0;
                 float positionX = 0;
                 float positionY = 0;
+                boolean isHouseEntrance = false;
 
                 // Getting all the information on the room
                 try {
@@ -206,6 +207,7 @@ public class HouseLayout {
                     width = Float.parseFloat(room.get("width").toString());
                     positionX = Float.parseFloat(room.get("position-x").toString());
                     positionY = Float.parseFloat(room.get("position-y").toString());
+                    isHouseEntrance = Boolean.parseBoolean(room.get("isHouseEntrance").toString());
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid data type " + e.getMessage().toLowerCase() + ".");
                     return null;
@@ -225,13 +227,9 @@ public class HouseLayout {
                 // Creating the room with the information gathered above
                 Room room1 = new Room(name, dimensions, windows, doors, lights);
 
-                // if the room is any of those 3 types, then its door should be of type houseEntrance
-                if (room1.getName().equalsIgnoreCase("garage") ||
-                        room1.getName().equalsIgnoreCase("building entrance") ||
-                        room1.getName().equalsIgnoreCase("backyard"))
-                {
+                // if the room is of type houseEntrance
+                if (isHouseEntrance)
                     room1.getDoors().stream().forEach(door -> door.setHouseEntrance(true));
-                }
 
                 // Adding the room to the list of rooms in the house
                 roomsList.add(room1);

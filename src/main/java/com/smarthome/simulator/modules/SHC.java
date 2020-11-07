@@ -3,34 +3,85 @@ package com.smarthome.simulator.modules;
 import com.smarthome.simulator.models.Person;
 import com.smarthome.simulator.models.Room;
 import com.smarthome.simulator.models.Simulation;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * The SHC class represents the Smart Home Core Functionality module.
+ */
 public class SHC extends Module{
 
+    /**
+     * This boolean is set to false when the auto mode is off and to true when it is on.
+     */
     private boolean autoMode = false;
 
+    /**
+     * Represents the permission to control doors.
+     */
     public static final String P_CONTROL_DOORS = "ControlDoors";
+
+    /**
+     * Represents the permission to control windows.
+     */
     public static final String P_CONTROL_WINDOWS = "ControlWindows";
+
+    /**
+     * Represents the permission to control lights.
+     */
     public static final String P_CONTROL_LIGHTS = "ControlLights";
+
+    /**
+     * Represents the permission to control auto mode.
+     */
     public static final String P_CONTROL_AUTO_MODE = "ControlAutoMode";
+
+    /**
+     * Represents the permission to control all window closing.
+     */
     public static final String P_CLOSE_ALL_WINDOWS = "CloseAllWindows";
+
+    /**
+     * Represents the permission to control all doors locking.
+     */
     public static final String P_LOCK_ALL_DOORS = "LockAllDoors";
+
+    /**
+     * Represents the permission to control room updates.
+     */
     public static final String P_UPDATE_ROOM = "UpdateRoom";
 
+    /**
+     * Represents the permission to control door remotely.
+     */
     public static final String P_REMOTE_CONTROL_DOORS = "RemoteControlDoors";
+
+    /**
+     * Represents the permission to control windows remotely.
+     */
     public static final String P_REMOTE_CONTROL_WINDOWS = "RemoteControlWindows";
+
+    /**
+     * Represents the permission to control light remotely.
+     */
     public static final String P_REMOTE_CONTROL_LIGHTS = "RemoteControlLights";
 
-
+    /**
+     * Constructor creates a new SHC with reference to the current simulation.
+     *
+     * @param simulation represents the running {@link Simulation}
+     */
     public SHC(Simulation simulation) {
         super("SHC", simulation);
     }
 
-    @Override
+    /**
+     * Gets the list of permissions/commands that the Module is responsible for/can execute.
+     *
+     * @return List of Strings representing the permissions/commands pertaining to the module
+     */
     public List<String> getPermissions() {
         return new ArrayList<String>() {{
             add(P_CONTROL_DOORS);
@@ -47,9 +98,14 @@ public class SHC extends Module{
         }};
     }
 
-    @Override
+    /**
+     * Executes a command given by a user or other system module.
+     *
+     * @param command The name of the command to be executed.
+     * @param payload The arguments for the command.
+     * @param sentByUser Whether the command was called by a user or not. False if called by other system modules.
+     */
     public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
-
         if (!checkPermission(command, sentByUser)) {
             return;
         }
@@ -79,11 +135,12 @@ public class SHC extends Module{
             case P_UPDATE_ROOM:
                 updateRoom(payload);
                 break;
-
         }
-
     }
 
+    /**
+     * Function locks all doors in the {@link com.smarthome.simulator.models.HouseLayout}
+     */
     private void lockAllDoors() {
         simulation.getAllDoors()
                 .stream()
@@ -93,6 +150,9 @@ public class SHC extends Module{
                 });
     }
 
+    /**
+     * Function cloeses all windows in the {@link com.smarthome.simulator.models.HouseLayout}
+     */
     private void closeAllWindows() {
         simulation.getAllWindows()
                 .stream()
@@ -102,6 +162,11 @@ public class SHC extends Module{
                 });
     }
 
+    /**
+     * Function to turn on and off the lights of {@link com.smarthome.simulator.models.HouseLayout}
+     *
+     * @param payload The arguments for the command.
+     */
     private void manageLightCommand(Map<String, Object> payload) {
         String id = (String) payload.get("id");
         boolean on = (Boolean) payload.get("on");
@@ -114,6 +179,11 @@ public class SHC extends Module{
                 .ifPresent(l -> l.setOn(on));
     }
 
+    /**
+     * Function to open, close, block and unblock the windows of {@link com.smarthome.simulator.models.HouseLayout}
+     *
+     * @param payload The arguments for the command.
+     */
     private void manageWindowCommand(Map<String, Object> payload) {
         String id = (String) payload.get("id");
         boolean blocked = (Boolean) payload.get("blocked");
@@ -134,6 +204,11 @@ public class SHC extends Module{
                 });
     }
 
+    /**
+     * Function to open, close, lock and unlock the doors of {@link com.smarthome.simulator.models.HouseLayout}
+     *
+     * @param payload The arguments for the command.
+     */
     private void manageDoorCommand(Map<String, Object> payload) {
         String id = (String) payload.get("id");
         boolean open = (Boolean) payload.get("open");
@@ -163,10 +238,20 @@ public class SHC extends Module{
                 });
     }
 
+    /**
+     * Function to turn on and off auto mode.
+     *
+     * @param payload The arguments for the command.
+     */
     private void manageAutoMode(Map<String, Object> payload) {
         autoMode = (Boolean) payload.get("on");
     }
 
+    /**
+     * Function to update the room of a {@link com.smarthome.simulator.models.HouseLayout}
+     *
+     * @param payload The arguments for the command.
+     */
     public void updateRoom(Map<String, Object> payload) {
         if (!autoMode) return;
         Room room = (Room) payload.get("room");
@@ -177,5 +262,4 @@ public class SHC extends Module{
 
         room.getLights().stream().forEach(light -> light.setOn(person.isPresent()));
     }
-
 }
