@@ -9,7 +9,6 @@ public class Light extends IdentifiableObject {
      * Is the light on or not.
      */
     private boolean on;
-    private boolean awayLight;
 
     // ============================ CONSTRUCTORS ============================
 
@@ -18,7 +17,6 @@ public class Light extends IdentifiableObject {
      */
     public Light() {
         this.on = true;
-        this.awayLight = true;
     }
 
     /**
@@ -30,16 +28,6 @@ public class Light extends IdentifiableObject {
         this.on = on;
     }
 
-    /**
-     * Parameterized constructor.
-     *
-     * @param on The state of the light.
-     * @param awayLight Whether or not the light stays on during away mode.
-     */
-    public Light(boolean on, boolean awayLight) {
-        this.on = on;
-        this.awayLight = awayLight;
-    }
 
     // ============================ OVERRIDES ============================
 
@@ -76,21 +64,4 @@ public class Light extends IdentifiableObject {
         this.on = on;
     }
 
-    /**
-     * This function shows if a light will stay on during away mode or not
-     *
-     * @return Boolean representation of it.
-     */
-    public boolean isAwayLight() {
-        return awayLight;
-    }
-
-    /**
-     * This function sets whether the light will remain on during away mode or not
-     *
-     * @param awayLight
-     */
-    public void setAwayLight(boolean awayLight) {
-        this.awayLight = awayLight;
-    }
 }
