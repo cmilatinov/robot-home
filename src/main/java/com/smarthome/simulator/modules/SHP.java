@@ -3,10 +3,6 @@ package com.smarthome.simulator.modules;
 import com.smarthome.simulator.models.Light;
 import com.smarthome.simulator.models.Person;
 import com.smarthome.simulator.models.Simulation;
-import org.panda_lang.panda.framework.language.parser.bootstrap.annotations.Local;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +11,9 @@ import java.util.regex.Pattern;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * The SHP class represents the Smart Home Security module.
+ */
 public class SHP extends Module{
 
     /**
@@ -84,7 +83,7 @@ public class SHP extends Module{
 
     /**
      * Creates a new SHP with reference to the simulation.
-     * @param _simulation
+     * @param _simulation represents the running {@link Simulation}
      */
     public SHP (Simulation _simulation) {
         super("SHP", _simulation);
