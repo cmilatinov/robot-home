@@ -136,13 +136,9 @@ public class SHP extends Module {
      * Sets home lights to away configuration designated by the user.
      */
     private boolean isHouseEmpty() {
-        List<Person> people = simulation.getPeople();
-
-        for (Person person : people) {
-            if (person.getRoomId() != null)
-                return false;
-        }
-        return true;
+        if (simulation.getUserLocation() != null)
+            return false;
+        return simulation.getPeople().stream().allMatch(p -> p.getRoomId() == null);
     }
 
     /**
