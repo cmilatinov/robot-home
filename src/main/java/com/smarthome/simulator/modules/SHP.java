@@ -146,6 +146,9 @@ public class SHP extends Module{
         return true;
     }
 
+    /**
+     * Sets {@link Light} in away mode.
+     */
     private void ExecuteAwayLights() {
 
         // Only do this in away mode
@@ -327,6 +330,10 @@ public class SHP extends Module{
         return awayMode;
     }
 
+    /**
+     * Returns the delay defined by the user for alerting the authorities.
+     * @return float representing the delay
+     */
     public float getAlertDelay() {
         return alertDelay;
     }

@@ -11,15 +11,35 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Logger class logs the events of the modules.
+ */
 public class Logger {
 
-    // Logging levels
+
+    /**
+     * Logging an information.
+     */
     public static final int INFO = 0;
+
+    /**
+     * Logging while debugging.
+     */
     public static final int DEBUG = 1;
+
+    /**
+     * Logging a warning.
+     */
     public static final int WARN = 2;
+
+    /**
+     * Logging an error.
+     */
     public static final int ERROR = 3;
 
-    // Log prefixes
+    /**
+     * Predefined prefixes to logging message.
+     */
     private static final String[] LOG_PREFIXES = {
             "[$date] [$tag] INFO - ",
             "[$date] [$tag] DEBUG - ",
@@ -27,24 +47,40 @@ public class Logger {
             "[$date] [$tag] ERROR - "
     };
 
-    // The date format of the logger.
+    /**
+     * Formatter for the date values.
+     */
     private final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
 
-    // The default log file path.
+    /**
+     * Log file path.
+     */
     private final String DEFAULT_LOG_FILEPATH = "./logs/" + new SimpleDateFormat("MMddyyyy-HHmmss").format(new Date())
             + ".log";
 
-    // Log split by new lines.
+    /**
+     * List of logs.
+     */
     private final List<String> log = new ArrayList<>();
 
-    // The log file and writer.
+    /**
+     * Log file.
+     */
     private final File logFile;
+
+    /**
+     * Log file writer.
+     */
     private PrintWriter writer;
 
-    // Has logger been closed.
+    /**
+     * Boolean to verify if the log file is closed yet.
+     */
     private boolean closed = false;
 
-    // A reference to the browser query handler so we can update the logs displayed.
+    /**
+     * A reference to the browser query handler so we can update the logs displayed.
+     */
     private final JavaScriptQueryHandler handler;
 
     /**
