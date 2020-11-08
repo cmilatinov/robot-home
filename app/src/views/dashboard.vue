@@ -40,14 +40,15 @@
                     <v-container fluid class="h-100 py-0 d-flex flex-column overflow-auto">
                         <v-btn class="mx-3 mb-2" :color="simulationRunning ? 'red darken-4' : 'primary darken-1'" :disabled="!hasHouseLayout" @click="onToggleSimulation">
                             <template v-if="simulationRunning">
-                                <v-icon class="mr-2">fa-stop</v-icon> Stop
+                                <v-icon class="mr-2">fa-stop</v-icon>Stop
                             </template>
                             <template v-else>
-                                <v-icon class="mr-2">fa-play</v-icon> Start
+                                <v-icon class="mr-2">fa-play</v-icon>Start
                             </template>
                         </v-btn>
-                        <span class="red--text mb-1" v-if="!hasHouseLayout">
-                            <v-icon style="font-size: 12pt !important;" class="mr-1 red--text">fa-info-circle</v-icon><em class="f-9">You must load a house layout before starting the simulation.</em>
+                        <span class="red--text" v-if="!hasHouseLayout">
+                            <v-icon style="font-size: 12pt !important;" class="mr-1 red--text">fa-info-circle</v-icon>
+                            <em class="f-9">You must load a house layout before starting the simulation.</em>
                         </span>
                         <v-form>
                             <v-menu v-model="timeMenu"
@@ -113,8 +114,21 @@
                                 </v-date-picker>
                             </v-menu>
 
-                            <v-subheader class="text-uppercase" style="margin-top: -10px; margin-left: -12px;">Temperature</v-subheader>
                             <v-subheader style="margin-top: -10px; margin-bottom: -10px;">
+                                <v-icon class="mr-3">fa-stopwatch</v-icon>
+                                <span class="f-10 w-100">Simulation Speed<strong class="float-right white--text">x{{ simulationSpeed }}</strong></span>
+                            </v-subheader>
+                            <v-slider
+                                    color="info"
+                                    :min="1"
+                                    :max="120"
+                                    :step="1"
+                                    :value="simulationSpeed"
+                                    thumb-label
+                                    @change="onChangeSimulationSpeed"></v-slider>
+
+                            <v-subheader class="text-uppercase" style="margin-top: -25px; margin-left: -12px;">Temperature</v-subheader>
+                            <v-subheader style="margin-top: -15px; margin-bottom: -10px;">
                                 <v-icon class="mr-3">fa-thermometer-empty</v-icon>
                                 <span class="f-10 w-100">Outside<strong class="float-right white--text">{{ outsideTemperature }} &deg;C</strong></span>
                             </v-subheader>
@@ -125,7 +139,7 @@
                                     :value="outsideTemperature"
                                     thumb-label
                                     @change="dispatchEvent('setOutsideTemp', { value: $event })"></v-slider>
-                            <v-subheader class="form-subheader" style="margin-bottom: -10px;">
+                            <v-subheader class="form-subheader" style="margin-top: -30px; margin-bottom: -10px;">
                                 <v-icon class="mr-3">fa-thermometer-half</v-icon>
                                 <span class="f-10 w-100">Inside<strong class="float-right white--text">{{ insideTemperature }} &deg;C</strong></span>
                             </v-subheader>
@@ -141,7 +155,7 @@
                 </v-card>
             </v-col>
             <v-col cols="9" class="h-100 d-flex flex-column">
-                <v-card style="flex: 7;" class="h-100 mb-3 main-card d-flex flex-column" flat outlined>
+                <v-card style="flex: 3;" class="h-100 mb-3 main-card d-flex flex-column" flat outlined>
                     <v-card-title>
                         <v-icon class="primary--text">fa-ruler-combined</v-icon>
                         House Layout
@@ -153,8 +167,8 @@
                         </house-layout-room>
                     </house-layout>
                 </v-card>
-                <div style="flex: 3;" class="d-flex">
-                    <v-card style="margin-right: 6px !important;" class="h-100 main-card flex-1" flat outlined>
+                <div style="flex: 2 2 0;" class="d-flex overflow-hidden">
+                    <v-card style="margin-right: 6px !important; min-width: 0;" class="h-100 main-card flex-1 overflow-hidden" flat outlined>
                         <div class="d-flex align-stretch">
                             <v-card-title class="flex-1 d-flex align-center">
                                 <v-icon class="primary--text">fa-th-large</v-icon>
@@ -162,55 +176,53 @@
                             </v-card-title>
                             <div>
                                 <v-tabs class="main-tabs" v-model="moduleTab">
-                                    <v-tab :key="module" v-for="module in smartModules">{{module}}</v-tab>
+                                    <v-tab :key="module.name" v-for="module in simulationModules">{{module.name}}</v-tab>
                                 </v-tabs>
                             </div>
-                            <div class="card-title d-flex flex-column justify-center">
-                                <v-btn icon class="mx-2">
-                                    <v-icon>mdi-plus</v-icon>
-                                </v-btn>
-                            </div>
+<!--                            <div class="card-title d-flex flex-column justify-center">-->
+<!--                                <v-btn icon class="mx-2">-->
+<!--                                    <v-icon>mdi-plus</v-icon>-->
+<!--                                </v-btn>-->
+<!--                            </div>-->
                         </div>
                         <div class="d-flex flex-row align-stretch">
-                            <v-tabs-items v-model="moduleTab">
-                                <v-tab-item :key="module" v-for="module in smartModules">
-                                    <v-container v-if="module=='SHP'">
-                                            <v-subheader class="px-4 text-uppercase w-100 form-subheader">
-                                                <div class="w-100">
-                                                    Away Mode<strong class="float-right white--text">{{awayMode ? 'On' : 'Off'}}</strong>
-                                                </div>
-                                            </v-subheader>
-                                            <v-btn
-                                                class="ma-2"
-                                                color="primary"
-                                                @click="dispatchEvent('setAwayLights', {$event})"
-                                            >
-                                                Set Away Lights
-                                            </v-btn>
-                                            <v-btn class="ma-2" :color="awayMode ? 'red darken-4' : 'primary darken-1'" @click="onToggleAwayMode">
-                                                <template v-if="awayMode">
-                                                    <v-icon class="mr-2">fa-stop</v-icon> Stop Away Mode
-                                                </template>
-                                                <template v-else>
-                                                    <v-icon class="mr-2">fa-play</v-icon> Start Away Mode
-                                                </template>
-                                            </v-btn>
-                                    </v-container>
-                                    <v-container v-if="module=='SHC'">
-                                        SHC TAB
-                                    </v-container>
-                                    <v-container v-if="module=='SHH'">
-                                        SHH TAB
-                                    </v-container>
+                            <v-tabs-items class="w-100 h-100" v-model="moduleTab">
+                                <v-tab-item :key="module.name" v-for="module in simulationModules">
+                                    <component :is="module.name">
+                                    </component>
                                 </v-tab-item>
                             </v-tabs-items>
                         </div>
                     </v-card>
-                    <v-card style="margin-left: 6px !important;" class="h-100 main-card flex-1" flat outlined>
-                        <v-card-title>
-                            <v-icon class="primary--text">fa-terminal</v-icon>
-                            Logs
-                        </v-card-title>
+                    <v-card style="margin-left: 6px !important; min-width: 0;" class="h-100 main-card flex-1 d-flex flex-column overflow-hidden" flat outlined>
+                        <div class="d-flex align-stretch">
+                            <v-card-title class="flex-1 d-flex align-center">
+                                <v-icon class="primary--text">fa-terminal</v-icon>
+                                <div class="flex-1">Logs</div>
+                                <div class="flex-0" style="min-width: 150px">
+                                    <v-select dense class="smaller-icon mt-0" style="margin-bottom: -20px;"
+                                              prepend-inner-icon="fa-filter"
+                                              v-model="logFilter"
+                                              item-value="filter"
+                                              item-text="label"
+                                              :items="logFilters"
+                                              :menu-props="{ offsetY: true }">
+                                    </v-select>
+                                </div>
+                            </v-card-title>
+
+                        </div>
+
+                        <div class="logs" v-if="filteredLogs.length > 0">
+                            <div :key="index" v-for="(log, index) in filteredLogs" :class="{
+                                'red--text text--darken-1': log.includes('ERROR'),
+                                'grey--text text--lighten-2': log.includes('INFO'),
+                                'warning--text': log.includes('WARNING')
+                            }">{{log}}</div>
+                        </div>
+                        <div style="flex: 1 1 0; opacity: 0.5;" class="d-flex justify-center align-center" v-else>
+                            <em>No logs to display.</em>
+                        </div>
                     </v-card>
                 </div>
             </v-col>
@@ -281,12 +293,10 @@
         data() {
             return {
                 moduleTab: null,
-                smartModules: [
-                    'SHC', 'SHP', 'SHH'
-                ],
                 timeMenu: false,
                 dateMenu: false,
-                simulationInterval: null
+                simulationInterval: null,
+                logFilter: ''
             }
         },
         computed: {
@@ -305,8 +315,14 @@
             simulationRunning() {
                 return this.$store.state.simulation?.running;
             },
+            simulationSpeed() {
+                return this.$store.state.simulation?.simulationSpeed.toFixed(1);
+            },
+            simulationModules() {
+                return this.$store.state.simulation?.modules || [];
+            },
             awayMode() {
-                return this.$store.state.simulation?.away;
+                return this.simulationModules.find(m => m.name === 'SHP')?.away;
             },
             insideTemperature() {
                 return this.$store.state.simulation?.temperatureInside;
@@ -363,16 +379,22 @@
             },
             hasHouseLayout() {
                 return !!this.$store.state.simulation?.houseLayout;
+            },
+            logs() {
+                return this.$store.state.logs;
+            },
+            filteredLogs() {
+                return this.logs.filter(log => log.includes(this.logFilter));
+            },
+            logFilters() {
+                return [{ label: 'All', filter: '' }, { label: 'System', filter: '[System]' }, ...this.simulationModules.map(m => ({ label: m.name, filter: `[${m.name}]` }))];
             }
         },
         methods: {
             onToggleSimulation() {
                 // Increment simulation time every minute if starting
                 if (!this.simulationRunning) {
-                    this.simulationInterval = setInterval(() => {
-                        let newDateTime = this.$moment(this.simulationDateTime, 'YYYY-MM-DD HH:mm').add(1, 'minutes').format('YYYY-MM-DD HH:mm');
-                        this.dispatchEvent('setSimulationDateTime', { value: newDateTime });
-                    }, 60 * 1000);
+                    this.simulationInterval = setInterval(this.nextSimulationMinute, 60 * 1000 / this.simulationSpeed);
 
                 // Clear interval if stopping
                 } else
@@ -389,16 +411,45 @@
                 this.editPerson = { ...person };
                 this.showDeletePerson = true;
             },
-            onToggleAwayMode () {
-                this.dispatchEvent('toggleAway', { value: !this.awayMode});
+            onChangeSimulationSpeed(value) {
+
+                // If the simulation is running, update the interval function
+                if (this.simulationRunning) {
+                    clearInterval(this.simulationInterval);
+                    this.simulationInterval = setInterval(this.nextSimulationMinute, 60 * 1000 / value);
+                }
+
+                this.dispatchEvent('setSimulationSpeed', { value });
+
+            },
+            nextSimulationMinute() {
+                let newDateTime = this.$moment(this.simulationDateTime, 'YYYY-MM-DD HH:mm').add(1, 'minutes').format('YYYY-MM-DD HH:mm');
+                this.dispatchEvent('setSimulationDateTime', { value: newDateTime });
             }
         },
         mixins: [validation]
     }
 </script>
 
+<style lang="scss">
+    .smaller-icon i.fa {
+        font-size: 12pt !important;
+    }
+</style>
+
 <style lang="scss" scoped>
     .form-subheader {
         margin-top: -20px;
+    }
+
+    .logs {
+        flex: 1 1 0;
+        font-family: Consolas, Monospaced, sans-serif !important;
+        overflow-y: auto;
+        padding: 0.5rem;
+        div {
+            text-indent: -150px;
+            padding-left: 150px;
+        }
     }
 </style>

@@ -4,5 +4,8 @@ public/
 natives/
 out/
 src/main/resources/META-INF/
+logs/
+blob_storage/
 *.iml
 *.log
+user_profiles.json

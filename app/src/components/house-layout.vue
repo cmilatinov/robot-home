@@ -13,7 +13,7 @@
 
 <script>
     export default {
-        name: "house-layout",
+        name: 'house-layout',
         data() {
             return {
                 activeElement: null,

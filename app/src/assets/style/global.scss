@@ -32,6 +32,12 @@ div:focus {
   outline: 0 solid transparent !important;
 }
 
+div.disabled {
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.4;
+}
+
 .fa {
   font-size: 15pt !important;
 }

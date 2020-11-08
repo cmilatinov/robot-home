@@ -2,6 +2,7 @@ package com.smarthome.simulator.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.models.Simulation;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
@@ -90,6 +91,18 @@ public class JavaScriptQueryHandler implements CefMessageRouterHandler {
         try {
             String state = mapper.writeValueAsString(simulation);
             browser.executeJavaScript("window.vm.$store.commit('setSimulation', JSON.parse('" + state + "'))", browser.getURL(), 0);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Updates the frontend logs to properly display any changes made from the Java side.
+     */
+    public void updateLogs() {
+        try {
+            String state = mapper.writeValueAsString(SmartHomeSimulator.LOGGER.getLogs());
+            browser.executeJavaScript("window.vm.$store.commit('setLogs', JSON.parse(`" + state + "`))", browser.getURL(), 0);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

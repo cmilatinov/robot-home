@@ -36,6 +36,27 @@
                         <strong>Current:</strong> <em style="font-weight: 300">{{ currentProfile.name }}</em>
                     </div>
                 </v-card-text>
+
+                <v-subheader style="margin-top: -15px">Permissions ({{editProfile.permissions.length || 'None'}} selected)</v-subheader>
+                <div class="mx-5">
+                    <v-expansion-panels :key="module.name" v-for="module in simulationModules" class="mb-3">
+                        <v-expansion-panel style="background-color: rgba(255, 255, 255, 0.03)">
+                            <v-expansion-panel-header class="d-flex py-0">
+                                <v-simple-checkbox class="flex-0 mr-3" dense color="primary"
+                                                   :value="module.commandList.every(c => editProfile.permissions.includes(c))"
+                                                   @input="onChangeModulePermission(module, $event)"></v-simple-checkbox>
+                                {{module.name}}
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content class="pl-3 pt-2">
+                                <v-checkbox dense class="ma-0 pa-0" :input-value="editProfile.permissions.includes(command)"
+                                            :key="command" v-for="command in module.commandList"
+                                            :label="command" @change="onChangePermission(command, $event)"></v-checkbox>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </div>
+
+
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn text color="grey darken-2" @click="showEditProfile = false">
@@ -120,7 +141,7 @@
     import validation from "../mixins/validation";
 
     export default {
-        name: "profile-manager",
+        name: 'profile-manager',
         data() {
             return {
                 showProfileManager: false,
@@ -138,38 +159,6 @@
                 profileSearch: ''
             }
         },
-        methods: {
-            onEditProfile(profile) {
-                this.editProfile = {
-                    ...profile
-                };
-                this.showEditProfile = true;
-            },
-            onCreateProfile() {
-                this.newProfile = {
-                    name: ''
-                };
-                this.showNewProfile = true;
-            },
-            onDeleteProfile(profile) {
-                this.deleteProfile = {
-                    ...profile
-                };
-                this.showDeleteProfile = true;
-            },
-            onSubmitEditProfile() {
-                if (!this.$refs.editForm || !this.$refs.editForm.validate())
-                    return;
-                this.dispatchEvent('editProfile', this.editProfile);
-                this.showEditProfile = false;
-            },
-            onSubmitCreateProfile() {
-                if (!this.$refs.addForm || !this.$refs.addForm.validate())
-                    return;
-                this.dispatchEvent('addProfile', this.newProfile);
-                this.showNewProfile = false;
-            }
-        },
         computed: {
             userProfiles() {
                 return this.$store.state.simulation?.userProfiles || [];
@@ -184,6 +173,58 @@
             },
             simulationRunning() {
                 return !!this.$store.state.simulation?.running;
+            },
+            simulationModules() {
+                return this.$store.state.simulation?.modules || [];
+            }
+        },
+        methods: {
+            onEditProfile(profile) {
+                this.editProfile = JSON.parse(JSON.stringify(profile));
+                this.showEditProfile = true;
+            },
+            onCreateProfile() {
+                this.newProfile = {
+                    name: ''
+                };
+                this.showNewProfile = true;
+            },
+            onDeleteProfile(profile) {
+                this.deleteProfile = JSON.parse(JSON.stringify(profile));
+                this.showDeleteProfile = true;
+            },
+            onSubmitEditProfile() {
+                if (!this.$refs.editForm || !this.$refs.editForm.validate())
+                    return;
+                this.dispatchEvent('editProfile', this.editProfile);
+                this.showEditProfile = false;
+            },
+            onSubmitCreateProfile() {
+                if (!this.$refs.addForm || !this.$refs.addForm.validate())
+                    return;
+                this.dispatchEvent('addProfile', this.newProfile);
+                this.showNewProfile = false;
+            },
+            onChangePermission(permission) {
+                let permissionIndex = this.editProfile.permissions.indexOf(permission);
+                if (permissionIndex >= 0)
+                    this.editProfile.permissions.splice(permissionIndex, 1);
+                else
+                    this.editProfile.permissions.push(permission);
+            },
+            onChangeModulePermission(m, value) {
+                if (value) {
+                    m.commandList.forEach(c => {
+                        if (!this.editProfile.permissions.includes(c))
+                            this.editProfile.permissions.push(c);
+                    });
+                } else {
+                    m.commandList.forEach(c => {
+                        let permissionIndex = this.editProfile.permissions.indexOf(c);
+                        if (permissionIndex >= 0)
+                            this.editProfile.permissions.splice(permissionIndex, 1);
+                    });
+                }
             }
         },
         mixins: [validation]
@@ -211,5 +252,11 @@
         display: flex;
         align-items: center;
         font-size: 12pt !important;
+    }
+
+    .module-title {
+        font-size: 16pt;
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid white;
     }
 </style>

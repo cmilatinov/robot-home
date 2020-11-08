@@ -10,11 +10,16 @@ export default new Vuex.Store({
         showMovePerson: false,
         showDeletePerson: false,
 
-        editPerson: null
+        editPerson: null,
+
+        logs: []
     },
     mutations: {
         setSimulation(state, simulation) {
             state.simulation = simulation;
+        },
+        setLogs(state, logs) {
+            state.logs = logs;
         },
         setShowMovePerson(state, value) {
             state.showMovePerson = !!value;

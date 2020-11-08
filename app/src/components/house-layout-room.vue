@@ -107,7 +107,7 @@
 
 <script>
     export default {
-        name: "house-layout-room",
+        name: 'house-layout-room',
         props: {
             room: {
                 required: true
@@ -195,7 +195,10 @@
                 return this.room.windows?.filter(w => w.blocked).length || 0;
             },
             people() {
-                return this.$store.state.simulation?.people.filter(p => p.roomId === this.room.id) || [];
+                let arr = this.$store.state.simulation?.people.filter(p => p.roomId === this.room.id) || [];
+                if (this.$store.state.simulation && this.$store.state.simulation.userLocation === this.room.id)
+                    arr.push({ id: 0, name: 'User', color: 'white' });
+                return arr;
             },
             simulationRunning() {
                 return !!this.$store.state.simulation?.running;

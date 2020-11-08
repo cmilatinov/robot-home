@@ -1,14 +1,20 @@
 package com.smarthome.simulator.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.modules.Module;
 import com.smarthome.simulator.modules.SHC;
 import com.smarthome.simulator.modules.SHP;
+import com.smarthome.simulator.utils.Logger;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class Simulation {
 
@@ -30,7 +36,7 @@ public class Simulation {
     /**
      * The list of available {@link UserProfile}s.
      */
-    private ArrayList<UserProfile> userProfiles;
+    private List<UserProfile> userProfiles;
 
     /**
      * The active {@link UserProfile} for the simulation.
@@ -48,24 +54,29 @@ public class Simulation {
     private float temperatureOutside;
 
     /**
+     * The simulation speed factor, 1 is realtime, more than 1 is faster than realtime.
+     */
+    private float simulationSpeed;
+
+    /**
      * The {@link HouseLayout} of the home.
      */
     private HouseLayout houseLayout;
 
     /**
-     * The house location.
+     * The user's location in the house.
      */
     private String userLocation;
 
     /**
      * The list of {@link Person} present in the house.
      */
-    private ArrayList<Person> people;
+    private List<Person> people;
 
     /**
      * The list of active {@link Module} in the simulation.
      */
-    private ArrayList<Module> modules;
+    private final List<Module> modules;
 
     // ============================ CONSTRUCTORS ============================
 
@@ -83,7 +94,8 @@ public class Simulation {
                 add(new UserProfile("Children"));
                 add(new UserProfile("Guests"));
                 add(new UserProfile("Strangers"));
-            }catch(Exception e){}
+            } catch (Exception e) {
+            }
         }};
 
         this.userProfiles.get(0).setPermissions("Parent");
@@ -94,10 +106,11 @@ public class Simulation {
         this.activeUserProfile = this.userProfiles.get(0);
         this.temperatureInside = 24.0f;
         this.temperatureOutside = 11.0f;
+        this.simulationSpeed = 1.0f;
         this.houseLayout = null;
         this.userLocation = null;
         this.people = new ArrayList<>();
-        this.modules = new ArrayList<Module>();
+        this.modules = new ArrayList<>();
         modules.add(new SHC(this));
         modules.add(new SHP(this));
     }
@@ -119,7 +132,7 @@ public class Simulation {
                 ", temperatureInside=" + temperatureInside +
                 ", temperatureOutside=" + temperatureOutside +
                 ", houseLayout=" + houseLayout +
-                ", houseLocation='" +  + '\'' +
+                ", houseLocation='" + +'\'' +
                 ", people=" + people +
                 '}';
     }
@@ -131,7 +144,7 @@ public class Simulation {
      *
      * @return The list of {@link UserProfile}.
      */
-    public ArrayList<UserProfile> getUserProfiles() {
+    public List<UserProfile> getUserProfiles() {
         return userProfiles;
     }
 
@@ -140,7 +153,7 @@ public class Simulation {
      *
      * @param userProfiles The list of {@link UserProfile}.
      */
-    public void setUserProfiles(ArrayList<UserProfile> userProfiles) {
+    public void setUserProfiles(List<UserProfile> userProfiles) {
         this.userProfiles = userProfiles;
     }
 
@@ -159,22 +172,11 @@ public class Simulation {
      * @param activeUserProfile The list of active {@link UserProfile}.
      */
     public boolean setActiveUserProfile(UserProfile activeUserProfile) {
-
         if (userProfiles.contains(activeUserProfile)) {
             this.activeUserProfile = activeUserProfile;
             return true;
         }
         return false;
-    }
-
-    /**
-     * Returns whether or not the simulation is in away mode.
-     *
-     * @return Boolean
-     */
-    public boolean isAway() {
-        SHP shp = (SHP) modules.get(1);
-        return shp.isAway();
     }
 
     /**
@@ -297,8 +299,14 @@ public class Simulation {
      * @return boolean representation of whether the location changed or not.
      */
     public boolean setUserLocation(String userLocation) {
+
+        if (userLocation == null) {
+            this.userLocation = null;
+            return true;
+        }
+
         ArrayList<Room> rooms = houseLayout.getRooms();
-        for (Room room: rooms) {
+        for (Room room : rooms) {
             if (room.getId().equals(userLocation)) {
                 this.userLocation = userLocation;
                 return true;
@@ -312,7 +320,7 @@ public class Simulation {
      *
      * @return The list of {@link Person} in this simulation.
      */
-    public ArrayList<Person> getPeople() {
+    public List<Person> getPeople() {
         return people;
     }
 
@@ -323,6 +331,80 @@ public class Simulation {
      */
     public void setPeople(ArrayList<Person> people) {
         this.people = people;
+    }
+
+    /**
+     * This function gets the speed of the simulation
+     *
+     * @return The speed factor of the simulation. (ex: 2 is twice as fast as realtime)
+     */
+    public float getSimulationSpeed() {
+        return simulationSpeed;
+    }
+
+    /**
+     * This function sets the speed of the simulation.
+     *
+     * @param simulationSpeed The new speed factor of the simulation.
+     */
+    public void setSimulationSpeed(float simulationSpeed) {
+        this.simulationSpeed = simulationSpeed;
+    }
+
+    /**
+     * Returns the list of modules attached to this simulation.
+     *
+     * @return {@link List<Module>} The list of modules attached to the simulation.
+     */
+    public List<Module> getModules() {
+        return modules;
+    }
+
+    /**
+     * Returns whether or not the SHP module, if present, has the away mode enabled.
+     * @return boolean
+     */
+    public boolean isAway() {
+        Optional<Module> shp = modules.stream().filter(m -> m instanceof SHP).findFirst();
+        if (shp.isPresent())
+            return ((SHP)shp.get()).isAwayMode();
+        return false;
+    }
+
+    /**
+     * Returns the start of the away mode window for lights.
+     * @return {@link LocalTime}
+     */
+    public LocalTime getAwayTimeStart() {
+        Optional<Module> shp = modules.stream().filter(m -> m instanceof SHP).findFirst();
+        return shp.map(module -> ((SHP) module).getAwayTimeStartObj()).orElse(null);
+    }
+
+    /**
+     * Returns the end of the away mode window for lights.
+     * @return {@link LocalTime}
+     */
+    public LocalTime getAwayTimeEnd() {
+        Optional<Module> shp = modules.stream().filter(m -> m instanceof SHP).findFirst();
+        return shp.map(module -> ((SHP) module).getAwayTimeEndObj()).orElse(null);
+    }
+
+    /**
+     * Returns the date part of the current simulation date time.
+     * @return {@link LocalDate} The current date of the simulation.
+     */
+    @JsonIgnore
+    public LocalDate getDate() {
+        return dateTime.toLocalDate();
+    }
+
+    /**
+     * Returns the time part of the current simulation date time.
+     * @return {@link LocalTime} The current time of the simulation.
+     */
+    @JsonIgnore
+    public LocalTime getTime() {
+        return dateTime.toLocalTime();
     }
 
     // ============================ OTHER METHODS ============================
@@ -336,13 +418,13 @@ public class Simulation {
     public ArrayList<Light> getAllLights() {
         if (houseLayout != null)
             return houseLayout
-                .getRooms()
-                .stream()
-                .map(Room::getLights)
-                .reduce(new ArrayList<>(), (list, roomLights) -> {
-                    list.addAll(roomLights);
-                    return list;
-                });
+                    .getRooms()
+                    .stream()
+                    .map(Room::getLights)
+                    .reduce(new ArrayList<>(), (list, roomLights) -> {
+                        list.addAll(roomLights);
+                        return list;
+                    });
         return new ArrayList<>();
     }
 
@@ -355,13 +437,13 @@ public class Simulation {
     public ArrayList<Door> getAllDoors() {
         if (houseLayout != null)
             return houseLayout
-                .getRooms()
-                .stream()
-                .map(Room::getDoors)
-                .reduce(new ArrayList<>(), (list, roomDoors) -> {
-                    list.addAll(roomDoors);
-                    return list;
-                });
+                    .getRooms()
+                    .stream()
+                    .map(Room::getDoors)
+                    .reduce(new ArrayList<>(), (list, roomDoors) -> {
+                        list.addAll(roomDoors);
+                        return list;
+                    });
         return new ArrayList<>();
     }
 
@@ -374,30 +456,38 @@ public class Simulation {
     public ArrayList<Window> getAllWindows() {
         if (houseLayout != null)
             return houseLayout
-                .getRooms()
-                .stream()
-                .map(Room::getWindows)
-                .reduce(new ArrayList<>(), (list, roomWindows) -> {
-                    list.addAll(roomWindows);
-                    return list;
-                });
+                    .getRooms()
+                    .stream()
+                    .map(Room::getWindows)
+                    .reduce(new ArrayList<>(), (list, roomWindows) -> {
+                        list.addAll(roomWindows);
+                        return list;
+                    });
         return new ArrayList<>();
     }
 
     /**
-     * This function searches for the module responsible for a given command.
-     * @param command The command to be searched.
-     * @return Module corresponding to the command. Null if module not found.
+     * Executes a specific module command.
+     * @param command The command to execute.
+     * @param payload The payload passed to the command.
+     * @param sentByUser True if the command was sent by a user, false otherwise.
      */
-    public Module getModule(String command) {
-        String name;
-        for (int i=0; i<modules.size(); i++) {
-            if (modules.get(i).getPermissions() != null) {
-                if (modules.get(i).getPermissions().contains(command))
-                    return modules.get(i);
-            }
+    public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
+
+        // Find module which handles the given command
+        Optional<Module> module = modules.stream()
+                .filter(m -> m.getCommandList().contains(command))
+                .findFirst();
+
+        // If the module exists, execute the command
+        if (module.isPresent()) {
+            module.get().executeCommand(command, payload, sentByUser);
+            return;
         }
-        return null;
+
+        // No module can handle the given command
+        SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "UNKNOWN COMMAND '" + command + "'!");
+
     }
 
 }

@@ -1,8 +1,10 @@
 package com.smarthome.simulator.models;
 
+import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.modules.SHC;
 import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.FileChooserUtil;
+import com.smarthome.simulator.utils.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,6 +14,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.List;
 import java.util.ArrayList;
 
 /**
@@ -20,26 +23,35 @@ import java.util.ArrayList;
 public class UserProfile extends IdentifiableObject {
 
     /**
+     * The file in which to save the user profile information.
+     */
+    public static final String USER_PROFILE_FILEPATH = "./user_profiles.json";
+
+    /**
      * List of all possible permission identifiers a user could have.
      */
-    public static final ArrayList<String> ALL_PERMISSIONS = new ArrayList<String>() {
+    private static final ArrayList<String> ALL_PERMISSIONS = new ArrayList<String>() {
         {
-            add(SHC.P_CONTROL_DOORS);
-            add(SHC.P_CONTROL_WINDOWS);
-            add(SHC.P_CONTROL_LIGHTS);
-            add(SHC.P_CONTROL_AUTO_MODE);
-            add(SHC.P_CLOSE_ALL_WINDOWS);
-            add(SHC.P_LOCK_ALL_DOORS);
-            add(SHC.P_UPDATE_ROOM);
+            add(SHC.CONTROL_DOOR);
+            add(SHC.CONTROL_WINDOW);
+            add(SHC.CONTROL_LIGHT);
+            add(SHC.SET_AUTO_MODE);
+            add(SHC.CLOSE_ALL_WINDOWS);
+            add(SHC.LOCK_ALL_DOORS);
+            add(SHC.CLOSE_ALL_LIGHTS);
+            add(SHC.UPDATE_ROOM_LIGHTS);
 
-            add(SHC.P_REMOTE_CONTROL_DOORS);
-            add(SHC.P_REMOTE_CONTROL_WINDOWS);
-            add(SHC.P_REMOTE_CONTROL_LIGHTS);
+            add(SHC.REMOTE_CONTROL_DOOR);
+            add(SHC.REMOTE_CONTROL_WINDOW);
+            add(SHC.REMOTE_CONTROL_LIGHT);
 
-            add(SHP.P_SET_AWAY_LIGHTS);
-            add(SHP.P_SET_AWAY_MODE);
-            add(SHP.P_SET_ALERT_DELAY);
-            add(SHP.P_SET_AWAY_TIME);
+            add(SHP.SET_AWAY_LIGHTS);
+            add(SHP.SET_AWAY_MODE);
+            add(SHP.SET_ALERT_DELAY);
+            add(SHP.SET_AWAY_TIME);
+
+            add(SHP.ALERT_USER);
+            add(SHP.TOGGLE_AWAY_LIGHTS);
         }
     };
 
@@ -51,7 +63,7 @@ public class UserProfile extends IdentifiableObject {
     /**
      * List of {@link String} representing permissions of the user profile.
      */
-    private ArrayList<String> permissions;
+    private List<String> permissions;
 
     // ============================ CONSTRUCTORS ============================
 
@@ -141,7 +153,7 @@ public class UserProfile extends IdentifiableObject {
      *
      * @return The list of {@link String} representing the permissions of the user profile.
      */
-    public ArrayList<String> getPermissions() {
+    public List<String> getPermissions() {
         return permissions;
     }
 
@@ -151,15 +163,14 @@ public class UserProfile extends IdentifiableObject {
      * @param permissions The list of {@link String} representing the permissions of the user profile.
      * @return Boolean representation of whether or not the setPermissions was successful.
      */
-    public boolean setPermissions(ArrayList<String> permissions) {
-        for (String permission: permissions) {
-            if (!UserProfile.ALL_PERMISSIONS.contains(permission))
-            {
-                return false;
-            }
-        }
+    public boolean setPermissions(List<String> permissions) {
 
-        this.permissions = permissions;
+        // If any permission is not in the list of permissions, return
+        if (permissions.stream()
+                .anyMatch(p -> !UserProfile.ALL_PERMISSIONS.contains(p)))
+            return false;
+
+        this.permissions = new ArrayList<>(permissions);
         return true;
     }
 
@@ -173,41 +184,40 @@ public class UserProfile extends IdentifiableObject {
         switch (clearance) {
             case "Parent":
                 return this.setPermissions(new ArrayList<String>(){{
-                    add(SHC.P_CONTROL_DOORS);
-                    add(SHC.P_CONTROL_WINDOWS);
-                    add(SHC.P_CONTROL_LIGHTS);
-                    add(SHC.P_CONTROL_AUTO_MODE);
-                    add(SHC.P_CLOSE_ALL_WINDOWS);
-                    add(SHC.P_LOCK_ALL_DOORS);
+                    add(SHC.CONTROL_DOOR);
+                    add(SHC.CONTROL_WINDOW);
+                    add(SHC.CONTROL_LIGHT);
+                    add(SHC.SET_AUTO_MODE);
+                    add(SHC.CLOSE_ALL_WINDOWS);
+                    add(SHC.LOCK_ALL_DOORS);
 
-                    add(SHC.P_REMOTE_CONTROL_DOORS);
-                    add(SHC.P_REMOTE_CONTROL_WINDOWS);
-                    add(SHC.P_REMOTE_CONTROL_LIGHTS);
+                    add(SHC.REMOTE_CONTROL_DOOR);
+                    add(SHC.REMOTE_CONTROL_WINDOW);
+                    add(SHC.REMOTE_CONTROL_LIGHT);
 
-                    add(SHP.P_SET_AWAY_LIGHTS);
-                    add(SHP.P_SET_AWAY_MODE);
-                    add(SHP.P_SET_ALERT_DELAY);
-                    add(SHP.P_SET_AWAY_TIME);
+                    add(SHP.SET_AWAY_LIGHTS);
+                    add(SHP.SET_AWAY_MODE);
+                    add(SHP.SET_ALERT_DELAY);
+                    add(SHP.SET_AWAY_TIME);
                 }});
             case "Child":
                 return this.setPermissions(new ArrayList<String>(){{
-                    add(SHC.P_CONTROL_DOORS);
-                    add(SHC.P_CONTROL_WINDOWS);
-                    add(SHC.P_CONTROL_LIGHTS);
+                    add(SHC.CONTROL_DOOR);
+                    add(SHC.CONTROL_WINDOW);
+                    add(SHC.CONTROL_LIGHT);
 
-                    add(SHP.P_SET_AWAY_MODE);
+                    add(SHP.SET_AWAY_MODE);
                 }});
             case "Guest":
                 return this.setPermissions(new ArrayList<String>(){{
-                    add(SHC.P_CONTROL_DOORS);
-                    add(SHC.P_CONTROL_LIGHTS);
-                    add(SHC.P_CONTROL_WINDOWS);
+                    add(SHC.CONTROL_DOOR);
+                    add(SHC.CONTROL_LIGHT);
+                    add(SHC.CONTROL_WINDOW);
                 }});
 
             case "Stranger":
             default:
-                return this.setPermissions(new ArrayList<String>(){{
-                }});
+                return this.setPermissions(new ArrayList<>());
         }
     }
 
@@ -223,7 +233,7 @@ public class UserProfile extends IdentifiableObject {
 
         // Verifying if the user chose a file
         if (returnValue != JFileChooser.APPROVE_OPTION) {
-            System.out.println("No file selected");
+            SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "No file selected");
         }
 
         return fileChooser.getSelectedFile();
@@ -241,7 +251,7 @@ public class UserProfile extends IdentifiableObject {
 
         // Verifying if the user chose a file
         if (returnValue != JFileChooser.APPROVE_OPTION) {
-            System.out.println("No file selected");
+            SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "No file selected");
             return null;
         }
 
@@ -254,7 +264,7 @@ public class UserProfile extends IdentifiableObject {
      * @param profiles The list of all current {@link UserProfile} in the simulation
      * @return The resulting {@link File} instance, or null if the user has not selected a file.
      */
-    public static void writeUserProfile(File selectedFile, ArrayList<UserProfile> profiles) {
+    public static void writeUserProfiles(File selectedFile, List<UserProfile> profiles) {
         //Creating json object and array to store the name and permissions
         JSONObject users = new JSONObject();
         JSONArray userProfiles = new JSONArray();
@@ -293,7 +303,7 @@ public class UserProfile extends IdentifiableObject {
      * @param selectedFile The file in which the {@link UserProfile} will be fetch from.
      * @return The resulting {@link UserProfile} list, or null for any parsing errors.
      */
-    public static ArrayList<UserProfile> loadUserProfiles(File selectedFile)
+    public static List<UserProfile> loadUserProfiles(File selectedFile)
     {
         // Resulting obj from parsing
         Object obj;
@@ -316,13 +326,13 @@ public class UserProfile extends IdentifiableObject {
 
             // Verifying if the user entered the profiles correctly
             if (userProfiles == null) {
-                System.out.println("Could not find any profiles. Make sure that the file contains a userProfiles array.");
+                SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "Could not find any profiles. Make sure that the file contains a userProfiles array.");
                 return null;
             }
 
             // Verifying if the user profiles array is empty
             if (userProfiles.size() == 0) {
-                System.out.println("User profiles array is empty. No profiles were defined.");
+                SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "User profiles array is empty. No profiles were defined.");
                 return null;
             }
 
@@ -356,10 +366,10 @@ public class UserProfile extends IdentifiableObject {
                     profilesList.add(tempProfile);
 
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid data type " + e.getMessage().toLowerCase() + ".");
+                    SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "Invalid data type " + e.getMessage().toLowerCase() + ".");
                     return null;
                 } catch (NullPointerException e) {
-                    System.out.println("Missing fields in json file.");
+                    SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "Missing fields in json file.");
                     return null;
                 }
             }
@@ -367,7 +377,7 @@ public class UserProfile extends IdentifiableObject {
             return profilesList;
 
         } catch (Exception e) {
-            System.out.println("An error has occurred while parsing the house layout file.");
+            SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "An error has occurred while parsing the house layout file.");
             return null;
         }
     }

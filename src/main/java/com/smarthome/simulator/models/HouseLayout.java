@@ -1,6 +1,8 @@
 package com.smarthome.simulator.models;
 
+import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.utils.FileChooserUtil;
+import com.smarthome.simulator.utils.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -168,13 +170,13 @@ public class HouseLayout {
 
             // Verifying if the user entered the rooms correctly
             if (rooms == null) {
-                System.out.println("Could not find any rooms. Make sure that the file contains a rooms array.");
+                SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "Could not find any rooms. Make sure that the file contains a rooms array.");
                 return null;
             }
 
             // Verifying if the house is empty
             if (rooms.size() == 0) {
-                System.out.println("House is empty. No rooms were defined.");
+                SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "House is empty. No rooms were defined.");
                 return null;
             }
 
@@ -209,10 +211,10 @@ public class HouseLayout {
                     positionY = Float.parseFloat(room.get("position-y").toString());
                     isHouseEntrance = Boolean.parseBoolean(room.get("isHouseEntrance").toString());
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid data type " + e.getMessage().toLowerCase() + ".");
+                    SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "Invalid data type " + e.getMessage().toLowerCase() + ".");
                     return null;
                 } catch (NullPointerException e) {
-                    System.out.println("Missing fields in json file.");
+                    SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "Missing fields in json file.");
                     return null;
                 }
 
@@ -238,7 +240,7 @@ public class HouseLayout {
             return roomsList;
 
         } catch (Exception e) {
-            System.out.println("An error has occurred while parsing the house layout file.");
+            SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "An error has occurred while parsing the house layout file.");
             return null;
         }
     }
@@ -256,7 +258,7 @@ public class HouseLayout {
 
         // Verifying if the user chose a file
         if (returnValue != JFileChooser.APPROVE_OPTION) {
-            System.out.println("No file selected");
+            SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "No file selected");
             return null;
         }
 

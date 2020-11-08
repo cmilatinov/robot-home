@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue from 'vue';
 import App from './App.vue'
 
 import vuetify from './vuetify';
@@ -12,8 +12,14 @@ import './mixins';
 import panzoom from 'vue-panzoom';
 import moment from 'vue-moment';
 
+import shc from './modules/shc';
+import shp from './modules/shp';
+
 Vue.use(panzoom);
-Vue.use(moment)
+Vue.use(moment);
+
+Vue.component('SHC', shc);
+Vue.component('SHP', shp);
 
 Vue.config.productionTip = false;
 

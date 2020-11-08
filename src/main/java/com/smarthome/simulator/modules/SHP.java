@@ -1,8 +1,12 @@
 package com.smarthome.simulator.modules;
 
+import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.models.Light;
 import com.smarthome.simulator.models.Person;
 import com.smarthome.simulator.models.Simulation;
+import com.smarthome.simulator.utils.Logger;
+import com.smarthome.simulator.utils.TimeUtil;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +14,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 /**
  * The SHP class represents the Smart Home Security module.
@@ -17,9 +22,9 @@ import java.time.format.DateTimeFormatter;
 public class SHP extends Module{
 
     /**
-     * Whether or not the system is in away mode.
+     * Indicates whether the away mode is enabled or not.
      */
-    private boolean away;
+    private boolean awayMode;
 
     /**
      * The delay before alerting authorities if an intruder is detected.
@@ -29,7 +34,7 @@ public class SHP extends Module{
     /**
      * The light configuration to be set when away mode is activated and withing set time window.
      */
-    private HashMap<String, Boolean> awayLights;
+    private List<Light> awayLights;
 
     /**
      * The start of the time window during which awayLights will be kept on.
@@ -54,32 +59,32 @@ public class SHP extends Module{
     /**
      * Permission identifier to set away lights.
      */
-    public static final String P_SET_AWAY_LIGHTS = "SetAwayLights";
+    public static final String SET_AWAY_LIGHTS = "SetAwayLights";
 
     /**
      * Permission identifier to set away mode.
      */
-    public static final String P_SET_AWAY_MODE = "SetAwayMode";
+    public static final String SET_AWAY_MODE = "SetAwayMode";
 
     /**
      * Permission identifier to set alert delay.
      */
-    public static final String P_SET_ALERT_DELAY = "SetAlertDelay";
+    public static final String SET_ALERT_DELAY = "SetAlertDelay";
 
     /**
      * Permission identifier to set the away time window.
      */
-    public static final String P_SET_AWAY_TIME = "SetAwayTime";
+    public static final String SET_AWAY_TIME = "SetAwayTime";
 
     /**
      * Permission identifier to alert user.
      */
-    public static final String P_ALERT_USER = "AlertUser";
+    public static final String ALERT_USER = "AlertUser";
 
     /**
      * Permission identifier to toggle away lights.
      */
-    public static final String P_TOGGLE_AWAY_LIGHTS = "ToggleAwayLights";
+    public static final String TOGGLE_AWAY_LIGHTS = "ToggleAwayLights";
 
     /**
      * Creates a new SHP with reference to the simulation.
@@ -87,9 +92,9 @@ public class SHP extends Module{
      */
     public SHP (Simulation _simulation) {
         super("SHP", _simulation);
-        this.away = false;
+        this.awayMode = false;
         this.alertDelay = 0;
-        this.awayLights = new HashMap<String, Boolean>();
+        this.awayLights = new ArrayList<>();
         this.awayTimeEnd = LocalTime.MIDNIGHT;
         this.awayTimeStart = LocalTime.NOON;
         this.withinAwayTime = false;
@@ -103,7 +108,7 @@ public class SHP extends Module{
         Thread alertThread = new Thread() {
             public void run() {
                 try {
-                    Thread.sleep((long) alertDelay);
+                    Thread.sleep((long) alertDelay * 1000);
                     NotifyAuthorities();
                 } catch (InterruptedException ie)
                 {
@@ -111,41 +116,51 @@ public class SHP extends Module{
                 }
             }
         };
-        alertThread.run();
+        alertThread.start();
     }
 
     /**
      * Notifies the user of an intruder during away mode by printing to console
      */
     private void NotifyUser () {
-        System.out.println("Notifying user!");
-        //TODO print to console
+        SmartHomeSimulator.LOGGER.log(Logger.WARN, getName(), "Notifying user!");
     }
 
     /**
      * Notifies authorities of an intruder during away mode.
      */
     private void NotifyAuthorities () {
-        System.out.println("Notifying authorities!");
-        //TODO print to console
+        SmartHomeSimulator.LOGGER.log(Logger.WARN, getName(), "Notifying authorities!");
     }
 
     /**
      * Sets home lights to away configuration designated by the user.
      */
-    private void ExecuteAwayLights() {
-        Module shc = simulation.getModule("ControlLights");
+    private boolean isHouseEmpty () {
+        List<Person> people = simulation.getPeople();
 
-        if (!awayLights.isEmpty()) {
-            awayLights.forEach((k, v) -> {
-                HashMap lightPayLoad = new HashMap<String, Object>() {{
-                    put("id", k);
-                    put("on", v);
-                }};
-                System.out.println(lightPayLoad);
-                shc.executeCommand("RemoteControlLights", lightPayLoad, false);
-            });
+        for (Person person : people) {
+            if (person.getRoomId() != null)
+                return false;
         }
+        return true;
+    }
+
+    private void ExecuteAwayLights() {
+
+        // Only do this in away mode
+        if (!awayMode)
+            return;
+
+        // Set all the desired lights to on
+        awayLights.forEach(light -> {
+            Map<String, Object> eventMap = new HashMap<String, Object>() {{
+                put("id", light.getId());
+                put("on", true);
+            }};
+            simulation.executeCommand(SHC.REMOTE_CONTROL_LIGHT, eventMap, false);
+        });
+
     }
 
     /**
@@ -154,19 +169,16 @@ public class SHP extends Module{
      * @param payload The arguments for execution
      */
     private void ExecuteAwayMode(Map<String, Object> payload) { 
-        setAway((boolean) payload.get("value"));
+        awayMode = ((boolean) payload.get("value"));
 
-        System.out.println("away: " + away);
+        if (!awayMode) return;
 
-        if (!away) {return;}
+        simulation.executeCommand(SHC.LOCK_ALL_DOORS, null, false);
+        simulation.executeCommand(SHC.CLOSE_ALL_WINDOWS, null, false);
+        simulation.executeCommand(SHC.CLOSE_ALL_LIGHTS, null, false);
 
-        Module shc = simulation.getModule("RemoteControlDoors");
-
-        shc.executeCommand("LockAllDoors", null, false);
-        shc.executeCommand("CloseAllWindows", null, false);
-
-        //TODO check if within allotted time to set away lights on or off
-        if (true)
+        // Check if within allotted time to set the proper away lights on
+        if (TimeUtil.isInRange(simulation.getTime(), awayTimeStart, awayTimeEnd))
             ExecuteAwayLights();
 
     }
@@ -176,13 +188,10 @@ public class SHP extends Module{
      * @param payload The arguments for execution
      */
     private void ExecuteAwayTime(Map<String, Object> payload) {
-        Pattern time = Pattern.compile("\\d{1,2}:\\d{2}");
         String startTime = (String) payload.get("startTime");
         String endTime = (String) payload.get("endTime");
 
-        startTime = startTime.substring(time.matcher(startTime).start());
         setAwayTimeStart(LocalTime.parse(startTime, formatter));
-        endTime = endTime.substring(time.matcher(endTime).start());
         setAwayTimeEnd(LocalTime.parse(endTime, formatter));
     }
 
@@ -190,15 +199,14 @@ public class SHP extends Module{
      * Gets the list of permissions/commands that the Module is responsible for/can execute.
      * @return List of Strings representing the permissions/commands pertaining to the module
      */
-    @Override
-    public List<String> getPermissions() {
+    public List<String> getCommandList() {
         return new ArrayList<String> () {{
-            add(P_SET_AWAY_MODE);
-            add(P_SET_AWAY_LIGHTS);
-            add(P_SET_AWAY_TIME);
-            add(P_SET_ALERT_DELAY);
-            add(P_ALERT_USER);
-            add(P_TOGGLE_AWAY_LIGHTS);
+            add(SET_AWAY_MODE);
+            add(SET_AWAY_LIGHTS);
+            add(SET_AWAY_TIME);
+            add(SET_ALERT_DELAY);
+            add(ALERT_USER);
+            add(TOGGLE_AWAY_LIGHTS);
         }};
     }
 
@@ -208,106 +216,66 @@ public class SHP extends Module{
      * @param payload The arguments for the command.
      * @param sentByUser Whether the command was called by a user or not. False if called by other system modules such as {@link SHC}.
      */
-    @Override
     public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
-        if (!checkPermission(command, sentByUser)) {
+
+        // If the command was sent by the user, check if the active user profile has the needed permission.
+        if (sentByUser && !checkPermission(command))
             return;
-        }
+
+        // Log command
+        SmartHomeSimulator.LOGGER.log(Logger.INFO, getName(), "Executing command '" + command + "'");
+
+        // Switch state for all the possible commands
         switch (command) {
-            case P_SET_AWAY_LIGHTS:
+            case SET_AWAY_LIGHTS:
                 setAwayLights();
                 break;
 
-            case P_SET_AWAY_MODE:
+            case SET_AWAY_MODE:
                 ExecuteAwayMode(payload);
                 break;
 
-            case P_SET_ALERT_DELAY:
-                setAlertDelay((float) payload.get("delay"));
+            case SET_ALERT_DELAY:
+                alertDelay = Float.parseFloat(payload.get("value").toString());
                 break;
 
-            case P_SET_AWAY_TIME:
+            case SET_AWAY_TIME:
                 ExecuteAwayTime(payload);
                 break;
 
-            case P_ALERT_USER:
+            case ALERT_USER:
                 Alert();
                 break;
 
-            case P_TOGGLE_AWAY_LIGHTS:
+            case TOGGLE_AWAY_LIGHTS:
                 ExecuteAwayLights();
                 break;
         }
     }
 
     /**
-     * Checks if the house is empty or not by looping through all rooms.
-     * @return boolean
-     */
-    private boolean isHouseEmpty () {
-        ArrayList<Person> people = simulation.getPeople();
-
-        for (int i=0; i<people.size(); i++) {
-            if (people.get(i).getRoomId() != null)
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Checks if simulation is in away mode.
-     * @return boolean
-     */
-    public boolean isAway() {
-        return away;
-    }
-
-    /**
-     * Sets away state to true or false after checking if house is empty.
-     * @param _away The state-to-be of the simulation.
-     */
-    public void setAway(boolean _away) {
-        if (_away && isHouseEmpty()) {
-            this.away = true;
-        }
-        else if (!_away)
-            this.away = false;
-    }
-
-    /**
-     * Gets the amount of time that will delay alerting authorities if an intruder is detected.
-     * @return float
-     */
-    public float getAlertDelay() {
-        return alertDelay;
-    }
-
-    /**
-     * Sets the amount of time that will delay alerting the authorities if an intruder is detected.
-     * @param alertDelay the value to be set.
-     */
-    public void setAlertDelay(float alertDelay) {
-        this.alertDelay = alertDelay;
-    }
-
-    /**
      * Saves current configuration of lights as configuration of lights to be kept on during away mode
      */
     private void setAwayLights() {
-        ArrayList<Light> lights = simulation.getAllLights();
-        System.out.println("setting away lights");
-        awayLights = new HashMap<String, Boolean>();
-        for(int i = 0; i < lights.size(); i++) {
-            Light l = lights.get(i);
-            awayLights.put(l.getId(), l.isOn());
-        }
+        awayLights = simulation.getAllLights()
+                .stream()
+                .filter(Light::isOn)
+                .collect(Collectors.toList());
     }
 
     /**
-     * Gets the start of the awayTime window.
-     * @return LocalTime
+     * Gets the start of the awayTime window in "HH:mm" format.
+     * @return {@link String}
      */
-    public LocalTime getAwayTimeStart() {
+    public String getAwayTimeStart() {
+        return formatter.format(awayTimeStart);
+    }
+
+    /**
+     * Gets the start of the awayTime window as a {@link LocalTime} object
+     * @return {@link LocalTime}
+     */
+    public LocalTime getAwayTimeStartObj() {
         return awayTimeStart;
     }
 
@@ -320,10 +288,18 @@ public class SHP extends Module{
     }
 
     /**
-     * Gets the end of the awayTime window.
-     * @return LocalTime
+     * Gets the end of the awayTime window in "HH:mm" format.
+     * @return {@link String}
      */
-    public LocalTime getAwayTimeEnd() {
+    public String getAwayTimeEnd() {
+        return formatter.format(awayTimeEnd);
+    }
+
+    /**
+     * Gets the end of the awayTime window as a {@link LocalTime} object
+     * @return {@link LocalTime}
+     */
+    public LocalTime getAwayTimeEndObj() {
         return awayTimeEnd;
     }
 
@@ -344,11 +320,15 @@ public class SHP extends Module{
     }
 
     /**
-     * Sets the value of withinAwayTime.
-     * @param withinAwayTime the value to be set.
+     * Returns whether or not away mode is active.
+     * @return boolean
      */
-    public void setWithinAwayTime(boolean withinAwayTime) {
-        this.withinAwayTime = withinAwayTime;
+    public boolean isAwayMode() {
+        return awayMode;
+    }
+
+    public float getAlertDelay() {
+        return alertDelay;
     }
 
 }

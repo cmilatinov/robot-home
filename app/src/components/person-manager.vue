@@ -45,7 +45,7 @@
             </template>
             <v-card>
                 <v-card-title>Manage People</v-card-title>
-                <v-text-field v-model="personSearch" class="mx-10 my-0 py-0" prepend-inner-icon="fa-search" placeholder="Search for a profile...">
+                <v-text-field v-model="personSearch" class="mx-10 my-0 py-0" prepend-inner-icon="fa-search" placeholder="Search for a person...">
                 </v-text-field>
                 <v-list class="pt-0 px-0 people-list">
                     <p class="mt-3 text-center grey--text" v-if="people.length <= 0">
@@ -91,7 +91,7 @@
     import validation from "../mixins/validation";
 
     export default {
-        name: "add-person",
+        name: 'person-manager',
         data() {
             return {
                 showPersonManager: false,

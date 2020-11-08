@@ -1,6 +1,9 @@
 package com.smarthome.simulator.modules;
 
+import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.models.Simulation;
+import com.smarthome.simulator.utils.Logger;
+
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +23,9 @@ public abstract class Module {
     protected final Simulation simulation;
 
     /**
-     * Parameterized constructor.
-     *
-     * @param name Name of the module created.
-     * @param simulation the current {@link Simulation} running.
+     * Creates a module with a given name and simulation reference.
+     * @param name The name of the module.
+     * @param simulation The simulation instance to bind to the module.
      */
     public Module(String name, Simulation simulation) {
         this.name = name;
@@ -31,18 +33,17 @@ public abstract class Module {
     }
 
     /**
-     * Gets the list of permissions/commands that the Module is responsible for/can execute.
+     * Returns this module's list of commands that can be executed.
      *
-     * @return List of Strings representing the permissions/commands pertaining to the module
+     * @return {@link List<String>} The list of commands associated to this module.
      */
-    public abstract List<String> getPermissions();
+    public abstract List<String> getCommandList();
 
     /**
-     * Executes a command given by a user or other system module.
-     *
-     * @param command The name of the command to be executed.
-     * @param payload The arguments for the command.
-     * @param sentByUser Whether the command was called by a user or not. False if called by other system modules.
+     * Executes a specific module command with the given payload.
+     * @param command The command to execute.
+     * @param payload The payload to pass to the command.
+     * @param sentByUser True if the command was sent by the user, false otherwise.
      */
     public abstract void executeCommand(String command, Map<String, Object> payload, boolean sentByUser);
 
@@ -50,25 +51,29 @@ public abstract class Module {
      * Function verifies if the user is allowed to run the command.
      *
      * @param command The name of the command to be executed.
-     * @param sentByUser Whether the command was called by a user or not. False if called by other system modules.
      */
-    public boolean checkPermission(String command, boolean sentByUser) {
-        boolean allowed;
+    public boolean checkPermission(String command) {
 
-        if (sentByUser) {
-            allowed = simulation.getActiveUserProfile().getPermissions().stream().anyMatch(p ->
-                    p.equals(command)
-            );
-        } else {
-            allowed = true;
-        }
-
-        if (!allowed) {
-            System.out.println("PERMISSION DENIED. '" + simulation.getActiveUserProfile().getName() + "' doesn't have " +
+        // Check if user has permission to execute this command
+        if (!simulation.getActiveUserProfile()
+                        .getPermissions()
+                        .contains(command)) {
+            SmartHomeSimulator.LOGGER.log(Logger.ERROR, name, "PERMISSION DENIED. '" + simulation.getActiveUserProfile().getName() + "' doesn't have " +
                     "the permission: '" + command + "'");
+            return false;
         }
 
-        return allowed;
+        // User does indeed have the required permission
+        return true;
+
+    }
+
+    /**
+     * Returns this module's name.
+     * @return {@link String} The name of the module.
+     */
+    public String getName() {
+        return name;
     }
 
 }
