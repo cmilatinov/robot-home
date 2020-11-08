@@ -1,5 +1,6 @@
 package com.smarthome.simulator.models;
 
+import com.sun.xml.internal.ws.developer.UsesJAXBContext;
 import org.junit.Assert;
 import org.junit.*;
 import java.io.File;
@@ -17,7 +18,7 @@ public class HouseLayoutTest {
     @Test
     public void parsingEmptyFileShouldReturnNull()
     {
-        File selectedFile = new File("src/test/resources/empty-sample-house-layout.json");
+        File selectedFile = new File("./src/test/resources/empty-sample-house-layout.json");
 
         Assert.assertNull(HouseLayout.parseJSONFile(selectedFile));
     }
@@ -28,7 +29,7 @@ public class HouseLayoutTest {
     @Test
     public void missingFieldInFileShouldReturnNull()
     {
-        File selectedFile = new File("src/test/resources/missing-field-sample-house-layout.json");
+        File selectedFile = new File("./src/test/resources/missing-field-sample-house-layout.json");
 
         Assert.assertNull(HouseLayout.parseJSONFile(selectedFile));
     }
@@ -39,7 +40,7 @@ public class HouseLayoutTest {
     @Test
     public void wrongFormatShouldReturnNull()
     {
-        File selectedFile = new File("src/test/resources/wrong-format-sample-house-layout.json");
+        File selectedFile = new File("./src/test/resources/wrong-format-sample-house-layout.json");
 
         Assert.assertNull(HouseLayout.parseJSONFile(selectedFile));
     }
@@ -50,7 +51,7 @@ public class HouseLayoutTest {
     @Test
     public void wrongFieldDataTypeShouldReturnNull()
     {
-        File selectedFile = new File("src/test/resources/wrong-field-data-type-sample-house-layout.json");
+        File selectedFile = new File("./src/test/resources/wrong-field-data-type-sample-house-layout.json");
 
         Assert.assertNull(HouseLayout.parseJSONFile(selectedFile));
     }
@@ -72,7 +73,7 @@ public class HouseLayoutTest {
     @Test
     public void rightFormatShouldReturnArrayListOfRoom()
     {
-        File selectedFile = new File("src/test/resources/working-sample-house-layout.json");
+        File selectedFile = new File("./src/test/resources/working-sample-house-layout.json");
 
         ArrayList<Room> roomList = new ArrayList<Room>();
 

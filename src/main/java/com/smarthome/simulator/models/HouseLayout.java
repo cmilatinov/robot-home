@@ -211,10 +211,10 @@ public class HouseLayout {
                     positionY = Float.parseFloat(room.get("position-y").toString());
                     isHouseEntrance = Boolean.parseBoolean(room.get("isHouseEntrance").toString());
                 } catch (NumberFormatException e) {
-                    SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "Invalid data type " + e.getMessage().toLowerCase() + ".");
+                    System.out.println("Invalid data type " + e.getMessage().toLowerCase() + ".");
                     return null;
                 } catch (NullPointerException e) {
-                    SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "Missing fields in json file.");
+                    System.out.println("Missing fields in json file.");
                     return null;
                 }
 
@@ -240,7 +240,7 @@ public class HouseLayout {
             return roomsList;
 
         } catch (Exception e) {
-            SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "An error has occurred while parsing the house layout file.");
+            System.out.println("An error has occurred while parsing the house layout file.");
             return null;
         }
     }
@@ -258,7 +258,7 @@ public class HouseLayout {
 
         // Verifying if the user chose a file
         if (returnValue != JFileChooser.APPROVE_OPTION) {
-            SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "No file selected");
+            System.out.println("No file selected");
             return null;
         }
 
