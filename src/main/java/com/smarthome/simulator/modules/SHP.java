@@ -7,19 +7,18 @@ import com.smarthome.simulator.models.Simulation;
 import com.smarthome.simulator.utils.Logger;
 import com.smarthome.simulator.utils.TimeUtil;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 /**
  * The SHP class represents the Smart Home Security module.
  */
-public class SHP extends Module{
+public class SHP extends Module {
 
     /**
      * Indicates whether the away mode is enabled or not.
@@ -88,9 +87,10 @@ public class SHP extends Module{
 
     /**
      * Creates a new SHP with reference to the simulation.
+     *
      * @param _simulation represents the running {@link Simulation}
      */
-    public SHP (Simulation _simulation) {
+    public SHP(Simulation _simulation) {
         super("SHP", _simulation);
         this.awayMode = false;
         this.alertDelay = 0;
@@ -103,15 +103,14 @@ public class SHP extends Module{
     /**
      * Send a notification to user and alerts authorities after set delay.
      */
-    public void Alert () {
+    public void Alert() {
         NotifyUser();
         Thread alertThread = new Thread() {
             public void run() {
                 try {
                     Thread.sleep((long) alertDelay * 1000);
                     NotifyAuthorities();
-                } catch (InterruptedException ie)
-                {
+                } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                 }
             }
@@ -122,21 +121,21 @@ public class SHP extends Module{
     /**
      * Notifies the user of an intruder during away mode by printing to console
      */
-    private void NotifyUser () {
+    private void NotifyUser() {
         SmartHomeSimulator.LOGGER.log(Logger.WARN, getName(), "Notifying user!");
     }
 
     /**
      * Notifies authorities of an intruder during away mode.
      */
-    private void NotifyAuthorities () {
+    private void NotifyAuthorities() {
         SmartHomeSimulator.LOGGER.log(Logger.WARN, getName(), "Notifying authorities!");
     }
 
     /**
      * Sets home lights to away configuration designated by the user.
      */
-    private boolean isHouseEmpty () {
+    private boolean isHouseEmpty() {
         List<Person> people = simulation.getPeople();
 
         for (Person person : people) {
@@ -169,6 +168,7 @@ public class SHP extends Module{
     /**
      * Sets away mode on/off and closes all doors and windows.
      * Calls ExecuteAwayLights if current time is appropriate.
+     *
      * @param payload The arguments for execution
      */
     private void ExecuteAwayMode(Map<String, Object> payload) {
@@ -194,6 +194,7 @@ public class SHP extends Module{
 
     /**
      * Sets start and end values for away light activation period.
+     *
      * @param payload The arguments for execution
      */
     private void ExecuteAwayTime(Map<String, Object> payload) {
@@ -206,10 +207,11 @@ public class SHP extends Module{
 
     /**
      * Gets the list of permissions/commands that the Module is responsible for/can execute.
+     *
      * @return List of Strings representing the permissions/commands pertaining to the module
      */
     public List<String> getCommandList() {
-        return new ArrayList<String> () {{
+        return new ArrayList<String>() {{
             add(SET_AWAY_MODE);
             add(SET_AWAY_LIGHTS);
             add(SET_AWAY_TIME);
@@ -221,8 +223,9 @@ public class SHP extends Module{
 
     /**
      * Executes a command given by a user or other system module.
-     * @param command The name of the command to be executed.
-     * @param payload The arguments for the command.
+     *
+     * @param command    The name of the command to be executed.
+     * @param payload    The arguments for the command.
      * @param sentByUser Whether the command was called by a user or not. False if called by other system modules such as {@link SHC}.
      */
     public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
@@ -274,6 +277,7 @@ public class SHP extends Module{
 
     /**
      * Gets the start of the awayTime window in "HH:mm" format.
+     *
      * @return {@link String}
      */
     public String getAwayTimeStart() {
@@ -282,6 +286,7 @@ public class SHP extends Module{
 
     /**
      * Gets the start of the awayTime window as a {@link LocalTime} object
+     *
      * @return {@link LocalTime}
      */
     public LocalTime getAwayTimeStartObj() {
@@ -290,6 +295,7 @@ public class SHP extends Module{
 
     /**
      * Sets the start of the away time window.
+     *
      * @param awayTimeStart the value to be set.
      */
     public void setAwayTimeStart(LocalTime awayTimeStart) {
@@ -298,6 +304,7 @@ public class SHP extends Module{
 
     /**
      * Gets the end of the awayTime window in "HH:mm" format.
+     *
      * @return {@link String}
      */
     public String getAwayTimeEnd() {
@@ -306,6 +313,7 @@ public class SHP extends Module{
 
     /**
      * Gets the end of the awayTime window as a {@link LocalTime} object
+     *
      * @return {@link LocalTime}
      */
     public LocalTime getAwayTimeEndObj() {
@@ -314,6 +322,7 @@ public class SHP extends Module{
 
     /**
      * Sets the end of the away time window.
+     *
      * @param awayTimeEnd the value to be set.
      */
     public void setAwayTimeEnd(LocalTime awayTimeEnd) {
@@ -322,6 +331,7 @@ public class SHP extends Module{
 
     /**
      * Returns the value of withinAwayTime.
+     *
      * @return boolean
      */
     public boolean isWithinAwayTime() {
@@ -330,6 +340,7 @@ public class SHP extends Module{
 
     /**
      * Returns whether or not away mode is active.
+     *
      * @return boolean
      */
     public boolean isAwayMode() {
@@ -338,6 +349,7 @@ public class SHP extends Module{
 
     /**
      * Returns the delay defined by the user for alerting the authorities.
+     *
      * @return float representing the delay
      */
     public float getAlertDelay() {

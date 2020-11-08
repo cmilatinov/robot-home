@@ -28,7 +28,7 @@ public class Window extends IdentifiableObject {
     /**
      * Parameterized constructor.
      *
-     * @param open If the window should be open or not.
+     * @param open    If the window should be open or not.
      * @param blocked If the window should be blocked or not.
      */
     public Window(boolean open, boolean blocked) {

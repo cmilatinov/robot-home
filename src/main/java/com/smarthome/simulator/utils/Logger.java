@@ -98,7 +98,7 @@ public class Logger {
      * Creates the assigned log file for this logger.
      *
      * @return [<b>boolean</b>] True if creating the file and its parent directories
-     *         succeeds, false otherwise.
+     * succeeds, false otherwise.
      */
     private boolean createLogFile() {
         try {
@@ -123,8 +123,9 @@ public class Logger {
 
     /**
      * Logs the specified string to the console and to the log file with the specified logging level.
+     *
      * @param logLevel The logging level to use ({@link Logger#INFO}, {@link Logger#DEBUG}, {@link Logger#WARN}, {@link Logger#ERROR}).
-     * @param str The string to log.
+     * @param str      The string to log.
      */
     public synchronized void log(int logLevel, String tag, String str) {
 
@@ -167,6 +168,7 @@ public class Logger {
 
     /**
      * Returns the current logs separated by newline characters.
+     *
      * @return {@link List<String>} The logs in memory separated by newline characters.
      */
     public List<String> getLogs() {

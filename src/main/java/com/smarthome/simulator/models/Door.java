@@ -34,8 +34,8 @@ public class Door extends IdentifiableObject {
     /**
      * Parameterized constructor.
      *
-     * @param open If the door should be open or not.
-     * @param lock If the door should be locked or not.
+     * @param open          If the door should be open or not.
+     * @param lock          If the door should be locked or not.
      * @param houseEntrance If the door is of special kind (building entrance, backyard and garage).
      */
     public Door(boolean open, boolean lock, boolean houseEntrance) {

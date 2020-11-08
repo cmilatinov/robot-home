@@ -11,6 +11,7 @@ public class FileChooserUtil {
 
     /**
      * Creates a prompt to choose a file and restricts it to JSON files only.
+     *
      * @param title represents the title of the file chooser
      * @return The resulting {@link JFileChooser} instance.
      */

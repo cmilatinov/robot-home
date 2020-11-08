@@ -3,19 +3,16 @@ package com.smarthome.simulator.models;
 import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.modules.SHC;
 import com.smarthome.simulator.modules.SHP;
-import com.smarthome.simulator.utils.FileChooserUtil;
 import com.smarthome.simulator.utils.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a user profile with its functionalities.
@@ -73,11 +70,10 @@ public class UserProfile extends IdentifiableObject {
      * @param name The name of the user profile.
      */
     public UserProfile(String name) throws Exception {
-        if(name != null && !name.matches("\\s+") && name.matches("[a-zA-Z0-9\\s]+") && name.length()<=16) {
+        if (name != null && !name.matches("\\s+") && name.matches("[a-zA-Z0-9\\s]+") && name.length() <= 16) {
             this.name = name;
             this.permissions = new ArrayList<>();
-        }
-        else{
+        } else {
             throw new Exception();
         }
     }
@@ -109,9 +105,10 @@ public class UserProfile extends IdentifiableObject {
                 ", permissions=" + permissions +
                 '}';
     }
-  
+
     /**
      * This function compares two UserProfiles.
+     *
      * @param o The UserProfile being compared to.
      * @return Boolean that represents if the UserProfile being compared to is the same or not.
      */
@@ -140,10 +137,9 @@ public class UserProfile extends IdentifiableObject {
      * @param name The name of the user profile.
      */
     public void setName(String name) throws Exception {
-        if(name != null && !name.matches("\\s+") && name.matches("[a-zA-Z0-9\\s]+") && name.length()<=16) {
+        if (name != null && !name.matches("\\s+") && name.matches("[a-zA-Z0-9\\s]+") && name.length() <= 16) {
             this.name = name;
-        }
-        else{
+        } else {
             throw new Exception();
         }
     }
@@ -183,7 +179,7 @@ public class UserProfile extends IdentifiableObject {
     public boolean setPermissions(String clearance) {
         switch (clearance) {
             case "Parent":
-                return this.setPermissions(new ArrayList<String>(){{
+                return this.setPermissions(new ArrayList<String>() {{
                     add(SHC.CONTROL_DOOR);
                     add(SHC.CONTROL_WINDOW);
                     add(SHC.CONTROL_LIGHT);
@@ -201,7 +197,7 @@ public class UserProfile extends IdentifiableObject {
                     add(SHP.SET_AWAY_TIME);
                 }});
             case "Child":
-                return this.setPermissions(new ArrayList<String>(){{
+                return this.setPermissions(new ArrayList<String>() {{
                     add(SHC.CONTROL_DOOR);
                     add(SHC.CONTROL_WINDOW);
                     add(SHC.CONTROL_LIGHT);
@@ -209,7 +205,7 @@ public class UserProfile extends IdentifiableObject {
                     add(SHP.SET_AWAY_MODE);
                 }});
             case "Guest":
-                return this.setPermissions(new ArrayList<String>(){{
+                return this.setPermissions(new ArrayList<String>() {{
                     add(SHC.CONTROL_DOOR);
                     add(SHC.CONTROL_LIGHT);
                     add(SHC.CONTROL_WINDOW);
@@ -223,8 +219,9 @@ public class UserProfile extends IdentifiableObject {
 
     /**
      * Writing the {@link UserProfile} to a JSON File
+     *
      * @param selectedFile The file in which the {@link UserProfile} will be written into.
-     * @param profiles The list of all current {@link UserProfile} in the simulation
+     * @param profiles     The list of all current {@link UserProfile} in the simulation
      * @return The resulting {@link File} instance, or null if the user has not selected a file.
      */
     public static void writeUserProfiles(File selectedFile, List<UserProfile> profiles) {
@@ -233,7 +230,7 @@ public class UserProfile extends IdentifiableObject {
         JSONArray userProfiles = new JSONArray();
 
         //Adding the name and the permission to the JSON object
-        profiles.forEach((profile) ->  {
+        profiles.forEach((profile) -> {
             JSONObject obj = new JSONObject();
             obj.put("name", profile.getName());
             obj.put("permissions", profile.getPermissions());
@@ -245,17 +242,15 @@ public class UserProfile extends IdentifiableObject {
 
         //Writing the JSON file with the JSON object and array
         FileWriter file = null;
-        try{
-            if(selectedFile.getPath().contains(".json")) {
+        try {
+            if (selectedFile.getPath().contains(".json")) {
                 file = new FileWriter(selectedFile.getPath());
-            }
-            else {
+            } else {
                 file = new FileWriter(selectedFile.getPath() + ".json");
             }
             file.write(users.toJSONString());
             file.close();
-        }catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
         }
@@ -263,11 +258,11 @@ public class UserProfile extends IdentifiableObject {
 
     /**
      * Loading the {@link UserProfile} from the JSON File
+     *
      * @param selectedFile The file in which the {@link UserProfile} will be fetch from.
      * @return The resulting {@link UserProfile} list, or null for any parsing errors.
      */
-    public static List<UserProfile> loadUserProfiles(File selectedFile)
-    {
+    public static List<UserProfile> loadUserProfiles(File selectedFile) {
         // Resulting obj from parsing
         Object obj;
 
@@ -319,13 +314,13 @@ public class UserProfile extends IdentifiableObject {
                     permissions = (JSONArray) profile.get("permissions");
 
                     //Looping through the permission and saving them
-                    for(int j = 0; j<permissions.size(); j++){
+                    for (int j = 0; j < permissions.size(); j++) {
                         String temp = permissions.get(j).toString();
                         permissionList.add(temp);
                     }
 
                     //Adding the userProfile to the list
-                    UserProfile tempProfile = new UserProfile(name,permissionList);
+                    UserProfile tempProfile = new UserProfile(name, permissionList);
                     profilesList.add(tempProfile);
 
                 } catch (NumberFormatException e) {

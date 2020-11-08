@@ -121,16 +121,20 @@ public class JavaScriptQueryHandler implements CefMessageRouterHandler {
     /**
      * Unused.
      */
-    public void onQueryCanceled(CefBrowser cefBrowser, CefFrame cefFrame, long l) {}
+    public void onQueryCanceled(CefBrowser cefBrowser, CefFrame cefFrame, long l) {
+    }
 
     /**
      * Unused.
      */
-    public void setNativeRef(String s, long l) {}
+    public void setNativeRef(String s, long l) {
+    }
 
     /**
      * Unused.
      */
-    public long getNativeRef(String s) { return 0; }
+    public long getNativeRef(String s) {
+        return 0;
+    }
 
 }

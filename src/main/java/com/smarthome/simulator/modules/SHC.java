@@ -14,7 +14,7 @@ import java.util.Optional;
 /**
  * The SHC class represents the Smart Home Core Functionality module.
  */
-public class SHC extends Module{
+public class SHC extends Module {
 
     /**
      * Indicates whether the AUTO mode is turned on for lights.
@@ -110,8 +110,8 @@ public class SHC extends Module{
     /**
      * Executes a command given by a user or other system module.
      *
-     * @param command The name of the command to be executed.
-     * @param payload The arguments for the command.
+     * @param command    The name of the command to be executed.
+     * @param payload    The arguments for the command.
      * @param sentByUser Whether the command was called by a user or not. False if called by other system modules.
      */
     public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {

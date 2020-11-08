@@ -1,8 +1,9 @@
 package com.smarthome.simulator;
 
-import com.smarthome.simulator.models.*;
 import com.smarthome.simulator.models.Window;
-import com.smarthome.simulator.modules.*;
+import com.smarthome.simulator.models.*;
+import com.smarthome.simulator.modules.SHC;
+import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.EventUtil;
 import com.smarthome.simulator.utils.Logger;
 import com.smarthome.simulator.utils.TimeUtil;
@@ -25,8 +26,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -104,9 +107,14 @@ public class SmartHomeSimulator {
 
         // Add load end handler to browser
         client.getCefClient().addLoadHandler(new CefLoadHandler() {
-            public void onLoadingStateChange(CefBrowser cefBrowser, boolean b, boolean b1, boolean b2) {}
-            public void onLoadStart(CefBrowser cefBrowser, CefFrame cefFrame, CefRequest.TransitionType transitionType) {}
-            public void onLoadError(CefBrowser cefBrowser, CefFrame cefFrame, ErrorCode errorCode, String s, String s1) {}
+            public void onLoadingStateChange(CefBrowser cefBrowser, boolean b, boolean b1, boolean b2) {
+            }
+
+            public void onLoadStart(CefBrowser cefBrowser, CefFrame cefFrame, CefRequest.TransitionType transitionType) {
+            }
+
+            public void onLoadError(CefBrowser cefBrowser, CefFrame cefFrame, ErrorCode errorCode, String s, String s1) {
+            }
 
             public void onLoadEnd(CefBrowser cefBrowser, CefFrame cefFrame, int i) {
                 handler.updateViews();
@@ -186,7 +194,8 @@ public class SmartHomeSimulator {
                             .add(new UserProfile(name));
                     // Save changes
                     UserProfile.writeUserProfiles(new File(UserProfile.USER_PROFILE_FILEPATH), simulation.getUserProfiles());
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
 
             // Update front-end
@@ -310,7 +319,8 @@ public class SmartHomeSimulator {
             // Set date time
             try {
                 simulation.setDateTime(value);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
 
             // New time after set
             LocalTime after = simulation.getTime();
@@ -324,7 +334,7 @@ public class SmartHomeSimulator {
                 if (!beforeInRange && afterInRange)
                     simulation.executeCommand(SHP.TOGGLE_AWAY_LIGHTS, null, false);
 
-                // Leaving the time range for lights to stay on, so close all lights
+                    // Leaving the time range for lights to stay on, so close all lights
                 else if (beforeInRange && !afterInRange)
                     simulation.executeCommand(SHC.CLOSE_ALL_LIGHTS, null, false);
 
@@ -391,11 +401,11 @@ public class SmartHomeSimulator {
                 if (light.isPresent())
                     simulation.executeCommand(SHC.CONTROL_LIGHT, EventUtil.convertToMap(event), true);
 
-                // The light is another room
+                    // The light is another room
                 else
                     simulation.executeCommand(SHC.REMOTE_CONTROL_LIGHT, EventUtil.convertToMap(event), true);
 
-            // User is outside of the house
+                // User is outside of the house
             } else
                 simulation.executeCommand(SHC.REMOTE_CONTROL_LIGHT, EventUtil.convertToMap(event), true);
 
@@ -432,11 +442,11 @@ public class SmartHomeSimulator {
                 if (door.isPresent())
                     simulation.executeCommand(SHC.CONTROL_DOOR, EventUtil.convertToMap(event), true);
 
-                // The door is another room
+                    // The door is another room
                 else
                     simulation.executeCommand(SHC.REMOTE_CONTROL_DOOR, EventUtil.convertToMap(event), true);
 
-            // User is outside of the house
+                // User is outside of the house
             } else
                 simulation.executeCommand(SHC.REMOTE_CONTROL_DOOR, EventUtil.convertToMap(event), true);
 
@@ -478,11 +488,11 @@ public class SmartHomeSimulator {
                 if (window.isPresent())
                     simulation.executeCommand(SHC.CONTROL_WINDOW, EventUtil.convertToMap(event), true);
 
-                // The window is another room
+                    // The window is another room
                 else
                     simulation.executeCommand(SHC.REMOTE_CONTROL_WINDOW, EventUtil.convertToMap(event), true);
 
-            // User is outside of the house
+                // User is outside of the house
             } else
                 simulation.executeCommand(SHC.REMOTE_CONTROL_WINDOW, EventUtil.convertToMap(event), true);
 
@@ -639,14 +649,14 @@ public class SmartHomeSimulator {
         handler.addEventListener("toggleAutoMode", (event) -> {
 
             // Update all room lights before turning auto mode off
-            if (!(boolean)event.get("value"))
+            if (!(boolean) event.get("value"))
                 updateAllRoomLights();
 
             // Execute the set auto mode command
             simulation.executeCommand(SHC.SET_AUTO_MODE, EventUtil.convertToMap(event), true);
 
             // Update all room lights
-            if ((boolean)event.get("value"))
+            if ((boolean) event.get("value"))
                 updateAllRoomLights();
 
             // Update front-end
@@ -690,7 +700,6 @@ public class SmartHomeSimulator {
                     simulation.executeCommand(SHC.UPDATE_ROOM_LIGHTS, eventMap, false);
                 });
     }
-
 
 
 }

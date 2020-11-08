@@ -24,7 +24,8 @@ public abstract class Module {
 
     /**
      * Creates a module with a given name and simulation reference.
-     * @param name The name of the module.
+     *
+     * @param name       The name of the module.
      * @param simulation The simulation instance to bind to the module.
      */
     public Module(String name, Simulation simulation) {
@@ -41,8 +42,9 @@ public abstract class Module {
 
     /**
      * Executes a specific module command with the given payload.
-     * @param command The command to execute.
-     * @param payload The payload to pass to the command.
+     *
+     * @param command    The command to execute.
+     * @param payload    The payload to pass to the command.
      * @param sentByUser True if the command was sent by the user, false otherwise.
      */
     public abstract void executeCommand(String command, Map<String, Object> payload, boolean sentByUser);
@@ -56,8 +58,8 @@ public abstract class Module {
 
         // Check if user has permission to execute this command
         if (!simulation.getActiveUserProfile()
-                        .getPermissions()
-                        .contains(command)) {
+                .getPermissions()
+                .contains(command)) {
             SmartHomeSimulator.LOGGER.log(Logger.ERROR, name, "PERMISSION DENIED. '" + simulation.getActiveUserProfile().getName() + "' doesn't have " +
                     "the permission: '" + command + "'");
             return false;
@@ -70,6 +72,7 @@ public abstract class Module {
 
     /**
      * Returns this module's name.
+     *
      * @return {@link String} The name of the module.
      */
     public String getName() {

@@ -362,17 +362,19 @@ public class Simulation {
 
     /**
      * Returns whether or not the SHP module, if present, has the away mode enabled.
+     *
      * @return boolean
      */
     public boolean isAway() {
         Optional<Module> shp = modules.stream().filter(m -> m instanceof SHP).findFirst();
         if (shp.isPresent())
-            return ((SHP)shp.get()).isAwayMode();
+            return ((SHP) shp.get()).isAwayMode();
         return false;
     }
 
     /**
      * Returns the start of the away mode window for lights.
+     *
      * @return {@link LocalTime}
      */
     public LocalTime getAwayTimeStart() {
@@ -382,6 +384,7 @@ public class Simulation {
 
     /**
      * Returns the end of the away mode window for lights.
+     *
      * @return {@link LocalTime}
      */
     public LocalTime getAwayTimeEnd() {
@@ -391,6 +394,7 @@ public class Simulation {
 
     /**
      * Returns the date part of the current simulation date time.
+     *
      * @return {@link LocalDate} The current date of the simulation.
      */
     @JsonIgnore
@@ -400,6 +404,7 @@ public class Simulation {
 
     /**
      * Returns the time part of the current simulation date time.
+     *
      * @return {@link LocalTime} The current time of the simulation.
      */
     @JsonIgnore
@@ -468,8 +473,9 @@ public class Simulation {
 
     /**
      * Executes a specific module command.
-     * @param command The command to execute.
-     * @param payload The payload passed to the command.
+     *
+     * @param command    The command to execute.
+     * @param payload    The payload passed to the command.
      * @param sentByUser True if the command was sent by a user, false otherwise.
      */
     public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
