@@ -316,10 +316,18 @@ public class SmartHomeSimulator {
             LocalTime after = simulation.getTime();
 
             // If the simulation is in away mode and we've just entered the away light range, set the correct away lights on.
-            if (simulation.isAway() &&
-                    !TimeUtil.isInRange(before, simulation.getAwayTimeStart(), simulation.getAwayTimeEnd()) &&
-                    TimeUtil.isInRange(after, simulation.getAwayTimeStart(), simulation.getAwayTimeEnd())) {
-                simulation.executeCommand(SHP.TOGGLE_AWAY_LIGHTS, null, false);
+            if (simulation.isAway()) {
+                boolean beforeInRange = TimeUtil.isInRange(before, simulation.getAwayTimeStart(), simulation.getAwayTimeEnd());
+                boolean afterInRange = TimeUtil.isInRange(after, simulation.getAwayTimeStart(), simulation.getAwayTimeEnd());
+
+                // Entering the time range for lights to stay on
+                if (!beforeInRange && afterInRange)
+                    simulation.executeCommand(SHP.TOGGLE_AWAY_LIGHTS, null, false);
+
+                // Leaving the time range for lights to stay on, so close all lights
+                else if (beforeInRange && !afterInRange)
+                    simulation.executeCommand(SHC.CLOSE_ALL_LIGHTS, null, false);
+
             }
 
             // Update front-end
