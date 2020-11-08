@@ -147,7 +147,7 @@ public class SHP extends Module{
     }
 
     /**
-     * Sets {@link Light} in away mode.
+     * Sets home lights to away configuration designated by the user.
      */
     private void ExecuteAwayLights() {
 
@@ -171,10 +171,16 @@ public class SHP extends Module{
      * Calls ExecuteAwayLights if current time is appropriate.
      * @param payload The arguments for execution
      */
-    private void ExecuteAwayMode(Map<String, Object> payload) { 
-        awayMode = ((boolean) payload.get("value"));
+    private void ExecuteAwayMode(Map<String, Object> payload) {
 
-        if (!awayMode) return;
+        boolean newAwayMode = ((boolean) payload.get("value"));
+        if (isHouseEmpty() || !newAwayMode)
+            awayMode = newAwayMode;
+        else
+            SmartHomeSimulator.LOGGER.log(Logger.ERROR, getName(), "CANNOT EXECUTE COMMAND 'SetAwayMode': House not empty");
+
+        if (!awayMode)
+            return;
 
         simulation.executeCommand(SHC.LOCK_ALL_DOORS, null, false);
         simulation.executeCommand(SHC.CLOSE_ALL_WINDOWS, null, false);

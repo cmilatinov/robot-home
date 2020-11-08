@@ -222,43 +222,6 @@ public class UserProfile extends IdentifiableObject {
     }
 
     /**
-     * Prompts the user to choose the location where they want to save the {@link UserProfile}
-     *
-     * @return The resulting {@link File} instance, or null if the user has not selected a file.
-     */
-    public static File promptToSaveFile(Component mainComponent) {
-        // Choosing a file
-        JFileChooser fileChooser = FileChooserUtil.promptUser("Save user profiles");
-        int returnValue = fileChooser.showSaveDialog(mainComponent);
-
-        // Verifying if the user chose a file
-        if (returnValue != JFileChooser.APPROVE_OPTION) {
-            SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "No file selected");
-        }
-
-        return fileChooser.getSelectedFile();
-    }
-
-    /**
-     * Prompts the user to choose the location where they saved the {@link UserProfile}
-     *
-     * @return The resulting {@link File} instance, or null if the user has not selected a file.
-     */
-    public static File promptForUserProfiles(Component mainComponent) {
-        // Choosing a file
-        JFileChooser fileChooser = FileChooserUtil.promptUser("Select a user profiles file");
-        int returnValue = fileChooser.showOpenDialog(mainComponent);
-
-        // Verifying if the user chose a file
-        if (returnValue != JFileChooser.APPROVE_OPTION) {
-            SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "No file selected");
-            return null;
-        }
-
-        return fileChooser.getSelectedFile();
-    }
-
-    /**
      * Writing the {@link UserProfile} to a JSON File
      * @param selectedFile The file in which the {@link UserProfile} will be written into.
      * @param profiles The list of all current {@link UserProfile} in the simulation
