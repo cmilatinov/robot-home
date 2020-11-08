@@ -20,7 +20,12 @@ Ali Mahram Hassan Zada (40077663) | [alimahram](https://github.com/alimahram)
 * SCSS
 * Pandomium 
 
+## Requirements
+* Java JDK 8
+* Maven
+* NodeJS (12 or above)
+
 ## Install
 1. Clone the repository.
 2. Run the build script `build.bat`.
-4. Run the application on intelliJ.
+3. Run the application on intelliJ.
