@@ -1,6 +1,5 @@
 package com.smarthome.simulator.models;
 
-import com.sun.xml.internal.ws.developer.UsesJAXBContext;
 import org.junit.Assert;
 import org.junit.*;
 import java.io.File;
