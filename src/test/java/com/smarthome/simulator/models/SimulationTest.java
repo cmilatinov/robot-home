@@ -10,7 +10,6 @@ import org.junit.runners.Suite;
         SetUserProfileTest.class,
         StartStopSimulationTest.class,
         SetDateAndTimeTest.class,
-        MoveLoggedUserToAnotherRoomTest.class,
         ModifyTemperatureTest.class
 })
 
