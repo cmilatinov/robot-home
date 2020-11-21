@@ -3,6 +3,7 @@ package com.smarthome.simulator.utils;
 import com.smarthome.simulator.web.JavaScriptQueryHandler;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -113,7 +114,7 @@ public class Logger {
             // Done!
             return true;
 
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
 
             // Error
             e.printStackTrace();
@@ -125,7 +126,8 @@ public class Logger {
      * Logs the specified string to the console and to the log file with the specified logging level.
      *
      * @param logLevel The logging level to use ({@link Logger#INFO}, {@link Logger#DEBUG}, {@link Logger#WARN}, {@link Logger#ERROR}).
-     * @param str      The string to log.
+     * @param tag The module involved with the log.
+     * @param str The string to log.
      */
     public synchronized void log(int logLevel, String tag, String str) {
 

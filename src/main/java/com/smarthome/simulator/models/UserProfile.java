@@ -1,16 +1,19 @@
 package com.smarthome.simulator.models;
 
 import com.smarthome.simulator.SmartHomeSimulator;
+import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.modules.SHC;
 import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,12 +72,12 @@ public class UserProfile extends IdentifiableObject {
      *
      * @param name The name of the user profile.
      */
-    public UserProfile(String name) throws Exception {
+    public UserProfile(String name) throws UserProfileException {
         if (name != null && !name.matches("\\s+") && name.matches("[a-zA-Z0-9\\s]+") && name.length() <= 16) {
             this.name = name;
             this.permissions = new ArrayList<>();
         } else {
-            throw new Exception();
+            throw new UserProfileException(Logger.ERROR, "System", "Invalid profile name.");
         }
     }
 
@@ -136,11 +139,11 @@ public class UserProfile extends IdentifiableObject {
      *
      * @param name The name of the user profile.
      */
-    public void setName(String name) throws Exception {
+    public void setName(String name) throws UserProfileException {
         if (name != null && !name.matches("\\s+") && name.matches("[a-zA-Z0-9\\s]+") && name.length() <= 16) {
             this.name = name;
         } else {
-            throw new Exception();
+            throw new UserProfileException(Logger.ERROR, "System", "Invalid profile name.");
         }
     }
 
@@ -243,16 +246,11 @@ public class UserProfile extends IdentifiableObject {
         //Writing the JSON file with the JSON object and array
         FileWriter file = null;
         try {
-            if (selectedFile.getPath().contains(".json")) {
-                file = new FileWriter(selectedFile.getPath());
-            } else {
-                file = new FileWriter(selectedFile.getPath() + ".json");
-            }
+            file = new FileWriter(selectedFile.getPath());
             file.write(users.toJSONString());
             file.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
+        } catch (IOException e) {
+            throw new UserProfileException(Logger.ERROR, "System", "Error while writing user profile json file.");
         }
     }
 
@@ -269,8 +267,8 @@ public class UserProfile extends IdentifiableObject {
         // Parsing file
         try {
             obj = new JSONParser().parse(new FileReader(selectedFile.getAbsolutePath()));
-        } catch (Exception e) {
-            return null;
+        } catch (IOException|ParseException e) {
+            throw new UserProfileException(Logger.ERROR, "System", "Error while fetching and parsing the json file.");
         }
 
         // Catch ClassCastExceptions or any other runtime exceptions that may occur during parsing
@@ -284,14 +282,12 @@ public class UserProfile extends IdentifiableObject {
 
             // Verifying if the user entered the profiles correctly
             if (userProfiles == null) {
-                SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "Could not find any profiles. Make sure that the file contains a userProfiles array.");
-                return null;
+                throw new UserProfileException(Logger.ERROR, "System", "Could not find any profiles. Make sure that the file contains a userProfiles array.");
             }
 
             // Verifying if the user profiles array is empty
             if (userProfiles.size() == 0) {
-                SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "User profiles array is empty. No profiles were defined.");
-                return null;
+                throw new UserProfileException(Logger.ERROR, "System", "User profiles array is empty. No profiles were defined.");
             }
 
             // Creating arraylist to store all profiles
@@ -324,18 +320,15 @@ public class UserProfile extends IdentifiableObject {
                     profilesList.add(tempProfile);
 
                 } catch (NumberFormatException e) {
-                    SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "Invalid data type " + e.getMessage().toLowerCase() + ".");
-                    return null;
+                    throw new UserProfileException(Logger.ERROR, "System", "Invalid data type " + e.getMessage().toLowerCase() + ".");
                 } catch (NullPointerException e) {
-                    SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "Missing fields in json file.");
-                    return null;
+                    throw new UserProfileException(Logger.ERROR, "System", "Missing fields in json file.");
                 }
             }
 
             return profilesList;
 
-        } catch (Exception e) {
-            SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "An error has occurred while parsing the house layout file.");
+        } catch (UserProfileException e) {
             return null;
         }
     }

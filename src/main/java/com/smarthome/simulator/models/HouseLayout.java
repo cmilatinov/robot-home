@@ -1,16 +1,18 @@
 package com.smarthome.simulator.models;
 
-import com.smarthome.simulator.SmartHomeSimulator;
+import com.smarthome.simulator.exceptions.HouseLayoutException;
 import com.smarthome.simulator.utils.FileChooserUtil;
 import com.smarthome.simulator.utils.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -155,13 +157,12 @@ public class HouseLayout {
         // Parsing file
         try {
             obj = new JSONParser().parse(new FileReader(selectedFile.getAbsolutePath()));
-        } catch (Exception e) {
-            return null;
+        } catch (IOException|ParseException e) {
+            throw new HouseLayoutException(Logger.ERROR, "System", "Error while fetching and parsing the json file.");
         }
 
         // Catch ClassCastExceptions or any other runtime exceptions that may occur during parsing
         try {
-
             // Typecasting obj to JSONObject
             JSONObject house = (JSONObject) obj;
 
@@ -170,14 +171,12 @@ public class HouseLayout {
 
             // Verifying if the user entered the rooms correctly
             if (rooms == null) {
-                SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "Could not find any rooms. Make sure that the file contains a rooms array.");
-                return null;
+                throw new HouseLayoutException(Logger.ERROR, "System", "Could not find any rooms. Make sure that the file contains a rooms array.");
             }
 
             // Verifying if the house is empty
             if (rooms.size() == 0) {
-                SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "House is empty. No rooms were defined.");
-                return null;
+                throw new HouseLayoutException(Logger.ERROR, "System", "House is empty. No rooms were defined.");
             }
 
             // Creating arraylist to store all rooms in the house
@@ -211,11 +210,9 @@ public class HouseLayout {
                     positionY = Float.parseFloat(room.get("position-y").toString());
                     isHouseEntrance = Boolean.parseBoolean(room.get("isHouseEntrance").toString());
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid data type " + e.getMessage().toLowerCase() + ".");
-                    return null;
+                    throw new HouseLayoutException(Logger.ERROR, "System", "Invalid data type " + e.getMessage().toLowerCase() + ".");
                 } catch (NullPointerException e) {
-                    System.out.println("Missing fields in json file.");
-                    return null;
+                    throw new HouseLayoutException(Logger.ERROR, "System", "Missing fields in json file.");
                 }
 
                 // Saving the objects of the room in an arraylist
@@ -239,8 +236,7 @@ public class HouseLayout {
 
             return roomsList;
 
-        } catch (Exception e) {
-            System.out.println("An error has occurred while parsing the house layout file.");
+        } catch (HouseLayoutException e) {
             return null;
         }
     }
@@ -256,22 +252,29 @@ public class HouseLayout {
         JFileChooser fileChooser = FileChooserUtil.promptUser("Select a house layout");
         int returnValue = fileChooser.showOpenDialog(mainComponent);
 
-        // Verifying if the user chose a file
-        if (returnValue != JFileChooser.APPROVE_OPTION) {
-            System.out.println("No file selected");
-            return null;
-        }
+        File selectedFile;
+        ArrayList<Room> roomsList;
 
-        File selectedFile = fileChooser.getSelectedFile();
-        ArrayList<Room> roomsList = parseJSONFile(selectedFile);
+        try {
 
-        if (roomsList == null) {
+            // Verifying if the user chose a file
+            if (returnValue != JFileChooser.APPROVE_OPTION) {
+                throw new HouseLayoutException(Logger.WARN, "System", "No file selected.");
+            }
+
+            selectedFile = fileChooser.getSelectedFile();
+            roomsList = parseJSONFile(selectedFile);
+
+            if (roomsList == null) {
+                throw new HouseLayoutException(Logger.WARN, "System", "No rooms were detected");
+            }
+        }catch (HouseLayoutException e)
+        {
             return null;
         }
 
         // Return a new HouseLayout instance
         return new HouseLayout(selectedFile.getName().replace("\\..*$", ""), roomsList);
-
     }
 
 }

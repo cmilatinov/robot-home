@@ -2,6 +2,9 @@ package com.smarthome.simulator.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.smarthome.simulator.SmartHomeSimulator;
+import com.smarthome.simulator.exceptions.DateTimeFormatException;
+import com.smarthome.simulator.exceptions.ModuleException;
+import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.modules.Module;
 import com.smarthome.simulator.modules.SHC;
 import com.smarthome.simulator.modules.SHP;
@@ -94,7 +97,7 @@ public class Simulation {
                 add(new UserProfile("Children"));
                 add(new UserProfile("Guests"));
                 add(new UserProfile("Strangers"));
-            } catch (Exception e) {
+            } catch (UserProfileException e) {
             }
         }};
 
@@ -193,12 +196,12 @@ public class Simulation {
      *
      * @param dateTime The date time string in the "yyyy-MM-dd HH:mm" format.
      */
-    public void setDateTime(String dateTime) throws Exception {
+    public void setDateTime(String dateTime) throws DateTimeFormatException {
         if (dateTime != null && !dateTime.equals("") && !dateTime.equals(" ")) {
             this.dateTime = LocalDateTime.parse(dateTime, formatter);
             return;
         }
-        throw new Exception();
+        throw new DateTimeFormatException();
     }
 
     /**
@@ -492,8 +495,7 @@ public class Simulation {
         }
 
         // No module can handle the given command
-        SmartHomeSimulator.LOGGER.log(Logger.ERROR, "System", "UNKNOWN COMMAND '" + command + "'!");
-
+        throw new ModuleException(Logger.ERROR, "System", "UNKNOWN COMMAND '" + command + "'!");
     }
 
 }

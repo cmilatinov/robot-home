@@ -1,6 +1,7 @@
 package com.smarthome.simulator.modules;
 
 import com.smarthome.simulator.SmartHomeSimulator;
+import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.models.Simulation;
 import com.smarthome.simulator.utils.Logger;
 
@@ -55,19 +56,20 @@ public abstract class Module {
      * @param command The name of the command to be executed.
      */
     public boolean checkPermission(String command) {
-
-        // Check if user has permission to execute this command
-        if (!simulation.getActiveUserProfile()
-                .getPermissions()
-                .contains(command)) {
-            SmartHomeSimulator.LOGGER.log(Logger.ERROR, name, "PERMISSION DENIED. '" + simulation.getActiveUserProfile().getName() + "' doesn't have " +
-                    "the permission: '" + command + "'");
+        try {
+            // Check if user has permission to execute this command
+            if (!simulation.getActiveUserProfile()
+                    .getPermissions()
+                    .contains(command)) {
+                throw new ModuleException(Logger.ERROR, name, "PERMISSION DENIED. '" + simulation.getActiveUserProfile().getName() + "' doesn't have " +
+                        "the permission: '" + command + "'");
+            }
+        }catch(ModuleException e) {
             return false;
         }
 
         // User does indeed have the required permission
         return true;
-
     }
 
     /**

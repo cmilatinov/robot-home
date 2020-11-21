@@ -1,5 +1,6 @@
 package com.smarthome.simulator.models;
 
+import com.smarthome.simulator.exceptions.HouseLayoutException;
 import org.junit.Assert;
 import org.junit.*;
 import java.io.File;
@@ -12,58 +13,58 @@ import org.assertj.core.api.*;
 public class HouseLayoutTest {
 
     /**
-     * Testing if the parser method returns null when the JSON file is empty
+     * Testing if the parser method returns exception when the JSON file is empty
      */
-    @Test
-    public void parsingEmptyFileShouldReturnNull()
+    @Test(expected= NullPointerException.class)
+    public void parsingEmptyFileShouldReturnException()
     {
         File selectedFile = new File("./src/test/resources/empty-sample-house-layout.json");
 
-        Assert.assertNull(HouseLayout.parseJSONFile(selectedFile));
+        HouseLayout.parseJSONFile(selectedFile);
     }
 
     /**
-     * Testing if the parser method returns null when there is a missing field in the JSON file
+     * Testing if the parser method returns exception when there is a missing field in the JSON file
      */
-    @Test
-    public void missingFieldInFileShouldReturnNull()
+    @Test(expected= NullPointerException.class)
+    public void missingFieldInFileShouldReturnException()
     {
         File selectedFile = new File("./src/test/resources/missing-field-sample-house-layout.json");
 
-        Assert.assertNull(HouseLayout.parseJSONFile(selectedFile));
+        HouseLayout.parseJSONFile(selectedFile);
     }
 
     /**
-     * Testing if the parser method returns null when the JSON file does not follow the right format (JSON format)
+     * Testing if the parser method returns exception when the JSON file does not follow the right format (JSON format)
      */
-    @Test
-    public void wrongFormatShouldReturnNull()
+    @Test(expected= NullPointerException.class)
+    public void wrongFormatShouldReturnException()
     {
         File selectedFile = new File("./src/test/resources/wrong-format-sample-house-layout.json");
 
-        Assert.assertNull(HouseLayout.parseJSONFile(selectedFile));
+        HouseLayout.parseJSONFile(selectedFile);
     }
 
     /**
-     * Testing if the parser method returns null when a JSON field contains the wrong data type
+     * Testing if the parser method returns exception when a JSON field contains the wrong data type
      */
-    @Test
-    public void wrongFieldDataTypeShouldReturnNull()
+    @Test(expected= NullPointerException.class)
+    public void wrongFieldDataTypeShouldReturnException()
     {
         File selectedFile = new File("./src/test/resources/wrong-field-data-type-sample-house-layout.json");
 
-        Assert.assertNull(HouseLayout.parseJSONFile(selectedFile));
+        HouseLayout.parseJSONFile(selectedFile);
     }
 
     /**
-     * Testing if the parser method returns null when no file is chosen
+     * Testing if the parser method returns exception when no file is chosen
      */
-    @Test
-    public void noFileChosenShouldReturnNull()
+    @Test(expected= NullPointerException.class)
+    public void noFileChosenShouldReturnException()
     {
         File selectedFile = new File("");
 
-        Assert.assertNull(HouseLayout.parseJSONFile(selectedFile));
+        HouseLayout.parseJSONFile(selectedFile);
     }
 
     /**

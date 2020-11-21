@@ -1,6 +1,7 @@
 package com.smarthome.simulator.modules;
 
 import com.smarthome.simulator.SmartHomeSimulator;
+import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.models.Light;
 import com.smarthome.simulator.models.Person;
 import com.smarthome.simulator.models.Simulation;
@@ -173,7 +174,7 @@ public class SHP extends Module {
         if (isHouseEmpty() || !newAwayMode)
             awayMode = newAwayMode;
         else
-            SmartHomeSimulator.LOGGER.log(Logger.ERROR, getName(), "CANNOT EXECUTE COMMAND 'SetAwayMode': House not empty");
+            throw new ModuleException(Logger.ERROR, getName(), "CANNOT EXECUTE COMMAND 'SetAwayMode': House not empty");
 
         if (!awayMode)
             return;
