@@ -1,11 +1,13 @@
 package com.smarthome.simulator.models.SimulationTestClasses;
 
+import com.smarthome.simulator.exceptions.DateTimeFormatException;
 import com.smarthome.simulator.models.Simulation;
 import org.junit.Assert;
 import org.junit.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class SetDateAndTimeTest {
 
@@ -18,7 +20,7 @@ public class SetDateAndTimeTest {
      * 3. Set date and time
      * Testing if setting the date and time returns an exception when the date and time is null
      */
-    @Test(expected = Exception.class)
+    @Test(expected = DateTimeFormatException.class)
     public void settingANullDateAndTimeShouldReturnAnException() throws Exception {
         tester.setDateTime(null);
     }
@@ -27,7 +29,7 @@ public class SetDateAndTimeTest {
      * 3. Set date and time
      * Testing if setting the date and time returns an exception when the date and time is ""
      */
-    @Test(expected = Exception.class)
+    @Test(expected = DateTimeFormatException.class)
     public void settingDateAndTimeWithEmptyStringShouldReturnAnException() throws Exception {
         tester.setDateTime("");
     }
@@ -36,7 +38,7 @@ public class SetDateAndTimeTest {
      * 3. Set date and time
      * Testing if setting the date and time returns an exception when the date and time is " "
      */
-    @Test(expected = Exception.class)
+    @Test(expected = DateTimeFormatException.class)
     public void settingDateAndTimeWithSpaceShouldReturnAnException() throws Exception {
         tester.setDateTime(" ");
     }
@@ -45,7 +47,7 @@ public class SetDateAndTimeTest {
      * 3. Set date and time
      * Testing if setting the date and time returns an exception when the date and time is wrongly formated
      */
-    @Test(expected = Exception.class)
+    @Test(expected = DateTimeParseException.class)
     public void settingDateAndTimeWithWrongFormatShouldReturnAnException() throws Exception {
         tester.setDateTime("sadsadsa");
     }

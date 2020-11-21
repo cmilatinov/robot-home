@@ -1,5 +1,7 @@
 package com.smarthome.simulator;
 
+import com.smarthome.simulator.exceptions.DateTimeFormatException;
+import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.models.Window;
 import com.smarthome.simulator.models.*;
 import com.smarthome.simulator.modules.SHC;
@@ -140,9 +142,10 @@ public class SmartHomeSimulator {
         frame.setVisible(true);
 
         // JFileChooser look and feel
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
+        } catch (ClassNotFoundException|InstantiationException|IllegalAccessException|UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
 
@@ -194,7 +197,7 @@ public class SmartHomeSimulator {
                             .add(new UserProfile(name));
                     // Save changes
                     UserProfile.writeUserProfiles(new File(UserProfile.USER_PROFILE_FILEPATH), simulation.getUserProfiles());
-                } catch (Exception ignored) {
+                } catch (UserProfileException ignored) {
                 }
             }
 
@@ -225,7 +228,7 @@ public class SmartHomeSimulator {
                                 p.setName(name);
                                 p.setPermissions(permissions);
                                 UserProfile.writeUserProfiles(new File(UserProfile.USER_PROFILE_FILEPATH), simulation.getUserProfiles());
-                            } catch (Exception ignored) {
+                            } catch (UserProfileException ignored) {
                             }
                         });
 
@@ -319,7 +322,7 @@ public class SmartHomeSimulator {
             // Set date time
             try {
                 simulation.setDateTime(value);
-            } catch (Exception ignored) {
+            } catch (DateTimeFormatException ignored) {
             }
 
             // New time after set
