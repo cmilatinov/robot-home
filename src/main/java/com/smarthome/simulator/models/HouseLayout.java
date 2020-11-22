@@ -144,10 +144,10 @@ public class HouseLayout {
     }
 
     /**
-     * Method to parse a JSON file selected
+     * Method to parse a JSON file selected.
      *
-     * @param selectedFile File object that contains the JSON file that will be parsed
-     * @return ArrayList of rooms that are in the HouseLayout
+     * @param selectedFile File object that contains the JSON file that will be parsed.
+     * @return ArrayList of rooms that are in the HouseLayout.
      */
     public static ArrayList<Room> parseJSONFile(File selectedFile) {
 
@@ -161,84 +161,140 @@ public class HouseLayout {
             throw new HouseLayoutException(Logger.ERROR, "System", "Error while fetching and parsing the json file.");
         }
 
-        // Catch ClassCastExceptions or any other runtime exceptions that may occur during parsing
+        // Catch HouseLayoutExceptions
         try {
-            // Typecasting obj to JSONObject
-            JSONObject house = (JSONObject) obj;
-
-            // Getting rooms
-            JSONArray rooms = (JSONArray) house.get("rooms");
-
-            // Verifying if the user entered the rooms correctly
-            if (rooms == null) {
-                throw new HouseLayoutException(Logger.ERROR, "System", "Could not find any rooms. Make sure that the file contains a rooms array.");
-            }
-
-            // Verifying if the house is empty
-            if (rooms.size() == 0) {
-                throw new HouseLayoutException(Logger.ERROR, "System", "House is empty. No rooms were defined.");
-            }
-
-            // Creating arraylist to store all rooms in the house
-            ArrayList<Room> roomsList = new ArrayList<>();
-
-            // Going through each room
-            for (int i = 0; i < rooms.size(); i++) {
-
-                // Getting the ith room
-                JSONObject room = (JSONObject) rooms.get(i);
-
-                String name = "";
-                int nbOfWindows = 0;
-                int nbOfDoors = 0;
-                int nbOfLights = 0;
-                float height = 0;
-                float width = 0;
-                float positionX = 0;
-                float positionY = 0;
-                boolean isHouseEntrance = false;
-
-                // Getting all the information on the room
-                try {
-                    name = room.get("name").toString();
-                    nbOfWindows = Integer.parseInt(room.get("nbOfWindows").toString());
-                    nbOfDoors = Integer.parseInt(room.get("nbOfDoors").toString());
-                    nbOfLights = Integer.parseInt(room.get("nbOfLights").toString());
-                    height = Float.parseFloat(room.get("height").toString());
-                    width = Float.parseFloat(room.get("width").toString());
-                    positionX = Float.parseFloat(room.get("position-x").toString());
-                    positionY = Float.parseFloat(room.get("position-y").toString());
-                    isHouseEntrance = Boolean.parseBoolean(room.get("isHouseEntrance").toString());
-                } catch (NumberFormatException e) {
-                    throw new HouseLayoutException(Logger.ERROR, "System", "Invalid data type " + e.getMessage().toLowerCase() + ".");
-                } catch (NullPointerException e) {
-                    throw new HouseLayoutException(Logger.ERROR, "System", "Missing fields in json file.");
-                }
-
-                // Saving the objects of the room in an arraylist
-                ArrayList<Window> windows = createWindowList(nbOfWindows);
-                ArrayList<Door> doors = createDoorList(nbOfDoors);
-                ArrayList<Light> lights = createLightList(nbOfLights);
-
-                // Setting the dimensions of the room
-                RoomDimensions dimensions = new RoomDimensions(positionX, positionY, width, height);
-
-                // Creating the room with the information gathered above
-                Room room1 = new Room(name, dimensions, windows, doors, lights);
-
-                // if the room is of type houseEntrance
-                if (isHouseEntrance)
-                    room1.getDoors().stream().forEach(door -> door.setHouseEntrance(true));
-
-                // Adding the room to the list of rooms in the house
-                roomsList.add(room1);
-            }
-
-            return roomsList;
-
+            //getting RoomsList
+            return getRoomsList(obj);
         } catch (HouseLayoutException e) {
             return null;
         }
+    }
+
+    /**
+     * Method to get the list of rooms parsed.
+     *
+     * @param obj represents the parsed room file.
+     * @return ArrayList of rooms that are in the house layout.
+     */
+    private static ArrayList<Room> getRoomsList(Object obj) throws HouseLayoutException
+    {
+        // Typecasting obj to JSONObject
+        JSONObject house = (JSONObject) obj;
+
+        // Getting rooms
+        JSONArray rooms = (JSONArray) house.get("rooms");
+
+        // Verifying the rooms
+        verifyRooms(rooms);
+
+        // returning roomsList
+        return saveRooms(rooms);
+    }
+
+    /**
+     * Method to verify if the rooms are entered correctly and that the rooms are not empty.
+     *
+     * @param rooms JSONArray object containing the parsed rooms.
+     */
+    private static void verifyRooms(JSONArray rooms) throws HouseLayoutException
+    {
+        // Verifying if the user entered the rooms correctly
+        if (rooms == null) {
+            throw new HouseLayoutException(Logger.ERROR, "System", "Could not find any rooms. Make sure that the file contains a rooms array.");
+        }
+
+        // Verifying if the house is empty
+        if (rooms.size() == 0) {
+            throw new HouseLayoutException(Logger.ERROR, "System", "House is empty. No rooms were defined.");
+        }
+    }
+
+    /**
+     * Method to save all rooms in an Arraylist.
+     *
+     * @param rooms JSONArray object containing the parsed rooms.
+     * @return ArrayList of rooms that are in the HouseLayout.
+     */
+    private static ArrayList<Room> saveRooms(JSONArray rooms) throws HouseLayoutException{
+        // Creating arraylist to store all rooms in the house
+        ArrayList<Room> roomsList = new ArrayList<>();
+
+        // Going through each room
+        for (int i = 0; i < rooms.size(); i++) {
+            // Adding the room to the list of rooms in the house
+            roomsList.add(getRoomsInfo((JSONObject) rooms.get(i)));
+        }
+
+        return roomsList;
+    }
+
+    /**
+     * Method to get all parsed information about the rooms.
+     *
+     * @param room JSONObject containing one parsed room.
+     * @return One room of the house layout.
+     */
+    private static Room getRoomsInfo(JSONObject room) throws HouseLayoutException{
+        String name = "";
+        int nbOfWindows = 0;
+        int nbOfDoors = 0;
+        int nbOfLights = 0;
+        float height = 0;
+        float width = 0;
+        float positionX = 0;
+        float positionY = 0;
+        boolean isHouseEntrance = false;
+
+        // Getting all the information on the room
+        try {
+            name = room.get("name").toString();
+            nbOfWindows = Integer.parseInt(room.get("nbOfWindows").toString());
+            nbOfDoors = Integer.parseInt(room.get("nbOfDoors").toString());
+            nbOfLights = Integer.parseInt(room.get("nbOfLights").toString());
+            height = Float.parseFloat(room.get("height").toString());
+            width = Float.parseFloat(room.get("width").toString());
+            positionX = Float.parseFloat(room.get("position-x").toString());
+            positionY = Float.parseFloat(room.get("position-y").toString());
+            isHouseEntrance = Boolean.parseBoolean(room.get("isHouseEntrance").toString());
+        } catch (NumberFormatException e) {
+            throw new HouseLayoutException(Logger.ERROR, "System", "Invalid data type " + e.getMessage().toLowerCase() + ".");
+        } catch (NullPointerException e) {
+            throw new HouseLayoutException(Logger.ERROR, "System", "Missing fields in json file.");
+        }
+
+        return creatingRoom(nbOfWindows, nbOfDoors, nbOfLights, positionX, positionY, height, width, name, isHouseEntrance);
+    }
+
+    /**
+     * Method to create a room of the house.
+     *
+     * @param nbOfWindows Integer representing the number of windows in the room.
+     * @param nbOfDoors Integer representing the number of doors in the room.
+     * @param nbOfLights Integer representing the number of lights in the room.
+     * @param positionX Float representing the position x of the room in the house.
+     * @param positionY Float representing the position y of the room in the house.
+     * @param height Float representing the height of the room.
+     * @param width Float representing the width of the room.
+     * @param name String representing the name of the room.
+     * @param isHouseEntrance Boolean set to true if the room is a house entrance.
+     * @return Room object representing the room.
+     */
+    private static Room creatingRoom(int nbOfWindows, int nbOfDoors, int nbOfLights, float positionX, float positionY, float height, float width, String name, boolean isHouseEntrance){
+        // Saving the objects of the room in an arraylist
+        ArrayList<Window> windows = createWindowList(nbOfWindows);
+        ArrayList<Door> doors = createDoorList(nbOfDoors);
+        ArrayList<Light> lights = createLightList(nbOfLights);
+
+        // Setting the dimensions of the room
+        RoomDimensions dimensions = new RoomDimensions(positionX, positionY, width, height);
+
+        Room room1 = new Room(name, dimensions, windows, doors, lights);
+
+        // if the room is of type houseEntrance
+        if (isHouseEntrance)
+            room1.getDoors().stream().forEach(door -> door.setHouseEntrance(true));
+
+        return room1;
     }
 
     /**

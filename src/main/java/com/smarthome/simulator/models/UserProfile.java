@@ -228,20 +228,7 @@ public class UserProfile extends IdentifiableObject {
      * @return The resulting {@link File} instance, or null if the user has not selected a file.
      */
     public static void writeUserProfiles(File selectedFile, List<UserProfile> profiles) {
-        //Creating json object and array to store the name and permissions
-        JSONObject users = new JSONObject();
-        JSONArray userProfiles = new JSONArray();
-
-        //Adding the name and the permission to the JSON object
-        profiles.forEach((profile) -> {
-            JSONObject obj = new JSONObject();
-            obj.put("name", profile.getName());
-            obj.put("permissions", profile.getPermissions());
-            userProfiles.add(obj);
-        });
-
-        //Adding all the profiles to the JSON array
-        users.put("userProfiles", userProfiles);
+        JSONObject users = createUsers(createProfiles(profiles));
 
         //Writing the JSON file with the JSON object and array
         FileWriter file = null;
@@ -252,6 +239,39 @@ public class UserProfile extends IdentifiableObject {
         } catch (IOException e) {
             throw new UserProfileException(Logger.ERROR, "System", "Error while writing user profile json file.");
         }
+    }
+
+    /**
+     * Method creates profiles with the user name and permissions.
+     * @param profiles UserProfile list containing all the current profiles.
+     * @return JSONArray containing all the user profiles.
+     */
+    private static JSONArray createProfiles(List<UserProfile> profiles)
+    {
+        JSONArray userProfiles = new JSONArray();
+
+        //Adding the name and the permission to the JSON object
+        profiles.forEach((profile) -> {
+            JSONObject obj = new JSONObject();
+            obj.put("name", profile.getName());
+            obj.put("permissions", profile.getPermissions());
+            userProfiles.add(obj);
+        });
+        return userProfiles;
+    }
+
+    /**
+     * Method creates the users with the different user profiles.
+     * @param userProfiles JSONArray of user profiles.
+     * @return JSONObject containing all users of the application.
+     */
+    private static JSONObject createUsers(JSONArray userProfiles){
+        JSONObject users = new JSONObject();
+
+        //Adding all the profiles to the JSON array
+        users.put("userProfiles", userProfiles);
+
+        return users;
     }
 
     /**
@@ -273,63 +293,94 @@ public class UserProfile extends IdentifiableObject {
 
         // Catch ClassCastExceptions or any other runtime exceptions that may occur during parsing
         try {
-
-            // Typecasting obj to JSONObject
-            JSONObject profiles = (JSONObject) obj;
-
-            // Getting profiles
-            JSONArray userProfiles = (JSONArray) profiles.get("userProfiles");
-
-            // Verifying if the user entered the profiles correctly
-            if (userProfiles == null) {
-                throw new UserProfileException(Logger.ERROR, "System", "Could not find any profiles. Make sure that the file contains a userProfiles array.");
-            }
-
-            // Verifying if the user profiles array is empty
-            if (userProfiles.size() == 0) {
-                throw new UserProfileException(Logger.ERROR, "System", "User profiles array is empty. No profiles were defined.");
-            }
-
-            // Creating arraylist to store all profiles
-            ArrayList<UserProfile> profilesList = new ArrayList<>();
-
-            // Going through each profile
-            for (int i = 0; i < userProfiles.size(); i++) {
-
-                // Getting the ith profile
-                JSONObject profile = (JSONObject) userProfiles.get(i);
-
-                //Setting the initial value of the name and permission
-                String name = "";
-                JSONArray permissions;
-                ArrayList<String> permissionList = new ArrayList<String>();
-
-                // Getting all the information on the profile
-                try {
-                    name = profile.get("name").toString();
-                    permissions = (JSONArray) profile.get("permissions");
-
-                    //Looping through the permission and saving them
-                    for (int j = 0; j < permissions.size(); j++) {
-                        String temp = permissions.get(j).toString();
-                        permissionList.add(temp);
-                    }
-
-                    //Adding the userProfile to the list
-                    UserProfile tempProfile = new UserProfile(name, permissionList);
-                    profilesList.add(tempProfile);
-
-                } catch (NumberFormatException e) {
-                    throw new UserProfileException(Logger.ERROR, "System", "Invalid data type " + e.getMessage().toLowerCase() + ".");
-                } catch (NullPointerException e) {
-                    throw new UserProfileException(Logger.ERROR, "System", "Missing fields in json file.");
-                }
-            }
-
-            return profilesList;
-
+            return getUserProfilesList(obj);
         } catch (UserProfileException e) {
             return null;
         }
+    }
+
+    /**
+     * Method to get the list of user profiles parsed.
+     *
+     * @param obj represents the parsed user profile file.
+     * @return List of user profiles that are in the house.
+     */
+    private static List<UserProfile> getUserProfilesList(Object obj) throws UserProfileException{
+        // Typecasting obj to JSONObject
+        JSONObject profiles = (JSONObject) obj;
+
+        // Getting profiles
+        JSONArray userProfiles = (JSONArray) profiles.get("userProfiles");
+
+        verifyUserProfiles(userProfiles);
+
+        return saveUserProfileList(userProfiles);
+    }
+
+    /**
+     * Method to verify if the user profiles are entered correctly and that the user profiles are not empty.
+     *
+     * @param userProfiles JSONArray object containing the parsed profiles.
+     */
+    private static void verifyUserProfiles(JSONArray userProfiles) throws UserProfileException{
+        // Verifying if the user entered the profiles correctly
+        if (userProfiles == null) {
+            throw new UserProfileException(Logger.ERROR, "System", "Could not find any profiles. Make sure that the file contains a userProfiles array.");
+        }
+
+        // Verifying if the user profiles array is empty
+        if (userProfiles.size() == 0) {
+            throw new UserProfileException(Logger.ERROR, "System", "User profiles array is empty. No profiles were defined.");
+        }
+    }
+
+    /**
+     * Method to save all user profiles in an Arraylist.
+     *
+     * @param userProfiles JSONArray object containing the parsed profiles.
+     * @return ArrayList of user profiles that are in the House.
+     */
+    private static ArrayList<UserProfile> saveUserProfileList(JSONArray userProfiles) throws UserProfileException{
+        // Creating arraylist to store all profiles
+        ArrayList<UserProfile> profilesList = new ArrayList<>();
+
+        // Going through each profile
+        for (int i = 0; i < userProfiles.size(); i++) {
+            //Adding the userProfile to the list
+            profilesList.add(getUserProfileInfo((JSONObject) userProfiles.get(i)));
+        }
+
+        return profilesList;
+    }
+
+    /**
+     * Method to get all parsed information about the profiles.
+     *
+     * @param profile JSONObject containing one parsed profile.
+     * @return One user profile of the house.
+     */
+    private static UserProfile getUserProfileInfo(JSONObject profile) throws UserProfileException{
+        //Setting the initial value of the name and permission
+        String name = "";
+        JSONArray permissions;
+        ArrayList<String> permissionList = new ArrayList<String>();
+
+        // Getting all the information on the profile
+        try {
+            name = profile.get("name").toString();
+            permissions = (JSONArray) profile.get("permissions");
+
+            //Looping through the permission and saving them
+            for (int j = 0; j < permissions.size(); j++) {
+                String temp = permissions.get(j).toString();
+                permissionList.add(temp);
+            }
+        } catch (NumberFormatException e) {
+            throw new UserProfileException(Logger.ERROR, "System", "Invalid data type " + e.getMessage().toLowerCase() + ".");
+        } catch (NullPointerException e) {
+            throw new UserProfileException(Logger.ERROR, "System", "Missing fields in json file.");
+        }
+
+        return new UserProfile(name, permissionList);
     }
 }
