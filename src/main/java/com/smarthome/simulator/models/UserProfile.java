@@ -228,20 +228,7 @@ public class UserProfile extends IdentifiableObject {
      * @return The resulting {@link File} instance, or null if the user has not selected a file.
      */
     public static void writeUserProfiles(File selectedFile, List<UserProfile> profiles) {
-        //Creating json object and array to store the name and permissions
-        JSONObject users = new JSONObject();
-        JSONArray userProfiles = new JSONArray();
-
-        //Adding the name and the permission to the JSON object
-        profiles.forEach((profile) -> {
-            JSONObject obj = new JSONObject();
-            obj.put("name", profile.getName());
-            obj.put("permissions", profile.getPermissions());
-            userProfiles.add(obj);
-        });
-
-        //Adding all the profiles to the JSON array
-        users.put("userProfiles", userProfiles);
+        JSONObject users = createUsers(createProfiles(profiles));
 
         //Writing the JSON file with the JSON object and array
         FileWriter file = null;
@@ -252,6 +239,29 @@ public class UserProfile extends IdentifiableObject {
         } catch (IOException e) {
             throw new UserProfileException(Logger.ERROR, "System", "Error while writing user profile json file.");
         }
+    }
+
+    private static JSONArray createProfiles(List<UserProfile> profiles)
+    {
+        JSONArray userProfiles = new JSONArray();
+
+        //Adding the name and the permission to the JSON object
+        profiles.forEach((profile) -> {
+            JSONObject obj = new JSONObject();
+            obj.put("name", profile.getName());
+            obj.put("permissions", profile.getPermissions());
+            userProfiles.add(obj);
+        });
+        return userProfiles;
+    }
+
+    private static JSONObject createUsers(JSONArray userProfiles){
+        JSONObject users = new JSONObject();
+
+        //Adding all the profiles to the JSON array
+        users.put("userProfiles", userProfiles);
+
+        return users;
     }
 
     /**
