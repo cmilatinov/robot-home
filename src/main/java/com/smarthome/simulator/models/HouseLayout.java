@@ -216,18 +216,13 @@ public class HouseLayout {
      * @return ArrayList of rooms that are in the HouseLayout.
      */
     private static ArrayList<Room> saveRooms(JSONArray rooms) throws HouseLayoutException{
-
         // Creating arraylist to store all rooms in the house
         ArrayList<Room> roomsList = new ArrayList<>();
 
         // Going through each room
         for (int i = 0; i < rooms.size(); i++) {
-
-            // Getting the ith room
-            Room room1 = getRoomsInfo((JSONObject) rooms.get(i));
-
             // Adding the room to the list of rooms in the house
-            roomsList.add(room1);
+            roomsList.add(getRoomsInfo((JSONObject) rooms.get(i)));
         }
 
         return roomsList;
