@@ -32,6 +32,7 @@ public class ModuleException extends RuntimeException {
      * @param msg Custom error message.
      */
     public ModuleException(int logLevel, String tag, String msg) {
-        SmartHomeSimulator.LOGGER.log(logLevel, tag, msg);
+        if (SmartHomeSimulator.LOGGER!=null)
+            SmartHomeSimulator.LOGGER.log(logLevel, tag, msg);
     }
 }

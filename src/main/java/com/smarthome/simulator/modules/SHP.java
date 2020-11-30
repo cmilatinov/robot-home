@@ -232,7 +232,9 @@ public class SHP extends Module {
             return;
 
         // Log command
-        SmartHomeSimulator.LOGGER.log(Logger.INFO, getName(), "Executing command '" + command + "'");
+        if (SmartHomeSimulator.LOGGER!=null) {
+            SmartHomeSimulator.LOGGER.log(Logger.INFO, getName(), "Executing command '" + command + "'");
+        }
 
         // Switch state for all the possible commands
         switch (command) {
