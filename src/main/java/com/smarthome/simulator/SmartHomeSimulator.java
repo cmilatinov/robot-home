@@ -5,6 +5,7 @@ import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.models.Window;
 import com.smarthome.simulator.models.*;
 import com.smarthome.simulator.modules.SHC;
+import com.smarthome.simulator.modules.SHH;
 import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.EventUtil;
 import com.smarthome.simulator.utils.Logger;
@@ -679,6 +680,13 @@ public class SmartHomeSimulator {
             // Update front-end
             handler.updateViews();
 
+        });
+
+        handler.addEventListener("setZone", (event) -> {
+
+            simulation.executeCommand(SHH.SET_ZONE, EventUtil.convertToMap(event), true);
+
+            handler.updateViews();
         });
 
     }

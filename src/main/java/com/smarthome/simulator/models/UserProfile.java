@@ -3,6 +3,7 @@ package com.smarthome.simulator.models;
 import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.modules.SHC;
+import com.smarthome.simulator.modules.SHH;
 import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.Logger;
 import org.json.simple.JSONArray;
@@ -40,7 +41,6 @@ public class UserProfile extends IdentifiableObject {
             add(SHC.LOCK_ALL_DOORS);
             add(SHC.CLOSE_ALL_LIGHTS);
             add(SHC.UPDATE_ROOM_LIGHTS);
-
             add(SHC.REMOTE_CONTROL_DOOR);
             add(SHC.REMOTE_CONTROL_WINDOW);
             add(SHC.REMOTE_CONTROL_LIGHT);
@@ -49,9 +49,10 @@ public class UserProfile extends IdentifiableObject {
             add(SHP.SET_AWAY_MODE);
             add(SHP.SET_ALERT_DELAY);
             add(SHP.SET_AWAY_TIME);
-
             add(SHP.ALERT_USER);
             add(SHP.TOGGLE_AWAY_LIGHTS);
+
+            add(SHH.SET_ZONE);
         }
     };
 
@@ -189,7 +190,6 @@ public class UserProfile extends IdentifiableObject {
                     add(SHC.SET_AUTO_MODE);
                     add(SHC.CLOSE_ALL_WINDOWS);
                     add(SHC.LOCK_ALL_DOORS);
-
                     add(SHC.REMOTE_CONTROL_DOOR);
                     add(SHC.REMOTE_CONTROL_WINDOW);
                     add(SHC.REMOTE_CONTROL_LIGHT);
@@ -198,6 +198,8 @@ public class UserProfile extends IdentifiableObject {
                     add(SHP.SET_AWAY_MODE);
                     add(SHP.SET_ALERT_DELAY);
                     add(SHP.SET_AWAY_TIME);
+
+                    add(SHH.SET_ZONE);
                 }});
             case "Child":
                 return this.setPermissions(new ArrayList<String>() {{

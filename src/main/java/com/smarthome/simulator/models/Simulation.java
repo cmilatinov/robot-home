@@ -7,6 +7,7 @@ import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.modules.Module;
 import com.smarthome.simulator.modules.SHC;
+import com.smarthome.simulator.modules.SHH;
 import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.Logger;
 
@@ -116,6 +117,7 @@ public class Simulation {
         this.modules = new ArrayList<>();
         modules.add(new SHC(this));
         modules.add(new SHP(this));
+        modules.add(new SHH(this));
     }
 
     // ============================ OVERRIDES ============================
