@@ -34,9 +34,9 @@ public class Room extends IdentifiableObject {
     private ArrayList<Light> lights;
 
     /**
-     *
+     * Zone ID where the room is located
      */
-    private int zone = 0; // 0 means no zone
+    private int zoneId = 0; // 0 means no zone
 
     // ============================ CONSTRUCTORS ============================
 
@@ -199,12 +199,22 @@ public class Room extends IdentifiableObject {
         this.lights = lights;
     }
 
+    /**
+     * This functions gets the zone ID of the room
+     *
+     * @return Zone ID of the room
+     * */
     public int getZone() {
-        return zone;
+        return zoneId;
     }
 
+    /**
+     * This function sets the zone ID of the room
+     *
+     * @param zone Zone ID of the room
+     * */
     public void setZone(int zone) {
-        this.zone = zone;
+        this.zoneId = zone;
     }
 
 }
