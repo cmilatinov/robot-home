@@ -33,6 +33,11 @@ public class Room extends IdentifiableObject {
      */
     private ArrayList<Light> lights;
 
+    /**
+     *
+     */
+    private int zone = 0; // 0 means no zone
+
     // ============================ CONSTRUCTORS ============================
 
     /**
@@ -192,6 +197,14 @@ public class Room extends IdentifiableObject {
      */
     public void setLights(ArrayList<Light> lights) {
         this.lights = lights;
+    }
+
+    public int getZone() {
+        return zone;
+    }
+
+    public void setZone(int zone) {
+        this.zone = zone;
     }
 
 }
