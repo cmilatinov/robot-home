@@ -15,6 +15,8 @@ public class SHH extends Module{
 
     public static final String SET_ZONE_TEMP = "setZoneTemperature";
 
+    public static final String SET_ROOM_TEMPERATURE = "setRoomTemperature";
+
     /**
      * Creates a module with a given name and simulation reference.
      *
@@ -28,6 +30,7 @@ public class SHH extends Module{
     public List<String> getCommandList() {
         return new ArrayList<String>() {{
             add(SET_ZONE);
+            add(SET_ROOM_TEMPERATURE);
         }};
     }
 
@@ -45,12 +48,15 @@ public class SHH extends Module{
             case SET_ZONE:
                 setZone(payload);
                 break;
+            case SET_ROOM_TEMPERATURE:
+                setRoomTemperature(payload);
+                break;
         }
     }
 
     private void setZone(Map<String, Object> payload){
-        int id = (int) payload.get("id");
-        int zoneId = (int) payload.get("zoneId");
+        String id = (String) payload.get("id");
+        int zoneId = Integer.parseInt(payload.get("zoneId").toString());
 
         // Check layout exists
         HouseLayout layout = this.simulation.getHouseLayout();
@@ -61,6 +67,20 @@ public class SHH extends Module{
                 .stream()
                 .filter(room -> room.getId().equals(id))
                 .findFirst()
-                .ifPresent(room -> room.setZone(zoneId));
+                .ifPresent(room -> room.setZoneId(zoneId));
+    }
+
+    private void setRoomTemperature(Map<String, Object> payload) {
+        String room_id = (String) payload.get("id");
+        Float temperature = Float.parseFloat(payload.get("temperature").toString());
+
+        this.simulation.getHouseLayout().getRooms()
+                .stream()
+                .filter(room -> room.getId().equals(room_id))
+                .findFirst()
+                .ifPresent(room -> {
+                    room.setTemperature(temperature);
+                    room.setTemperatureOverridden(true);
+                });
     }
 }

@@ -691,6 +691,17 @@ public class SmartHomeSimulator {
             handler.updateViews();
         });
 
+        // User sets temperature of a specific room
+        handler.addEventListener("setRoomTemperature", (event) -> {
+
+            // Execute the set room temperature command
+            simulation.executeCommand(SHH.SET_ROOM_TEMPERATURE, EventUtil.convertToMap(event), true);
+
+            // Update front-end
+            handler.updateViews();
+
+        });
+
     }
 
     private static void updateRoomLights(String... rooms) {
