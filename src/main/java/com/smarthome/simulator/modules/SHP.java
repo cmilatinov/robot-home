@@ -10,10 +10,7 @@ import com.smarthome.simulator.utils.TimeUtil;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -106,17 +103,13 @@ public class SHP extends Module {
      */
     public void Alert() {
         NotifyUser();
-        Thread alertThread = new Thread() {
-            public void run() {
-                try {
-                    Thread.sleep((long) alertDelay * 1000);
-                    NotifyAuthorities();
-                } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                }
+        TimerTask task = new TimerTask() {
+            public void run () {
+                NotifyAuthorities();
             }
         };
-        alertThread.start();
+
+        simulation.getTimer().schedule(task, (long) alertDelay * 1000);
     }
 
     /**
@@ -232,7 +225,9 @@ public class SHP extends Module {
             return;
 
         // Log command
-        SmartHomeSimulator.LOGGER.log(Logger.INFO, getName(), "Executing command '" + command + "'");
+        if (SmartHomeSimulator.LOGGER!=null) {
+            SmartHomeSimulator.LOGGER.log(Logger.INFO, getName(), "Executing command '" + command + "'");
+        }
 
         // Switch state for all the possible commands
         switch (command) {
