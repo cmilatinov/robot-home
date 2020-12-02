@@ -1,6 +1,7 @@
 package com.smarthome.simulator.models;
 
-import com.smarthome.simulator.modules.SHP;
+import com.smarthome.simulator.modules.*;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -8,10 +9,13 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.Mockito.*;
+
 public class SHPTest {
 
+
     Simulation testSimulation = new Simulation();
-    //Simulation object that contains modules and data they manipulate./
+    SHP testSHP = (SHP) testSimulation.getModules().get(1);
 
 
     @Test
@@ -21,6 +25,6 @@ public class SHPTest {
         payload.put("value", !awayStateBeforeTest);
         testSimulation.setActiveUserProfile(testSimulation.getUserProfiles().get(2));
         testSimulation.executeCommand(SHP.SET_AWAY_MODE, payload, true);
-        Assert.assertTrue(testSimulation.isAway()==awayStateBeforeTest);
+        Assert.assertTrue(testSimulation.isAway() == awayStateBeforeTest);
     }
 }

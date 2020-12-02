@@ -14,12 +14,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Simulation {
+
+    /**
+     * Timer that handles scheduled tasks.
+     */
+    private static Timer timer;
 
     /**
      * The date format used to display the simulation date and time.
@@ -88,6 +92,7 @@ public class Simulation {
      */
     public Simulation() {
         super();
+        this.timer = new Timer(true);
         this.dateTime = LocalDateTime.now();
         this.running = false;
 
@@ -141,6 +146,17 @@ public class Simulation {
     }
 
     // ============================ GETTERS/SETTERS ============================
+
+
+    /**
+     * This function returns a reference to the timer object.
+     *
+     * @return The {@link Timer}
+     */
+    public static Timer getTimer() {
+        return timer;
+    }
+
 
     /**
      * This function gets the list of {@link UserProfile}.
