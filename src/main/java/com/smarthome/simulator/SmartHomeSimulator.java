@@ -699,7 +699,16 @@ public class SmartHomeSimulator {
 
             // Update front-end
             handler.updateViews();
+        });
 
+        // User sets temperature of a specific zone
+        handler.addEventListener("setZoneTemperature", (event) -> {
+
+            // Execute the set zone temperature command
+            simulation.executeCommand(SHH.SET_ZONE_TEMPERATURE, EventUtil.convertToMap(event), true);
+
+            // Update front-end
+            handler.updateViews();
         });
 
     }

@@ -12,10 +12,8 @@ import java.util.Map;
 public class SHH extends Module{
 
     public static final String SET_ZONE = "setZone";
-
-    public static final String SET_ZONE_TEMP = "setZoneTemperature";
-
     public static final String SET_ROOM_TEMPERATURE = "setRoomTemperature";
+    public static final String SET_ZONE_TEMPERATURE = "setZoneTemperature";
 
     /**
      * Creates a module with a given name and simulation reference.
@@ -31,6 +29,7 @@ public class SHH extends Module{
         return new ArrayList<String>() {{
             add(SET_ZONE);
             add(SET_ROOM_TEMPERATURE);
+            add(SET_ZONE_TEMPERATURE);
         }};
     }
 
@@ -50,6 +49,9 @@ public class SHH extends Module{
                 break;
             case SET_ROOM_TEMPERATURE:
                 setRoomTemperature(payload);
+                break;
+            case SET_ZONE_TEMPERATURE:
+                setZoneTemperature(payload);
                 break;
         }
     }
@@ -81,6 +83,19 @@ public class SHH extends Module{
                 .ifPresent(room -> {
                     room.setTemperature(temperature);
                     room.setTemperatureOverridden(true);
+                });
+    }
+
+    private void setZoneTemperature(Map<String, Object> payload) {
+        int zone_id = Integer.parseInt(payload.get("zone_id").toString());
+        Float temperature = Float.parseFloat(payload.get("temperature").toString());
+
+        this.simulation.getHouseLayout().getRooms()
+                .forEach(room -> {
+                    if (room.getZoneId() == zone_id) {
+                        room.setTemperature(temperature);
+                        room.setTemperatureOverridden(false);
+                    }
                 });
     }
 }

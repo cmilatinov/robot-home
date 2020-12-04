@@ -54,6 +54,7 @@ public class UserProfile extends IdentifiableObject {
 
             add(SHH.SET_ZONE);
             add(SHH.SET_ROOM_TEMPERATURE);
+            add(SHH.SET_ZONE_TEMPERATURE);
         }
     };
 
@@ -202,6 +203,7 @@ public class UserProfile extends IdentifiableObject {
 
                     add(SHH.SET_ZONE);
                     add(SHH.SET_ROOM_TEMPERATURE);
+                    add(SHH.SET_ZONE_TEMPERATURE);
                 }});
             case "Child":
                 return this.setPermissions(new ArrayList<String>() {{
