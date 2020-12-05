@@ -12,9 +12,9 @@ public class HVAC {
         STOPPED
     }
     private State state;
-    private float workingRate = 0.1f;
-    private float pausedRate = 0f;
-    private float stoppedRate = 0.05f;
+    private final float workingRate = 0.1f;
+    private final float pausedRate = 0f;
+    private final float stoppedRate = 0.05f;
 
     public HVAC(Simulation simulation, SHH shh){
         super();
