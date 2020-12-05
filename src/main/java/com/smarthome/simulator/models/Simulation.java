@@ -86,6 +86,7 @@ public class Simulation {
      */
     private final List<Module> modules;
 
+
     // ============================ CONSTRUCTORS ============================
 
     /**
@@ -113,7 +114,6 @@ public class Simulation {
         this.userProfiles.get(3).setPermissions("Stranger");
 
         this.activeUserProfile = this.userProfiles.get(0);
-        this.temperatureInside = 24.0f;
         this.temperatureOutside = 11.0f;
         this.simulationSpeed = 1.0f;
         this.houseLayout = null;

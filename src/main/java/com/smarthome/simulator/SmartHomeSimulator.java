@@ -168,6 +168,7 @@ public class SmartHomeSimulator {
                 HouseLayout layout = HouseLayout.promptForLayout(frame);
                 if (layout != null) {
                     simulation.setHouseLayout(layout);
+                    simulation.executeCommand(SHH.SET_DEFAULT_ZONE, null, false);
                     handler.updateViews();
                 }
             });
@@ -684,18 +685,52 @@ public class SmartHomeSimulator {
 
         });
 
-        handler.addEventListener("setZone", (event) -> {
-
-            simulation.executeCommand(SHH.SET_ZONE, EventUtil.convertToMap(event), true);
-
-            handler.updateViews();
-        });
-
         // User sets temperature of a specific room
         handler.addEventListener("setRoomTemperature", (event) -> {
 
             // Execute the set room temperature command
             simulation.executeCommand(SHH.SET_ROOM_TEMPERATURE, EventUtil.convertToMap(event), true);
+
+            // Update front-end
+            handler.updateViews();
+        });
+
+        // User sets if room should be overriding zone temperature
+        handler.addEventListener("setRoomOverride", (event) -> {
+
+            // Execute the set room override command
+            simulation.executeCommand(SHH.SET_ROOM_OVERRIDE, EventUtil.convertToMap(event), true);
+
+            // Update front-end
+            handler.updateViews();
+        });
+
+        // User edits a specific zone
+        handler.addEventListener("editZone", (event) -> {
+
+            // Execute the edit zone command
+            simulation.executeCommand(SHH.EDIT_ZONE, EventUtil.convertToMap(event), true);
+
+            // Update front-end
+            handler.updateViews();
+        });
+
+        // User adds a new zone to the simulation
+        handler.addEventListener("addZone", (event) -> {
+
+            // Execute the add zone command
+            simulation.executeCommand(SHH.ADD_ZONE, EventUtil.convertToMap(event), true);
+
+            // Update front-end
+            handler.updateViews();
+
+        });
+
+        // User removes a zone
+        handler.addEventListener("removeZone", (event) -> {
+
+            // Execute the remove zone command
+            simulation.executeCommand(SHH.REMOVE_ZONE, EventUtil.convertToMap(event), true);
 
             // Update front-end
             handler.updateViews();
