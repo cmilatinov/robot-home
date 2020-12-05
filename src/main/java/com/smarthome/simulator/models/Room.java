@@ -33,12 +33,9 @@ public class Room extends IdentifiableObject {
      */
     private ArrayList<Light> lights;
 
-    /**
-     * Zone ID where the room is located
-     */
-    private int zoneId = 1; // all rooms start with being in the same zone by default
-
     private float temperature = 24.0f;
+
+    private float desiredTemperature;
 
     private boolean temperatureOverridden = false;
     // ============================ CONSTRUCTORS ============================
@@ -202,24 +199,6 @@ public class Room extends IdentifiableObject {
         this.lights = lights;
     }
 
-    /**
-     * This functions gets the zone ID of the room
-     *
-     * @return Zone ID of the room
-     * */
-    public int getZoneId() {
-        return zoneId;
-    }
-
-    /**
-     * This function sets the zone ID of the room
-     *
-     * @param zone Zone ID of the room
-     * */
-    public void setZoneId(int zone) {
-        this.zoneId = zone;
-    }
-
     public float getTemperature() {
         return temperature;
     }
@@ -234,6 +213,14 @@ public class Room extends IdentifiableObject {
 
     public void setTemperatureOverridden(boolean temperatureOverridden) {
         this.temperatureOverridden = temperatureOverridden;
+    }
+
+    public float getDesiredTemperature() {
+        return desiredTemperature;
+    }
+
+    public void setDesiredTemperature(float desiredTemperature) {
+        this.desiredTemperature = desiredTemperature;
     }
 
 }
