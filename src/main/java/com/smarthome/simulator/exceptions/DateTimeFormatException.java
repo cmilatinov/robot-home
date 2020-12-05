@@ -3,12 +3,12 @@ package com.smarthome.simulator.exceptions;
 /**
  * The DateTimeFormatException class will display an error message if the format of the Date and Time is not properly defined
  */
-public class DateTimeFormatException extends RuntimeException{
+public class DateTimeFormatException extends RuntimeException {
 
     /**
      * Default Constructor
      */
-    public DateTimeFormatException(){
+    public DateTimeFormatException() {
         super("Invalid date time format.");
     }
 
@@ -17,8 +17,7 @@ public class DateTimeFormatException extends RuntimeException{
      *
      * @param msg Custom error message.
      */
-    public DateTimeFormatException(String msg)
-    {
+    public DateTimeFormatException(String msg) {
         super(msg);
     }
 }

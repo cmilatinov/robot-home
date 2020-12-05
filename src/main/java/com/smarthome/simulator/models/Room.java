@@ -34,13 +34,20 @@ public class Room extends IdentifiableObject {
     private ArrayList<Light> lights;
 
     /**
-     * Zone ID where the room is located
+     * Actual temperature of the room.
      */
-    private int zoneId = 1; // all rooms start with being in the same zone by default
-
     private float temperature = 24.0f;
 
-    private boolean temperatureOverridden = false;
+    /**
+     * Desired temperature of the room.
+     */
+    private float desiredTemperature = 24.0f;
+
+    /**
+     *
+     */
+    private boolean overrideZoneTemp = false;
+
     // ============================ CONSTRUCTORS ============================
 
     /**
@@ -202,24 +209,6 @@ public class Room extends IdentifiableObject {
         this.lights = lights;
     }
 
-    /**
-     * This functions gets the zone ID of the room
-     *
-     * @return Zone ID of the room
-     * */
-    public int getZoneId() {
-        return zoneId;
-    }
-
-    /**
-     * This function sets the zone ID of the room
-     *
-     * @param zone Zone ID of the room
-     * */
-    public void setZoneId(int zone) {
-        this.zoneId = zone;
-    }
-
     public float getTemperature() {
         return temperature;
     }
@@ -228,12 +217,26 @@ public class Room extends IdentifiableObject {
         this.temperature = temperature;
     }
 
-    public boolean isTemperatureOverridden() {
-        return temperatureOverridden;
+
+    public float getDesiredTemperature() {
+        return desiredTemperature;
     }
 
-    public void setTemperatureOverridden(boolean temperatureOverridden) {
-        this.temperatureOverridden = temperatureOverridden;
+    public void setDesiredTemperature(float desiredTemperature) {
+        this.desiredTemperature = desiredTemperature;
+    }
+
+    /**
+     * Returns whether or not this room has overridden the zone temperature control of the zone it belongs to.
+     *
+     * @return
+     */
+    public boolean isZoneTempOverridden() {
+        return overrideZoneTemp;
+    }
+
+    public void setOverrideZoneTemp(boolean override) {
+        this.overrideZoneTemp = override;
     }
 
 }

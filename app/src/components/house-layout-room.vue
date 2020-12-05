@@ -18,7 +18,7 @@
                     </v-tooltip>
                 </template>
                 <v-card>
-                    <v-list class="py-0">
+                    <v-list class="py-0" v-if="person.id !== 0">
                         <v-list-item link @click="$emit('movePerson', person)">
                             <v-icon class="mr-3" style="margin-left: -3px">mdi-crosshairs-gps</v-icon>Move
                         </v-list-item>

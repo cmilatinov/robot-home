@@ -15,15 +15,14 @@ import com.smarthome.simulator.utils.TaskDispatcher;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Simulation {
 
     /**
-     * Timer that handles scheduled tasks.
+     * TaskDispatcher that handles scheduled tasks.
      */
     private static TaskDispatcher dispatcher;
 
@@ -87,6 +86,26 @@ public class Simulation {
      */
     private final List<Module> modules;
 
+    /**
+     * Specifies the first month of winter
+     */
+    private int startWinterMonth;
+
+    /**
+     * Specifies the last month of winter
+     */
+    private int endWinterMonth;
+
+    /**
+     * The default temperature for winter when the home is in away mode
+     */
+    private float winterTemperature;
+
+    /**
+     * The default temperature for summer when the home is in away mode
+     */
+    private float summerTemperature;
+
     // ============================ CONSTRUCTORS ============================
 
     /**
@@ -94,8 +113,10 @@ public class Simulation {
      */
     public Simulation() {
         super();
+
         this.dispatcher = new TaskDispatcher(this);
         dispatcher.start();
+
         this.dateTime = LocalDateTime.now();
         this.running = false;
 
@@ -105,7 +126,7 @@ public class Simulation {
                 add(new UserProfile("Children"));
                 add(new UserProfile("Guests"));
                 add(new UserProfile("Strangers"));
-            } catch (UserProfileException e) {
+            } catch (UserProfileException ignored) {
             }
         }};
 
@@ -115,7 +136,6 @@ public class Simulation {
         this.userProfiles.get(3).setPermissions("Stranger");
 
         this.activeUserProfile = this.userProfiles.get(0);
-        this.temperatureInside = 24.0f;
         this.temperatureOutside = 11.0f;
         this.simulationSpeed = 1.0f;
         this.houseLayout = null;
@@ -125,6 +145,11 @@ public class Simulation {
         modules.add(new SHC(this));
         modules.add(new SHP(this));
         modules.add(new SHH(this));
+        this.startWinterMonth = 10;
+        this.endWinterMonth = 3;
+        this.winterTemperature = 24.0f;
+        this.summerTemperature = 16.0f;
+
     }
 
     // ============================ OVERRIDES ============================
@@ -160,7 +185,6 @@ public class Simulation {
     public static TaskDispatcher getDispatcher() {
         return dispatcher;
     }
-
 
     /**
      * This function gets the list of {@link UserProfile}.
@@ -435,7 +459,106 @@ public class Simulation {
         return dateTime.toLocalTime();
     }
 
+    public int getStartWinterMonth() {
+        return startWinterMonth;
+    }
+
+    public void setStartWinterMonth(int startWinterMonth) {
+        this.startWinterMonth = startWinterMonth;
+    }
+
+    public int getEndWinterMonth() {
+        return endWinterMonth;
+    }
+
+    public void setEndWinterMonth(int endWinterMonth) {
+        this.endWinterMonth = endWinterMonth;
+    }
+
+    /**
+     * The default winter temperature
+     *
+     * @return the fault winter temperature
+     */
+    public float getWinterTemperature() {
+        return winterTemperature;
+    }
+
+    /**
+     * Sets the winter temperature
+     * @param winterTemperature
+     * @return if the change was made or not
+     */
+    public boolean setWinterTemperature(float winterTemperature) {
+        if(winterTemperature <= 30 && winterTemperature >= 15){
+            this.winterTemperature = winterTemperature;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * The default summer temperature
+     *
+     * @return the default summer temperature
+     */
+    public float getSummerTemperature() {
+        return summerTemperature;
+    }
+
+    /**
+     * Sets the default summer temperature
+     * @param summerTemperature
+     * @return if the change was made or not
+     */
+    public boolean setSummerTemperature(float summerTemperature) {
+        if(summerTemperature <= 30 && summerTemperature >= 15){
+            this.summerTemperature = summerTemperature;
+            return true;
+        }
+        return false;
+    }
+
     // ============================ OTHER METHODS ============================
+
+    /**
+     * @return the season we are currently in
+     */
+    public String getCurrentSeason() {
+        // get the current month
+        int month = dateTime.getMonthValue();
+
+        // initial winter range --> october 1st to march 31st
+        if (month >= this.startWinterMonth || month <= this.endWinterMonth) {
+            return "Winter";
+        } else {
+            return "Summer";
+        }
+    }
+
+    /**
+     * Registers a module for the simulation, adding its functionality to the simulation.
+     *
+     * @param moduleClass The class of the module to instantiate.
+     */
+    public void registerModule(Class<? extends Module> moduleClass) {
+
+        // Check if there already is a module of this type
+        Optional<Module> existingModule = modules.stream().filter(m -> m.getClass().equals(moduleClass)).findFirst();
+        if (existingModule.isPresent())
+            throw new ModuleException("Module of class " + moduleClass + " is already instantiated for this simulation instance.");
+
+        try {
+
+            // Try adding the module to the simulation
+            modules.add(moduleClass.getConstructor(Simulation.class).newInstance(this));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ModuleException();
+        }
+
+    }
 
     /**
      * This function collects all of the existing lights of the house layout and returns them as a list.
@@ -504,13 +627,26 @@ public class Simulation {
     public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
 
         // Find module which handles the given command
-        Optional<Module> module = modules.stream()
+        Optional<Module> moduleOptional = modules.stream()
                 .filter(m -> m.getCommandList().contains(command))
                 .findFirst();
 
         // If the module exists, execute the command
-        if (module.isPresent()) {
-            module.get().executeCommand(command, payload, sentByUser);
+        if (moduleOptional.isPresent()) {
+
+            // Reference to the module
+            Module module = moduleOptional.get();
+
+            // If the command was sent by the user, check if the active user profile has the needed permission.
+            if (sentByUser && !module.checkPermission(command))
+                return;
+
+            // Log command
+            if (SmartHomeSimulator.LOGGER != null)
+                SmartHomeSimulator.LOGGER.log(Logger.INFO, module.getName(), "Executing command '" + command + "'");
+
+            // Execute command
+            module.executeCommand(command, payload, sentByUser);
             return;
         }
 

@@ -1,6 +1,5 @@
 package com.smarthome.simulator.models;
 
-import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.modules.SHC;
 import com.smarthome.simulator.modules.SHH;
@@ -52,8 +51,13 @@ public class UserProfile extends IdentifiableObject {
             add(SHP.ALERT_USER);
             add(SHP.TOGGLE_AWAY_LIGHTS);
 
-            add(SHH.SET_ZONE);
+            add(SHH.SET_DEFAULT_ZONE);
             add(SHH.SET_ROOM_TEMPERATURE);
+            add(SHH.EDIT_ZONE);
+            add(SHH.ADD_ZONE);
+            add(SHH.REMOVE_ZONE);
+            add(SHH.SET_ROOM_OVERRIDE);
+            add(SHH.SET_SEASON_TEMP);
         }
     };
 
@@ -200,8 +204,13 @@ public class UserProfile extends IdentifiableObject {
                     add(SHP.SET_ALERT_DELAY);
                     add(SHP.SET_AWAY_TIME);
 
-                    add(SHH.SET_ZONE);
+                    add(SHH.SET_DEFAULT_ZONE);
                     add(SHH.SET_ROOM_TEMPERATURE);
+                    add(SHH.EDIT_ZONE);
+                    add(SHH.ADD_ZONE);
+                    add(SHH.REMOVE_ZONE);
+                    add(SHH.SET_ROOM_OVERRIDE);
+                    add(SHH.SET_SEASON_TEMP);
                 }});
             case "Child":
                 return this.setPermissions(new ArrayList<String>() {{
@@ -247,11 +256,11 @@ public class UserProfile extends IdentifiableObject {
 
     /**
      * Method creates profiles with the user name and permissions.
+     *
      * @param profiles UserProfile list containing all the current profiles.
      * @return JSONArray containing all the user profiles.
      */
-    private static JSONArray createProfiles(List<UserProfile> profiles)
-    {
+    private static JSONArray createProfiles(List<UserProfile> profiles) {
         JSONArray userProfiles = new JSONArray();
 
         //Adding the name and the permission to the JSON object
@@ -266,10 +275,11 @@ public class UserProfile extends IdentifiableObject {
 
     /**
      * Method creates the users with the different user profiles.
+     *
      * @param userProfiles JSONArray of user profiles.
      * @return JSONObject containing all users of the application.
      */
-    private static JSONObject createUsers(JSONArray userProfiles){
+    private static JSONObject createUsers(JSONArray userProfiles) {
         JSONObject users = new JSONObject();
 
         //Adding all the profiles to the JSON array
@@ -291,7 +301,7 @@ public class UserProfile extends IdentifiableObject {
         // Parsing file
         try {
             obj = new JSONParser().parse(new FileReader(selectedFile.getAbsolutePath()));
-        } catch (IOException|ParseException e) {
+        } catch (IOException | ParseException e) {
             throw new UserProfileException(Logger.ERROR, "System", "Error while fetching and parsing the json file.");
         }
 
@@ -309,7 +319,7 @@ public class UserProfile extends IdentifiableObject {
      * @param obj represents the parsed user profile file.
      * @return List of user profiles that are in the house.
      */
-    private static List<UserProfile> getUserProfilesList(Object obj) throws UserProfileException{
+    private static List<UserProfile> getUserProfilesList(Object obj) throws UserProfileException {
         // Typecasting obj to JSONObject
         JSONObject profiles = (JSONObject) obj;
 
@@ -326,7 +336,7 @@ public class UserProfile extends IdentifiableObject {
      *
      * @param userProfiles JSONArray object containing the parsed profiles.
      */
-    private static void verifyUserProfiles(JSONArray userProfiles) throws UserProfileException{
+    private static void verifyUserProfiles(JSONArray userProfiles) throws UserProfileException {
         // Verifying if the user entered the profiles correctly
         if (userProfiles == null) {
             throw new UserProfileException(Logger.ERROR, "System", "Could not find any profiles. Make sure that the file contains a userProfiles array.");
@@ -344,7 +354,7 @@ public class UserProfile extends IdentifiableObject {
      * @param userProfiles JSONArray object containing the parsed profiles.
      * @return ArrayList of user profiles that are in the House.
      */
-    private static ArrayList<UserProfile> saveUserProfileList(JSONArray userProfiles) throws UserProfileException{
+    private static ArrayList<UserProfile> saveUserProfileList(JSONArray userProfiles) throws UserProfileException {
         // Creating arraylist to store all profiles
         ArrayList<UserProfile> profilesList = new ArrayList<>();
 
@@ -363,7 +373,7 @@ public class UserProfile extends IdentifiableObject {
      * @param profile JSONObject containing one parsed profile.
      * @return One user profile of the house.
      */
-    private static UserProfile getUserProfileInfo(JSONObject profile) throws UserProfileException{
+    private static UserProfile getUserProfileInfo(JSONObject profile) throws UserProfileException {
         //Setting the initial value of the name and permission
         String name = "";
         JSONArray permissions;
