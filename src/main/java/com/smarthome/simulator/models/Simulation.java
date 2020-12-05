@@ -134,7 +134,6 @@ public class Simulation {
         this.userProfiles.get(1).setPermissions("Child");
         this.userProfiles.get(2).setPermissions("Guest");
         this.userProfiles.get(3).setPermissions("Stranger");
-
         this.activeUserProfile = this.userProfiles.get(0);
         this.temperatureOutside = 11.0f;
         this.simulationSpeed = 1.0f;
@@ -142,9 +141,6 @@ public class Simulation {
         this.userLocation = null;
         this.people = new ArrayList<>();
         this.modules = new ArrayList<>();
-        modules.add(new SHC(this));
-        modules.add(new SHP(this));
-        modules.add(new SHH(this));
         this.startWinterMonth = 10;
         this.endWinterMonth = 3;
         this.winterTemperature = 24.0f;
