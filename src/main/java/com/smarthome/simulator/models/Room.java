@@ -33,6 +33,21 @@ public class Room extends IdentifiableObject {
      */
     private ArrayList<Light> lights;
 
+    /**
+     * Actual temperature of the room.
+     */
+    private float temperature = 24.0f;
+
+    /**
+     * Desired temperature of the room.
+     */
+    private float desiredTemperature = 24.0f;
+
+    /**
+     *
+     */
+    private boolean overrideZoneTemp = false;
+
     // ============================ CONSTRUCTORS ============================
 
     /**
@@ -192,6 +207,36 @@ public class Room extends IdentifiableObject {
      */
     public void setLights(ArrayList<Light> lights) {
         this.lights = lights;
+    }
+
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(float temperature) {
+        this.temperature = temperature;
+    }
+
+
+    public float getDesiredTemperature() {
+        return desiredTemperature;
+    }
+
+    public void setDesiredTemperature(float desiredTemperature) {
+        this.desiredTemperature = desiredTemperature;
+    }
+
+    /**
+     * Returns whether or not this room has overridden the zone temperature control of the zone it belongs to.
+     *
+     * @return
+     */
+    public boolean isZoneTempOverridden() {
+        return overrideZoneTemp;
+    }
+
+    public void setOverrideZoneTemp(boolean override) {
+        this.overrideZoneTemp = override;
     }
 
 }

@@ -3,17 +3,13 @@ package com.smarthome.simulator.modules;
 import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.models.Light;
-import com.smarthome.simulator.models.Person;
 import com.smarthome.simulator.models.Simulation;
 import com.smarthome.simulator.utils.Logger;
 import com.smarthome.simulator.utils.TimeUtil;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -89,10 +85,10 @@ public class SHP extends Module {
     /**
      * Creates a new SHP with reference to the simulation.
      *
-     * @param _simulation represents the running {@link Simulation}
+     * @param simulation represents the running {@link Simulation}
      */
-    public SHP(Simulation _simulation) {
-        super("SHP", _simulation);
+    public SHP(Simulation simulation) {
+        super("SHP", simulation);
         this.awayMode = false;
         this.alertDelay = 0;
         this.awayLights = new ArrayList<>();
@@ -106,17 +102,13 @@ public class SHP extends Module {
      */
     public void Alert() {
         NotifyUser();
-        Thread alertThread = new Thread() {
+        TimerTask task = new TimerTask() {
             public void run() {
-                try {
-                    Thread.sleep((long) alertDelay * 1000);
-                    NotifyAuthorities();
-                } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                }
+                NotifyAuthorities();
             }
         };
-        alertThread.start();
+
+        simulation.getTimer().schedule(task, (long) alertDelay * 1000);
     }
 
     /**
@@ -182,6 +174,7 @@ public class SHP extends Module {
         simulation.executeCommand(SHC.LOCK_ALL_DOORS, null, false);
         simulation.executeCommand(SHC.CLOSE_ALL_WINDOWS, null, false);
         simulation.executeCommand(SHC.CLOSE_ALL_LIGHTS, null, false);
+        simulation.executeCommand(SHH.SET_AWAY_MODE_TEMP, null, false);
 
         // Check if within allotted time to set the proper away lights on
         if (TimeUtil.isInRange(simulation.getTime(), awayTimeStart, awayTimeEnd))
@@ -226,14 +219,6 @@ public class SHP extends Module {
      * @param sentByUser Whether the command was called by a user or not. False if called by other system modules such as {@link SHC}.
      */
     public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
-
-        // If the command was sent by the user, check if the active user profile has the needed permission.
-        if (sentByUser && !checkPermission(command))
-            return;
-
-        // Log command
-        SmartHomeSimulator.LOGGER.log(Logger.INFO, getName(), "Executing command '" + command + "'");
-
         // Switch state for all the possible commands
         switch (command) {
             case SET_AWAY_LIGHTS:

@@ -10,7 +10,7 @@ public class IdentifiableObject {
     /**
      * String representing the ID
      */
-    private String id;
+    private final String id;
 
     // ============================ CONSTRUCTORS ============================
 
@@ -18,7 +18,7 @@ public class IdentifiableObject {
      * Default constructor
      */
     public IdentifiableObject() {
-        id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString();
     }
 
     // ============================ GETTERS/SETTERS ============================

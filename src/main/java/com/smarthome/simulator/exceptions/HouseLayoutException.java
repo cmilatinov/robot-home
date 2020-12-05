@@ -11,8 +11,7 @@ public class HouseLayoutException extends RuntimeException {
     /**
      * Default Constructor
      */
-    public HouseLayoutException()
-    {
+    public HouseLayoutException() {
         super("Error while generating the house layout.");
     }
 
@@ -22,18 +21,19 @@ public class HouseLayoutException extends RuntimeException {
      * @param msg Custom error message.
      */
     public HouseLayoutException(String msg) {
-       super(msg);
-   }
+        super(msg);
+    }
 
     /**
      * Parameterized constructor.
      *
      * @param logLevel The logging level to use ({@link Logger#INFO}, {@link Logger#DEBUG}, {@link Logger#WARN}, {@link Logger#ERROR}).
-     * @param tag The module involved with the log.
-     * @param msg Custom error message.
+     * @param tag      The module involved with the log.
+     * @param msg      Custom error message.
      */
     public HouseLayoutException(int logLevel, String tag, String msg) {
         super();
         SmartHomeSimulator.LOGGER.log(logLevel, tag, msg);
     }
+
 }

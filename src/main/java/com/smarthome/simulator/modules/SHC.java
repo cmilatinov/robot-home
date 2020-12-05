@@ -1,6 +1,5 @@
 package com.smarthome.simulator.modules;
 
-import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.models.Person;
 import com.smarthome.simulator.models.Room;
@@ -87,9 +86,7 @@ public class SHC extends Module {
     }
 
     /**
-     * Gets the list of permissions/commands that the Module is responsible for/can execute.
-     *
-     * @return List of Strings representing the permissions/commands pertaining to the module
+     * {@inheritDoc}
      */
     public List<String> getCommandList() {
         return new ArrayList<String>() {{
@@ -109,21 +106,9 @@ public class SHC extends Module {
     }
 
     /**
-     * Executes a command given by a user or other system module.
-     *
-     * @param command    The name of the command to be executed.
-     * @param payload    The arguments for the command.
-     * @param sentByUser Whether the command was called by a user or not. False if called by other system modules.
+     * {@inheritDoc}
      */
     public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
-
-        // If the command was sent by the user, check if the active user profile has the needed permission
-        if (sentByUser && !checkPermission(command))
-            return;
-
-        // Log command
-        SmartHomeSimulator.LOGGER.log(Logger.INFO, getName(), "Executing command '" + command + "'");
-
         // Switch state for all the possible commands
         switch (command) {
             case CONTROL_DOOR:

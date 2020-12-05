@@ -14,12 +14,14 @@ import moment from 'vue-moment';
 
 import shc from './modules/shc';
 import shp from './modules/shp';
+import shh from './modules/shh';
 
 Vue.use(panzoom);
 Vue.use(moment);
 
 Vue.component('SHC', shc);
 Vue.component('SHP', shp);
+Vue.component('SHH', shh);
 
 Vue.config.productionTip = false;
 

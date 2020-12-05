@@ -1,6 +1,5 @@
 package com.smarthome.simulator.modules;
 
-import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.models.Simulation;
 import com.smarthome.simulator.utils.Logger;
@@ -64,7 +63,7 @@ public abstract class Module {
                 throw new ModuleException(Logger.ERROR, name, "PERMISSION DENIED. '" + simulation.getActiveUserProfile().getName() + "' doesn't have " +
                         "the permission: '" + command + "'");
             }
-        }catch(ModuleException e) {
+        } catch (ModuleException e) {
             return false;
         }
 

@@ -4,6 +4,7 @@ import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.models.Window;
 import com.smarthome.simulator.models.*;
 import com.smarthome.simulator.modules.SHC;
+import com.smarthome.simulator.modules.SHH;
 import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.EventUtil;
 import com.smarthome.simulator.utils.Logger;
@@ -54,7 +55,6 @@ public class SmartHomeSimulator {
      */
     private static final Simulation simulation = new Simulation();
 
-
     /**
      * The web server serving the front-end files.
      */
@@ -71,6 +71,11 @@ public class SmartHomeSimulator {
      * @param args The command line arguments passed to the program.
      */
     public static void main(String[] args) {
+
+        // Load simulation modules
+        simulation.registerModule(SHC.class);
+        simulation.registerModule(SHP.class);
+        simulation.registerModule(SHH.class);
 
         // Start web server
         server.start();
@@ -141,33 +146,31 @@ public class SmartHomeSimulator {
         frame.setVisible(true);
 
         // JFileChooser look and feel
-
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException|InstantiationException|IllegalAccessException|UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
 
         // Add browser listeners
         addListeners();
-
     }
 
     /**
      * Registers all listeners for events fired from the front-end.
      */
+    @SuppressWarnings("unchecked")
     private static void addListeners() {
 
         // User clicks on upload layout button
-        handler.addEventListener("uploadHouseLayout", (event) -> {
-            SwingUtilities.invokeLater(() -> {
-                HouseLayout layout = HouseLayout.promptForLayout(frame);
-                if (layout != null) {
-                    simulation.setHouseLayout(layout);
-                    handler.updateViews();
-                }
-            });
-        });
+        handler.addEventListener("uploadHouseLayout", (event) -> SwingUtilities.invokeLater(() -> {
+            HouseLayout layout = HouseLayout.promptForLayout(frame);
+            if (layout != null) {
+                simulation.setHouseLayout(layout);
+                simulation.executeCommand(SHH.SET_DEFAULT_ZONE, null, false);
+                handler.updateViews();
+            }
+        }));
 
         // User toggles simulation state
         handler.addEventListener("toggleSimulation", (event) -> {
@@ -213,7 +216,7 @@ public class SmartHomeSimulator {
             String name = (String) event.get("name");
             List<String> permissions = (List<String>) ((JSONArray) event.get("permissions"))
                     .stream()
-                    .map(p -> p.toString())
+                    .map(Object::toString)
                     .collect(Collectors.toList());
 
             // Update profile if exists and name not empty
@@ -675,6 +678,77 @@ public class SmartHomeSimulator {
             // Update front-end
             handler.updateViews();
 
+        });
+
+        // User sets temperature of a specific room
+        handler.addEventListener("setRoomTemperature", (event) -> {
+
+            // Execute the set room temperature command
+            simulation.executeCommand(SHH.SET_ROOM_TEMPERATURE, EventUtil.convertToMap(event), true);
+
+            // Update front-end
+            handler.updateViews();
+        });
+
+        // User sets if room should be overriding zone temperature
+        handler.addEventListener("setRoomOverride", (event) -> {
+
+            // Execute the set room override command
+            simulation.executeCommand(SHH.SET_ROOM_OVERRIDE, EventUtil.convertToMap(event), true);
+
+            // Update front-end
+            handler.updateViews();
+        });
+
+        // User edits a specific zone
+        handler.addEventListener("editZone", (event) -> {
+
+            // Execute the edit zone command
+            simulation.executeCommand(SHH.EDIT_ZONE, EventUtil.convertToMap(event), true);
+
+            // Update front-end
+            handler.updateViews();
+        });
+
+        // User adds a new zone to the simulation
+        handler.addEventListener("addZone", (event) -> {
+
+            // Execute the add zone command
+            simulation.executeCommand(SHH.ADD_ZONE, EventUtil.convertToMap(event), true);
+
+            // Update front-end
+            handler.updateViews();
+
+        });
+
+        // User removes a zone
+        handler.addEventListener("removeZone", (event) -> {
+
+            // Execute the remove zone command
+            simulation.executeCommand(SHH.REMOVE_ZONE, EventUtil.convertToMap(event), true);
+
+            // Update front-end
+            handler.updateViews();
+
+        });
+
+        //User sets the winter and summer dates
+        handler.addEventListener("setWinterRange", (event) -> {
+
+            // Set the range of winter
+            simulation.executeCommand(SHH.SET_WINTER_RANGE, EventUtil.convertToMap(event), false);
+
+            //Update front end
+            handler.updateViews();
+        });
+
+        handler.addEventListener("setSeasonTemp", (event) -> {
+
+            //Set the desired winter and summer temperature when the house is in away mode
+            simulation.executeCommand(SHH.SET_SEASON_TEMP, EventUtil.convertToMap(event), true);
+
+            // Update front end
+            handler.updateViews();
         });
 
     }
