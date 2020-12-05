@@ -14,7 +14,7 @@ public class Zone extends IdentifiableObject {
     private final List<Room> rooms = new ArrayList<>();
     private final List<Period> periods = new ArrayList<>();
 
-    public Zone(String name,boolean isDefault) {
+    public Zone(String name, boolean isDefault) {
         this.name = name;
         this.isDefault = isDefault;
     }

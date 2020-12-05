@@ -6,12 +6,12 @@ import com.smarthome.simulator.utils.Logger;
 /**
  * The UserProfileException class will display an error message if there is any error related to the user profiles.
  */
-public class UserProfileException extends RuntimeException{
+public class UserProfileException extends RuntimeException {
 
     /**
      * Default Constructor
      */
-    public UserProfileException(){
+    public UserProfileException() {
         super("Invalid user profile.");
     }
 
@@ -20,8 +20,7 @@ public class UserProfileException extends RuntimeException{
      *
      * @param msg Custom error message.
      */
-    public UserProfileException(String msg)
-    {
+    public UserProfileException(String msg) {
         super(msg);
     }
 
@@ -29,8 +28,8 @@ public class UserProfileException extends RuntimeException{
      * Parameterized constructor.
      *
      * @param logLevel The logging level to use ({@link Logger#INFO}, {@link Logger#DEBUG}, {@link Logger#WARN}, {@link Logger#ERROR}).
-     * @param tag The module involved with the log.
-     * @param msg Custom error message.
+     * @param tag      The module involved with the log.
+     * @param msg      Custom error message.
      */
     public UserProfileException(int logLevel, String tag, String msg) {
         SmartHomeSimulator.LOGGER.log(logLevel, tag, msg);

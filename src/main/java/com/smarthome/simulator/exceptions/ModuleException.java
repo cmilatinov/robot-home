@@ -28,11 +28,11 @@ public class ModuleException extends RuntimeException {
      * Parameterized constructor.
      *
      * @param logLevel The logging level to use ({@link Logger#INFO}, {@link Logger#DEBUG}, {@link Logger#WARN}, {@link Logger#ERROR}).
-     * @param tag The module involved with the log.
-     * @param msg Custom error message.
+     * @param tag      The module involved with the log.
+     * @param msg      Custom error message.
      */
     public ModuleException(int logLevel, String tag, String msg) {
-        if (SmartHomeSimulator.LOGGER!=null)
+        if (SmartHomeSimulator.LOGGER != null)
             SmartHomeSimulator.LOGGER.log(logLevel, tag, msg);
     }
 }

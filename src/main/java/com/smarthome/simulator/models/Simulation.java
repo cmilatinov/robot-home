@@ -17,15 +17,8 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Simulation {
-
-    /**
-     * Timer that handles scheduled tasks.
-     */
-    private static Timer timer;
 
     /**
      * The date format used to display the simulation date and time.
@@ -106,6 +99,10 @@ public class Simulation {
      * The default temperature for summer when the home is in away mode
      */
     private float summerTemperature;
+    /**
+     * Timer that handles scheduled tasks.
+     */
+    private final Timer timer = new Timer(true);
 
     // ============================ CONSTRUCTORS ============================
 
@@ -114,7 +111,6 @@ public class Simulation {
      */
     public Simulation() {
         super();
-        this.timer = new Timer(true);
         this.dateTime = LocalDateTime.now();
         this.running = false;
 
@@ -124,7 +120,7 @@ public class Simulation {
                 add(new UserProfile("Children"));
                 add(new UserProfile("Guests"));
                 add(new UserProfile("Strangers"));
-            } catch (UserProfileException e) {
+            } catch (UserProfileException ignored) {
             }
         }};
 
@@ -147,6 +143,7 @@ public class Simulation {
         this.endWinterMonth = 3;
         this.winterTemperature = 24.0f;
         this.summerTemperature = 16.0f;
+
     }
 
     // ============================ OVERRIDES ============================
@@ -179,10 +176,10 @@ public class Simulation {
      *
      * @return The {@link Timer}
      */
-    public static Timer getTimer() {
+    @JsonIgnore
+    public Timer getTimer() {
         return timer;
     }
-
 
     /**
      * This function gets the list of {@link UserProfile}.
@@ -527,11 +524,35 @@ public class Simulation {
         int month = dateTime.getMonthValue();
 
         // initial winter range --> october 1st to march 31st
-        if(month >= this.startWinterMonth || month <= this.endWinterMonth) {
+        if (month >= this.startWinterMonth || month <= this.endWinterMonth) {
             return "Winter";
-        }else {
+        } else {
             return "Summer";
         }
+    }
+
+    /**
+     * Registers a module for the simulation, adding its functionality to the simulation.
+     *
+     * @param moduleClass The class of the module to instantiate.
+     */
+    public void registerModule(Class<? extends Module> moduleClass) {
+
+        // Check if there already is a module of this type
+        Optional<Module> existingModule = modules.stream().filter(m -> m.getClass().equals(moduleClass)).findFirst();
+        if (existingModule.isPresent())
+            throw new ModuleException("Module of class " + moduleClass + " is already instantiated for this simulation instance.");
+
+        try {
+
+            // Try adding the module to the simulation
+            modules.add(moduleClass.getConstructor(Simulation.class).newInstance(this));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ModuleException();
+        }
+
     }
 
     /**
@@ -601,13 +622,26 @@ public class Simulation {
     public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
 
         // Find module which handles the given command
-        Optional<Module> module = modules.stream()
+        Optional<Module> moduleOptional = modules.stream()
                 .filter(m -> m.getCommandList().contains(command))
                 .findFirst();
 
         // If the module exists, execute the command
-        if (module.isPresent()) {
-            module.get().executeCommand(command, payload, sentByUser);
+        if (moduleOptional.isPresent()) {
+
+            // Reference to the module
+            Module module = moduleOptional.get();
+
+            // If the command was sent by the user, check if the active user profile has the needed permission.
+            if (sentByUser && !module.checkPermission(command))
+                return;
+
+            // Log command
+            if (SmartHomeSimulator.LOGGER != null)
+                SmartHomeSimulator.LOGGER.log(Logger.INFO, module.getName(), "Executing command '" + command + "'");
+
+            // Execute command
+            module.executeCommand(command, payload, sentByUser);
             return;
         }
 

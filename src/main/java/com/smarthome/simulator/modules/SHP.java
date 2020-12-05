@@ -3,7 +3,6 @@ package com.smarthome.simulator.modules;
 import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.models.Light;
-import com.smarthome.simulator.models.Person;
 import com.smarthome.simulator.models.Simulation;
 import com.smarthome.simulator.utils.Logger;
 import com.smarthome.simulator.utils.TimeUtil;
@@ -86,10 +85,10 @@ public class SHP extends Module {
     /**
      * Creates a new SHP with reference to the simulation.
      *
-     * @param _simulation represents the running {@link Simulation}
+     * @param simulation represents the running {@link Simulation}
      */
-    public SHP(Simulation _simulation) {
-        super("SHP", _simulation);
+    public SHP(Simulation simulation) {
+        super("SHP", simulation);
         this.awayMode = false;
         this.alertDelay = 0;
         this.awayLights = new ArrayList<>();
@@ -104,7 +103,7 @@ public class SHP extends Module {
     public void Alert() {
         NotifyUser();
         TimerTask task = new TimerTask() {
-            public void run () {
+            public void run() {
                 NotifyAuthorities();
             }
         };
@@ -220,16 +219,6 @@ public class SHP extends Module {
      * @param sentByUser Whether the command was called by a user or not. False if called by other system modules such as {@link SHC}.
      */
     public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
-
-        // If the command was sent by the user, check if the active user profile has the needed permission.
-        if (sentByUser && !checkPermission(command))
-            return;
-
-        // Log command
-        if (SmartHomeSimulator.LOGGER!=null) {
-            SmartHomeSimulator.LOGGER.log(Logger.INFO, getName(), "Executing command '" + command + "'");
-        }
-
         // Switch state for all the possible commands
         switch (command) {
             case SET_AWAY_LIGHTS:

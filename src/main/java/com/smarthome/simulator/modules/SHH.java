@@ -1,18 +1,18 @@
 package com.smarthome.simulator.modules;
 
-import com.smarthome.simulator.*;
-import com.smarthome.simulator.models.*;
-import com.smarthome.simulator.utils.Logger;
 
+import com.smarthome.simulator.models.Period;
+import com.smarthome.simulator.models.Room;
+import com.smarthome.simulator.models.Simulation;
+import com.smarthome.simulator.models.Zone;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class SHH extends Module{
+public class SHH extends Module {
 
 
     private final List<Zone> zones = new ArrayList<>();
@@ -35,7 +35,9 @@ public class SHH extends Module{
         super("SHH", simulation);
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public List<String> getCommandList() {
         return new ArrayList<String>() {{
             add(SET_DEFAULT_ZONE);
@@ -50,17 +52,12 @@ public class SHH extends Module{
         }};
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
-
-        // If the command was sent by the user, check if the active user profile has the needed permission.
-        if (sentByUser && !checkPermission(command))
-            return;
-
-        // Log command
-        SmartHomeSimulator.LOGGER.log(Logger.INFO, getName(), "Executing command '" + command + "'");
-
-        switch (command){
+        // Switch state for all the possible commands
+        switch (command) {
             case SET_DEFAULT_ZONE:
                 setDefaultZone();
                 break;
@@ -121,19 +118,19 @@ public class SHH extends Module{
 
     private void setRoomOverride(Map<String, Object> payload) {
         String roomId = (String) payload.get("id");
-        Boolean overrideBool = Boolean.parseBoolean(payload.get("value").toString());
+        boolean overrideBool = (boolean) payload.get("value");
         simulation.getHouseLayout().getRooms()
                 .stream()
                 .filter(room -> room.getId().equals(roomId))
                 .findFirst()
-                .ifPresent(room -> room.setTemperatureOverridden(overrideBool));
+                .ifPresent(room -> room.setOverrideZoneTemp(overrideBool));
     }
 
     private void removeZone(Map<String, Object> payload) {
         String zoneId = (String) payload.get("id");
 
         Optional<Zone> defaultZone = zones.stream()
-                .filter(zone -> zone.isDefault())
+                .filter(Zone::isDefault)
                 .findFirst();
 
         zones.stream()
@@ -147,11 +144,12 @@ public class SHH extends Module{
                 });
     }
 
+    @SuppressWarnings({"unchecked", "Duplicates"})
     private void addZone(Map<String, Object> payload) {
         String zoneName = (String) payload.get("name");
         List<Room> rooms = (List<Room>) ((JSONArray) payload.get("room_ids"))
                 .stream()
-                .map(p -> p.toString())
+                .map(Object::toString)
                 .reduce(new ArrayList<Room>(), (listObj, roomId) -> {
                     List<Room> list = (List<Room>) listObj;
                     simulation.getHouseLayout().getRooms()
@@ -161,15 +159,19 @@ public class SHH extends Module{
                             .ifPresent(list::add);
                     return list;
                 });
-        zones.forEach(z -> z.getRooms().removeIf(r -> rooms.contains(r)));
+        zones.forEach(z -> z.getRooms().removeIf(rooms::contains));
         List<Period> periods = (List<Period>) ((JSONArray) payload.get("periods"))
                 .stream()
-                .map(obj -> {
-                    JSONObject json = (JSONObject) obj;
-                    return new Period(
-                            Integer.parseInt(json.get("startTime").toString()),
-                            Integer.parseInt(json.get("endTime").toString()),
+                .map(Object::toString)
+                .reduce(new ArrayList<Period>(), (listObj, periodPayloadObj) -> {
+                    List<Period> list = (List<Period>) listObj;
+                    JSONObject json = (JSONObject) periodPayloadObj;
+                    Period period = new Period(
+                            json.get("startTime").toString(),
+                            json.get("endTime").toString(),
                             Float.parseFloat(json.get("desiredTemperature").toString()));
+                    list.add(period);
+                    return list;
                 });
 
         Zone zone = new Zone(zoneName, false);
@@ -182,14 +184,14 @@ public class SHH extends Module{
     private void setDefaultZone() {
         zones.clear();
         Zone defaultZone = new Zone("default", true);
-        defaultZone.getPeriods().add(new Period(0, 1440, simulation.getTemperatureOutside()));
+        defaultZone.getPeriods().add(new Period("00:00", "23:59", simulation.getTemperatureOutside()));
         defaultZone.getRooms().addAll(simulation.getHouseLayout().getRooms());
         zones.add(defaultZone);
     }
 
     private void setRoomTemperature(Map<String, Object> payload) {
         String room_id = (String) payload.get("id");
-        Float temperature = Float.parseFloat(payload.get("temperature").toString());
+        float temperature = Float.parseFloat(payload.get("temperature").toString());
 
         this.simulation.getHouseLayout().getRooms()
                 .stream()
@@ -197,31 +199,36 @@ public class SHH extends Module{
                 .findFirst()
                 .ifPresent(room -> {
                     room.setDesiredTemperature(temperature);
-                    room.setTemperatureOverridden(true);
+                    room.setOverrideZoneTemp(true);
                 });
     }
 
+    @SuppressWarnings({"unchecked", "Duplicates"})
     private void editZone(Map<String, Object> payload) {
         String zoneName = (String) payload.get("name");
-        String zoneId = (String) payload.get("zone_id") ;
+        String zoneId = (String) payload.get("zone_id");
         List<Period> periods = (List<Period>) ((JSONArray) payload.get("periods"))
                 .stream()
-                .map(obj -> {
-                    JSONObject json = (JSONObject) obj;
-                    return new Period(
-                            Integer.parseInt(json.get("startTime").toString()),
-                            Integer.parseInt(json.get("endTime").toString()),
+                .map(Object::toString)
+                .reduce(new ArrayList<Period>(), (listObj, periodPayloadObj) -> {
+                    List<Period> list = (List<Period>) listObj;
+                    JSONObject json = (JSONObject) periodPayloadObj;
+                    Period period = new Period(
+                            json.get("startTime").toString(),
+                            json.get("endTime").toString(),
                             Float.parseFloat(json.get("desiredTemperature").toString()));
+                    list.add(period);
+                    return list;
                 });
 
         zones.stream()
-            .filter(z -> z.getId().equals(zoneId))
-            .findFirst()
-            .ifPresent(z -> {
-                z.getPeriods().clear();
-                z.setName(zoneName);
-                z.getPeriods().addAll(periods);
-            });
+                .filter(z -> z.getId().equals(zoneId))
+                .findFirst()
+                .ifPresent(z -> {
+                    z.getPeriods().clear();
+                    z.setName(zoneName);
+                    z.getPeriods().addAll(periods);
+                });
     }
 
     public List<Zone> getZones() {

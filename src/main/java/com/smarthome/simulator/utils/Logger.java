@@ -126,8 +126,8 @@ public class Logger {
      * Logs the specified string to the console and to the log file with the specified logging level.
      *
      * @param logLevel The logging level to use ({@link Logger#INFO}, {@link Logger#DEBUG}, {@link Logger#WARN}, {@link Logger#ERROR}).
-     * @param tag The module involved with the log.
-     * @param str The string to log.
+     * @param tag      The module involved with the log.
+     * @param str      The string to log.
      */
     public synchronized void log(int logLevel, String tag, String str) {
 
