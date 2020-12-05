@@ -1,6 +1,5 @@
 package com.smarthome.simulator;
 
-import com.smarthome.simulator.exceptions.DateTimeFormatException;
 import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.models.Window;
 import com.smarthome.simulator.models.*;
@@ -320,10 +319,7 @@ public class SmartHomeSimulator {
             LocalTime before = simulation.getTime();
 
             // Set date time
-            try {
-                simulation.setDateTime(value);
-            } catch (DateTimeFormatException ignored) {
-            }
+            simulation.setDateTime(value);
 
             // New time after set
             LocalTime after = simulation.getTime();
