@@ -52,8 +52,12 @@ public class UserProfile extends IdentifiableObject {
             add(SHP.ALERT_USER);
             add(SHP.TOGGLE_AWAY_LIGHTS);
 
-            add(SHH.SET_ZONE);
+            add(SHH.SET_DEFAULT_ZONE);
             add(SHH.SET_ROOM_TEMPERATURE);
+            add(SHH.EDIT_ZONE);
+            add(SHH.ADD_ZONE);
+            add(SHH.REMOVE_ZONE);
+            add(SHH.SET_ROOM_OVERRIDE);
         }
     };
 
@@ -200,8 +204,12 @@ public class UserProfile extends IdentifiableObject {
                     add(SHP.SET_ALERT_DELAY);
                     add(SHP.SET_AWAY_TIME);
 
-                    add(SHH.SET_ZONE);
+                    add(SHH.SET_DEFAULT_ZONE);
                     add(SHH.SET_ROOM_TEMPERATURE);
+                    add(SHH.EDIT_ZONE);
+                    add(SHH.ADD_ZONE);
+                    add(SHH.REMOVE_ZONE);
+                    add(SHH.SET_ROOM_OVERRIDE);
                 }});
             case "Child":
                 return this.setPermissions(new ArrayList<String>() {{
