@@ -174,6 +174,7 @@ public class SHP extends Module {
         simulation.executeCommand(SHC.LOCK_ALL_DOORS, null, false);
         simulation.executeCommand(SHC.CLOSE_ALL_WINDOWS, null, false);
         simulation.executeCommand(SHC.CLOSE_ALL_LIGHTS, null, false);
+        simulation.executeCommand(SHH.SET_AWAY_MODE_TEMP, null, false);
 
         // Check if within allotted time to set the proper away lights on
         if (TimeUtil.isInRange(simulation.getTime(), awayTimeStart, awayTimeEnd))

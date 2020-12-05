@@ -14,6 +14,7 @@ import com.smarthome.simulator.utils.Logger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -80,6 +81,25 @@ public class Simulation {
     private final List<Module> modules;
 
     /**
+     * Specifies the first month of winter
+     */
+    private int startWinterMonth;
+
+    /**
+     * Specifies the last month of winter
+     */
+    private int endWinterMonth;
+
+    /**
+     * The default temperature for winter when the home is in away mode
+     */
+    private float winterTemperature;
+
+    /**
+     * The default temperature for summer when the home is in away mode
+     */
+    private float summerTemperature;
+    /**
      * Timer that handles scheduled tasks.
      */
     private final Timer timer = new Timer(true);
@@ -116,6 +136,14 @@ public class Simulation {
         this.userLocation = null;
         this.people = new ArrayList<>();
         this.modules = new ArrayList<>();
+        modules.add(new SHC(this));
+        modules.add(new SHP(this));
+        modules.add(new SHH(this));
+        this.startWinterMonth = 10;
+        this.endWinterMonth = 3;
+        this.winterTemperature = 24.0f;
+        this.summerTemperature = 16.0f;
+
     }
 
     // ============================ OVERRIDES ============================
@@ -426,7 +454,82 @@ public class Simulation {
         return dateTime.toLocalTime();
     }
 
+    public int getStartWinterMonth() {
+        return startWinterMonth;
+    }
+
+    public void setStartWinterMonth(int startWinterMonth) {
+        this.startWinterMonth = startWinterMonth;
+    }
+
+    public int getEndWinterMonth() {
+        return endWinterMonth;
+    }
+
+    public void setEndWinterMonth(int endWinterMonth) {
+        this.endWinterMonth = endWinterMonth;
+    }
+
+    /**
+     * The default winter temperature
+     *
+     * @return the fault winter temperature
+     */
+    public float getWinterTemperature() {
+        return winterTemperature;
+    }
+
+    /**
+     * Sets the winter temperature
+     * @param winterTemperature
+     * @return if the change was made or not
+     */
+    public boolean setWinterTemperature(float winterTemperature) {
+        if(winterTemperature <= 30 && winterTemperature >= 15){
+            this.winterTemperature = winterTemperature;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * The default summer temperature
+     *
+     * @return the default summer temperature
+     */
+    public float getSummerTemperature() {
+        return summerTemperature;
+    }
+
+    /**
+     * Sets the default summer temperature
+     * @param summerTemperature
+     * @return if the change was made or not
+     */
+    public boolean setSummerTemperature(float summerTemperature) {
+        if(summerTemperature <= 30 && summerTemperature >= 15){
+            this.summerTemperature = summerTemperature;
+            return true;
+        }
+        return false;
+    }
+
     // ============================ OTHER METHODS ============================
+
+    /**
+     * @return the season we are currently in
+     */
+    public String getCurrentSeason() {
+        // get the current month
+        int month = dateTime.getMonthValue();
+
+        // initial winter range --> october 1st to march 31st
+        if (month >= this.startWinterMonth || month <= this.endWinterMonth) {
+            return "Winter";
+        } else {
+            return "Summer";
+        }
+    }
 
     /**
      * Registers a module for the simulation, adding its functionality to the simulation.

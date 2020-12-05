@@ -1,12 +1,12 @@
 package com.smarthome.simulator.modules;
 
+
 import com.smarthome.simulator.models.Period;
 import com.smarthome.simulator.models.Room;
 import com.smarthome.simulator.models.Simulation;
 import com.smarthome.simulator.models.Zone;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,14 +14,17 @@ import java.util.Optional;
 
 public class SHH extends Module {
 
-    private final List<Zone> zones = new ArrayList<>();
 
+    private final List<Zone> zones = new ArrayList<>();
     public static final String SET_DEFAULT_ZONE = "setDefaultZone";
     public static final String SET_ROOM_TEMPERATURE = "setRoomTemperature";
     public static final String EDIT_ZONE = "editZone";
     public static final String ADD_ZONE = "addZone";
     public static final String REMOVE_ZONE = "removeZone";
     public static final String SET_ROOM_OVERRIDE = "setRoomOverride";
+    public static final String SET_SEASON_TEMP = "setSeasonTemp";
+    public static final String SET_WINTER_RANGE = "setWinterRange";
+    public static final String SET_AWAY_MODE_TEMP = "setAwayModeTemp";
 
     /**
      * Creates a module with a given name and simulation reference.
@@ -39,10 +42,13 @@ public class SHH extends Module {
         return new ArrayList<String>() {{
             add(SET_DEFAULT_ZONE);
             add(SET_ROOM_TEMPERATURE);
+            add(SET_WINTER_RANGE);
             add(EDIT_ZONE);
             add(ADD_ZONE);
             add(REMOVE_ZONE);
             add(SET_ROOM_OVERRIDE);
+            add(SET_SEASON_TEMP);
+            add(SET_AWAY_MODE_TEMP);
         }};
     }
 
@@ -58,6 +64,8 @@ public class SHH extends Module {
             case SET_ROOM_TEMPERATURE:
                 setRoomTemperature(payload);
                 break;
+            case SET_WINTER_RANGE:
+                setWinterRange(payload);
             case EDIT_ZONE:
                 editZone(payload);
                 break;
@@ -70,8 +78,43 @@ public class SHH extends Module {
             case SET_ROOM_OVERRIDE:
                 setRoomOverride(payload);
                 break;
+            case SET_SEASON_TEMP:
+                setSeasonTemp(payload);
+                break;
+            case SET_AWAY_MODE_TEMP:
+                setAwayModeTemp();
+                break;
         }
     }
+
+    private void setAwayModeTemp() {
+        // waiting for the change rate temperature to be figured out
+        // will change the actual temperature to the desired temperature according to the season
+        // In Simulator class, winter: winterTemperature, summer: summerTemperature
+    }
+
+    private void setSeasonTemp(Map<String, Object> payload){
+        // desired temperature of winter and summer time in away mode
+        float winterTemp = Float.parseFloat(payload.get("winter").toString());
+        float summerTemp = Float.parseFloat(payload.get("summer").toString());
+
+        // set the temperature to the simulation
+        simulation.setWinterTemperature(winterTemp);
+        simulation.setSummerTemperature(summerTemp);
+
+    }
+
+    private void setWinterRange(Map<String, Object> payload){
+        // receives the month in integer format
+        int startMonth = Integer.parseInt(payload.get("start").toString());
+        int endMonth = Integer.parseInt(payload.get("end").toString());
+
+        //set the winter range
+        this.simulation.setStartWinterMonth(startMonth);
+        this.simulation.setEndWinterMonth(endMonth);
+    }
+
+
 
     private void setRoomOverride(Map<String, Object> payload) {
         String roomId = (String) payload.get("id");
