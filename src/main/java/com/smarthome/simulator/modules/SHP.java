@@ -5,6 +5,7 @@ import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.models.Light;
 import com.smarthome.simulator.models.Person;
 import com.smarthome.simulator.models.Simulation;
+import com.smarthome.simulator.utils.DelayedRunnable;
 import com.smarthome.simulator.utils.Logger;
 import com.smarthome.simulator.utils.TimeUtil;
 
@@ -102,14 +103,39 @@ public class SHP extends Module {
      * Send a notification to user and alerts authorities after set delay.
      */
     public void Alert() {
+        System.out.println("Auth delay: " + alertDelay);
         NotifyUser();
-        TimerTask task = new TimerTask() {
-            public void run () {
+        DelayedRunnable task = new DelayedRunnable() {
+
+            private long delay = (long) alertDelay*1000000000;
+
+            @Override
+            public long getDelay() {
+                return delay;
+            }
+
+            @Override
+            public synchronized void setDelay(long delay) {
+                this.delay = delay;
+            }
+
+            @Override
+            public boolean isPeriodic() {
+                return false;
+            }
+
+            @Override
+            public long getPeriod() {
+                return 0;
+            }
+
+            @Override
+            public void run() {
                 NotifyAuthorities();
             }
         };
 
-        simulation.getTimer().schedule(task, (long) alertDelay * 1000);
+        simulation.getDispatcher().schedule(task);
     }
 
     /**

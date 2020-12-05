@@ -10,6 +10,7 @@ import com.smarthome.simulator.modules.SHC;
 import com.smarthome.simulator.modules.SHH;
 import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.Logger;
+import com.smarthome.simulator.utils.TaskDispatcher;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,7 +25,7 @@ public class Simulation {
     /**
      * Timer that handles scheduled tasks.
      */
-    private static Timer timer;
+    private static TaskDispatcher dispatcher;
 
     /**
      * The date format used to display the simulation date and time.
@@ -93,7 +94,8 @@ public class Simulation {
      */
     public Simulation() {
         super();
-        this.timer = new Timer(true);
+        this.dispatcher = new TaskDispatcher(this);
+        dispatcher.start();
         this.dateTime = LocalDateTime.now();
         this.running = false;
 
@@ -151,12 +153,12 @@ public class Simulation {
 
 
     /**
-     * This function returns a reference to the timer object.
+     * This function returns a reference to the dispatcher object.
      *
-     * @return The {@link Timer}
+     * @return The {@link TaskDispatcher}
      */
-    public static Timer getTimer() {
-        return timer;
+    public static TaskDispatcher getDispatcher() {
+        return dispatcher;
     }
 
 
