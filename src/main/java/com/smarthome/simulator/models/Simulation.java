@@ -132,7 +132,6 @@ public class Simulation {
         this.userProfiles.get(1).setPermissions("Child");
         this.userProfiles.get(2).setPermissions("Guest");
         this.userProfiles.get(3).setPermissions("Stranger");
-
         this.activeUserProfile = this.userProfiles.get(0);
         this.temperatureOutside = 11.0f;
         this.simulationSpeed = 1.0f;
