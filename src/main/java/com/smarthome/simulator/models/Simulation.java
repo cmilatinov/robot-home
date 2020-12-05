@@ -1,8 +1,6 @@
 package com.smarthome.simulator.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.smarthome.simulator.SmartHomeSimulator;
-import com.smarthome.simulator.exceptions.DateTimeFormatException;
 import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.modules.Module;
@@ -10,8 +8,8 @@ import com.smarthome.simulator.modules.SHC;
 import com.smarthome.simulator.modules.SHH;
 import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.Logger;
+import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.utils.TaskDispatcher;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -142,9 +140,6 @@ public class Simulation {
         this.userLocation = null;
         this.people = new ArrayList<>();
         this.modules = new ArrayList<>();
-        modules.add(new SHC(this));
-        modules.add(new SHP(this));
-        modules.add(new SHH(this));
         this.startWinterMonth = 10;
         this.endWinterMonth = 3;
         this.winterTemperature = 24.0f;
@@ -240,12 +235,8 @@ public class Simulation {
      *
      * @param dateTime The date time string in the "yyyy-MM-dd HH:mm" format.
      */
-    public void setDateTime(String dateTime) throws DateTimeFormatException {
-        if (dateTime != null && !dateTime.equals("") && !dateTime.equals(" ")) {
-            this.dateTime = LocalDateTime.parse(dateTime, formatter);
-            return;
-        }
-        throw new DateTimeFormatException();
+    public void setDateTime(String dateTime) {
+        this.dateTime = LocalDateTime.parse(dateTime, formatter);
     }
 
     /**

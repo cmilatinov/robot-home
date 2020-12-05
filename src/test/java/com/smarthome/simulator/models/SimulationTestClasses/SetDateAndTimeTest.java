@@ -1,6 +1,5 @@
 package com.smarthome.simulator.models.SimulationTestClasses;
 
-import com.smarthome.simulator.exceptions.DateTimeFormatException;
 import com.smarthome.simulator.models.Simulation;
 import org.junit.Assert;
 import org.junit.*;
@@ -20,7 +19,7 @@ public class SetDateAndTimeTest {
      * 3. Set date and time
      * Testing if setting the date and time returns an exception when the date and time is null
      */
-    @Test(expected = DateTimeFormatException.class)
+    @Test(expected = NullPointerException.class)
     public void settingANullDateAndTimeShouldReturnAnException() throws Exception {
         tester.setDateTime(null);
     }
@@ -29,7 +28,7 @@ public class SetDateAndTimeTest {
      * 3. Set date and time
      * Testing if setting the date and time returns an exception when the date and time is ""
      */
-    @Test(expected = DateTimeFormatException.class)
+    @Test(expected = DateTimeParseException.class)
     public void settingDateAndTimeWithEmptyStringShouldReturnAnException() throws Exception {
         tester.setDateTime("");
     }
@@ -38,7 +37,7 @@ public class SetDateAndTimeTest {
      * 3. Set date and time
      * Testing if setting the date and time returns an exception when the date and time is " "
      */
-    @Test(expected = DateTimeFormatException.class)
+    @Test(expected = DateTimeParseException.class)
     public void settingDateAndTimeWithSpaceShouldReturnAnException() throws Exception {
         tester.setDateTime(" ");
     }
