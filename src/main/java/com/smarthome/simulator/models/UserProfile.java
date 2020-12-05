@@ -58,6 +58,7 @@ public class UserProfile extends IdentifiableObject {
             add(SHH.ADD_ZONE);
             add(SHH.REMOVE_ZONE);
             add(SHH.SET_ROOM_OVERRIDE);
+            add(SHH.SET_SEASON_TEMP);
         }
     };
 
@@ -210,6 +211,7 @@ public class UserProfile extends IdentifiableObject {
                     add(SHH.ADD_ZONE);
                     add(SHH.REMOVE_ZONE);
                     add(SHH.SET_ROOM_OVERRIDE);
+                    add(SHH.SET_SEASON_TEMP);
                 }});
             case "Child":
                 return this.setPermissions(new ArrayList<String>() {{

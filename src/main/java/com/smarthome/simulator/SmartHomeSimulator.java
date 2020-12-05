@@ -737,12 +737,21 @@ public class SmartHomeSimulator {
         });
 
         //User sets the winter and summer dates
-        handler.addEventListener("setWinter", (event) -> {
+        handler.addEventListener("setWinterRange", (event) -> {
 
             // Set the range of winter
             simulation.executeCommand(SHH.SET_WINTER_RANGE, EventUtil.convertToMap(event), false);
 
             //Update front end
+            handler.updateViews();
+        });
+
+        handler.addEventListener("setSeasonTemp", (event) -> {
+
+            //Set the desired winter and summer temperature when the house is in away mode
+            simulation.executeCommand(SHH.SET_SEASON_TEMP, EventUtil.convertToMap(event), true);
+
+            // Update front end
             handler.updateViews();
         });
 

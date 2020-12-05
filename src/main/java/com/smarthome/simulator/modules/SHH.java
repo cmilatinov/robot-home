@@ -22,8 +22,9 @@ public class SHH extends Module{
     public static final String ADD_ZONE = "addZone";
     public static final String REMOVE_ZONE = "removeZone";
     public static final String SET_ROOM_OVERRIDE = "setRoomOverride";
-
+    public static final String SET_SEASON_TEMP = "setSeasonTemp";
     public static final String SET_WINTER_RANGE = "setWinterRange";
+    public static final String SET_AWAY_MODE_TEMP = "setAwayModeTemp";
 
     /**
      * Creates a module with a given name and simulation reference.
@@ -44,6 +45,8 @@ public class SHH extends Module{
             add(ADD_ZONE);
             add(REMOVE_ZONE);
             add(SET_ROOM_OVERRIDE);
+            add(SET_SEASON_TEMP);
+            add(SET_AWAY_MODE_TEMP);
         }};
     }
 
@@ -78,17 +81,40 @@ public class SHH extends Module{
             case SET_ROOM_OVERRIDE:
                 setRoomOverride(payload);
                 break;
+            case SET_SEASON_TEMP:
+                setSeasonTemp(payload);
+                break;
+            case SET_AWAY_MODE_TEMP:
+                setAwayModeTemp();
+                break;
         }
+    }
+
+    private void setAwayModeTemp() {
+        // waiting for the change rate temperature to be figured out
+        // will change the actual temperature to the desired temperature according to the season
+        // In Simulator class, winter: winterTemperature, summer: summerTemperature
+    }
+
+    private void setSeasonTemp(Map<String, Object> payload){
+        // desired temperature of winter and summer time in away mode
+        float winterTemp = Float.parseFloat(payload.get("winter").toString());
+        float summerTemp = Float.parseFloat(payload.get("summer").toString());
+
+        // set the temperature to the simulation
+        simulation.setWinterTemperature(winterTemp);
+        simulation.setSummerTemperature(summerTemp);
+
     }
 
     private void setWinterRange(Map<String, Object> payload){
         // receives the month in integer format
-        String startMonth = (String) payload.get("start");
-        String endMonth = (String) payload.get("end");
+        int startMonth = Integer.parseInt(payload.get("start").toString());
+        int endMonth = Integer.parseInt(payload.get("end").toString());
 
         //set the winter range
-        this.simulation.setStartWinterMonth(Integer.parseInt(startMonth));
-        this.simulation.setEndWinterMonth(Integer.parseInt(endMonth));
+        this.simulation.setStartWinterMonth(startMonth);
+        this.simulation.setEndWinterMonth(endMonth);
     }
 
 

@@ -97,6 +97,16 @@ public class Simulation {
      */
     private int endWinterMonth;
 
+    /**
+     * The default temperature for winter when the home is in away mode
+     */
+    private float winterTemperature;
+
+    /**
+     * The default temperature for summer when the home is in away mode
+     */
+    private float summerTemperature;
+
     // ============================ CONSTRUCTORS ============================
 
     /**
@@ -135,6 +145,8 @@ public class Simulation {
         modules.add(new SHH(this));
         this.startWinterMonth = 10;
         this.endWinterMonth = 3;
+        this.winterTemperature = 24.0f;
+        this.summerTemperature = 16.0f;
     }
 
     // ============================ OVERRIDES ============================
@@ -459,6 +471,50 @@ public class Simulation {
 
     public void setEndWinterMonth(int endWinterMonth) {
         this.endWinterMonth = endWinterMonth;
+    }
+
+    /**
+     * The default winter temperature
+     *
+     * @return the fault winter temperature
+     */
+    public float getWinterTemperature() {
+        return winterTemperature;
+    }
+
+    /**
+     * Sets the winter temperature
+     * @param winterTemperature
+     * @return if the change was made or not
+     */
+    public boolean setWinterTemperature(float winterTemperature) {
+        if(winterTemperature <= 30 && winterTemperature >= 15){
+            this.winterTemperature = winterTemperature;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * The default summer temperature
+     *
+     * @return the default summer temperature
+     */
+    public float getSummerTemperature() {
+        return summerTemperature;
+    }
+
+    /**
+     * Sets the default summer temperature
+     * @param summerTemperature
+     * @return if the change was made or not
+     */
+    public boolean setSummerTemperature(float summerTemperature) {
+        if(summerTemperature <= 30 && summerTemperature >= 15){
+            this.summerTemperature = summerTemperature;
+            return true;
+        }
+        return false;
     }
 
     // ============================ OTHER METHODS ============================
