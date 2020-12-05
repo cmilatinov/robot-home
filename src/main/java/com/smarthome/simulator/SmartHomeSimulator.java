@@ -35,8 +35,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Main program class.
@@ -58,7 +56,6 @@ public class SmartHomeSimulator {
      */
     private static final Simulation simulation = new Simulation();
 
-
     /**
      * The web server serving the front-end files.
      */
@@ -75,6 +72,11 @@ public class SmartHomeSimulator {
      * @param args The command line arguments passed to the program.
      */
     public static void main(String[] args) {
+
+        // Load simulation modules
+        simulation.registerModule(SHC.class);
+        simulation.registerModule(SHP.class);
+        simulation.registerModule(SHH.class);
 
         // Start web server
         server.start();
@@ -145,10 +147,9 @@ public class SmartHomeSimulator {
         frame.setVisible(true);
 
         // JFileChooser look and feel
-
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException|InstantiationException|IllegalAccessException|UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
 
@@ -160,19 +161,18 @@ public class SmartHomeSimulator {
     /**
      * Registers all listeners for events fired from the front-end.
      */
+    @SuppressWarnings("unchecked")
     private static void addListeners() {
 
         // User clicks on upload layout button
-        handler.addEventListener("uploadHouseLayout", (event) -> {
-            SwingUtilities.invokeLater(() -> {
-                HouseLayout layout = HouseLayout.promptForLayout(frame);
-                if (layout != null) {
-                    simulation.setHouseLayout(layout);
-                    simulation.executeCommand(SHH.SET_DEFAULT_ZONE, null, false);
-                    handler.updateViews();
-                }
-            });
-        });
+        handler.addEventListener("uploadHouseLayout", (event) -> SwingUtilities.invokeLater(() -> {
+            HouseLayout layout = HouseLayout.promptForLayout(frame);
+            if (layout != null) {
+                simulation.setHouseLayout(layout);
+                simulation.executeCommand(SHH.SET_DEFAULT_ZONE, null, false);
+                handler.updateViews();
+            }
+        }));
 
         // User toggles simulation state
         handler.addEventListener("toggleSimulation", (event) -> {
@@ -218,7 +218,7 @@ public class SmartHomeSimulator {
             String name = (String) event.get("name");
             List<String> permissions = (List<String>) ((JSONArray) event.get("permissions"))
                     .stream()
-                    .map(p -> p.toString())
+                    .map(Object::toString)
                     .collect(Collectors.toList());
 
             // Update profile if exists and name not empty

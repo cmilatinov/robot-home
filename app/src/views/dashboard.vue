@@ -227,58 +227,6 @@
                 </div>
             </v-col>
         </v-row>
-
-        <!-- Edit user profile modal -->
-        <v-dialog width="400" v-model="showMovePerson">
-            <v-card v-if="editPerson">
-                <v-card-title>Move {{editPerson.name}}</v-card-title>
-                <v-form ref="editForm" lazy-validation>
-                    <v-select v-model="editPerson.roomId"
-                              dense outlined
-                              class="mx-4 mt-3 pt-0"
-                              label="New Location"
-                              prepend-inner-icon="mdi-crosshairs-gps"
-                              item-value="id"
-                              item-text="name"
-                              :items="roomLocations"
-                              :menu-props="{ offsetY: true }">
-                    </v-select>
-                </v-form>
-                <v-card-text>
-                    <div class="subtitle-2" v-if="currentPersonLocation">
-                        <strong>Current:</strong> <em style="font-weight: 300">{{ currentPersonLocation }}</em>
-                    </div>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn text color="grey darken-2" @click="showMovePerson = false">
-                        <v-icon class="mr-2">fa-times</v-icon>Cancel
-                    </v-btn>
-                    <v-btn text color="primary" @click="dispatchEvent('movePerson', editPerson), showMovePerson = false">
-                        <v-icon class="mr-2">fa-share</v-icon>Move
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-
-        <!-- Delete person modal -->
-        <v-dialog width="400" v-model="showDeletePerson">
-            <v-card v-if="editPerson">
-                <v-card-title>Remove Person</v-card-title>
-                <v-card-text>
-                    Are you sure you want to remove <strong><em>{{editPerson.name}}</em></strong> ?
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn text color="grey darken-2" @click="showDeletePerson = false">
-                        <v-icon class="mr-2">fa-times</v-icon>Cancel
-                    </v-btn>
-                    <v-btn text color="red" @click="dispatchEvent('deletePerson', editPerson), showDeletePerson = false">
-                        <v-icon class="mr-2">fa-trash-alt</v-icon>Delete
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
     </v-container>
 </template>
 
@@ -347,16 +295,6 @@
             },
             userLocation() {
                 return this.$store.state.simulation?.userLocation || null;
-            },
-            currentPerson() {
-                if (this.editPerson)
-                    return this.people.find(p => p.id === this.editPerson.id);
-                return null;
-            },
-            currentPersonLocation() {
-                if (this.currentPerson)
-                    return this.roomLocations.find(l => l.id === this.currentPerson.roomId)?.name;
-                return '';
             },
             showMovePerson: {
                 get() {

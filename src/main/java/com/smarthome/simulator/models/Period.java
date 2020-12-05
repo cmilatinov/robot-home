@@ -1,47 +1,83 @@
 package com.smarthome.simulator.models;
 
-public class Period {
-    private int startTime;
-    private int endTime;
-    private int duration;
-    private float desiredTemperature;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
-    public Period(int startTime, int endTime, float desiredTemperature) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+/**
+ * Represents a period of time in a day with its desired temperature.
+ */
+public class Period {
+
+    /**
+     * Time formatter used to convert strings into {@link LocalTime} instances.
+     */
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+    /**
+     * Start time of the period.
+     */
+    private final LocalTime startTime;
+
+    /**
+     * Start time of the period.
+     */
+    private final LocalTime endTime;
+
+    /**
+     * Desired temperature for the period.
+     */
+    private final float desiredTemperature;
+
+
+    /**
+     * Creates a new period with the given values.
+     *
+     * @param startTime          The period's start time in 'HH:mm' format.
+     * @param endTime            The period's end time in 'HH:mm' format.
+     * @param desiredTemperature The period's desired temperature.
+     */
+    public Period(String startTime, String endTime, float desiredTemperature) {
+        this.startTime = LocalTime.parse(startTime, formatter);
+        this.endTime = LocalTime.parse(endTime, formatter);
         this.desiredTemperature = desiredTemperature;
-        this.duration = endTime - startTime;
     }
 
-    public int getStartTime() {
+    /**
+     * Returns this period's start time.
+     *
+     * @return {@link LocalTime} The start of this period.
+     */
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(int startTime) {
-        this.startTime = startTime;
-    }
-
-    public int getEndTime() {
+    /**
+     * Returns this period's end time.
+     *
+     * @return {@link LocalTime} The end of this period.
+     */
+    public LocalTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
-        this.endTime = endTime;
+    /**
+     * Returns this period's duration.
+     *
+     * @return {@link LocalTime} The duration of this period based on its start and end times.
+     * @parma timeUnit The unit of time in which to return the duration. (ex: {@link ChronoUnit#HOURS}, {@link ChronoUnit#MINUTES})
+     */
+    public long getDuration(ChronoUnit timeUnit) {
+        return startTime.until(endTime, timeUnit);
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
+    /**
+     * Returns the desired temperature for this time period.
+     *
+     * @return float The desired temperature for this time period.
+     */
     public float getDesiredTemperature() {
         return desiredTemperature;
     }
 
-    public void setDesiredTemperature(float desiredTemperature) {
-        this.desiredTemperature = desiredTemperature;
-    }
 }
