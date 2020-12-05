@@ -52,15 +52,12 @@ public class TaskDispatcher extends Thread{
         while (true) {
             this.previousTime = System.nanoTime();
             while (simulation.isRunning()) {
-                System.out.println("currentTime: " + currentTime);
                 this.currentTime = System.nanoTime();
                 float simSpeed = simulation.getSimulationSpeed();
                 long timeDelta = currentTime - previousTime;
                 for (Iterator<DelayedRunnable> iterator = taskList.iterator(); iterator.hasNext();) {
                     DelayedRunnable dr = iterator.next();
                     dr.setDelay(dr.getDelay() - (long)simSpeed*timeDelta);
-                    //System.out.println(dr);
-                    //System.out.println(dr.getDelay());
                     if (dr.getDelay() <= 0) {
                         dr.run();
                         if (dr.isPeriodic()) {
