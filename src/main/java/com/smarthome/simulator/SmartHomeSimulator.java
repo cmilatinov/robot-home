@@ -154,7 +154,6 @@ public class SmartHomeSimulator {
 
         // Add browser listeners
         addListeners();
-
     }
 
     /**
@@ -700,6 +699,16 @@ public class SmartHomeSimulator {
             // Update front-end
             handler.updateViews();
 
+        });
+
+        //User sets the winter and summer dates
+        handler.addEventListener("setWinter", (event) -> {
+
+            // Set the range of winter
+            simulation.executeCommand(SHH.SET_WINTER_RANGE, EventUtil.convertToMap(event), false);
+
+            //Update front end
+            handler.updateViews();
         });
 
     }

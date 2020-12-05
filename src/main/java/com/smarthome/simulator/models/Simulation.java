@@ -14,6 +14,7 @@ import com.smarthome.simulator.utils.Logger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Timer;
@@ -86,6 +87,16 @@ public class Simulation {
      */
     private final List<Module> modules;
 
+    /**
+     * Specifies the first month of winter
+     */
+    private int startWinterMonth;
+
+    /**
+     * Specifies the last month of winter
+     */
+    private int endWinterMonth;
+
     // ============================ CONSTRUCTORS ============================
 
     /**
@@ -123,6 +134,8 @@ public class Simulation {
         modules.add(new SHC(this));
         modules.add(new SHP(this));
         modules.add(new SHH(this));
+        this.startWinterMonth = 10;
+        this.endWinterMonth = 3;
     }
 
     // ============================ OVERRIDES ============================
@@ -433,7 +446,38 @@ public class Simulation {
         return dateTime.toLocalTime();
     }
 
+    public int getStartWinterMonth() {
+        return startWinterMonth;
+    }
+
+    public void setStartWinterMonth(int startWinterMonth) {
+        this.startWinterMonth = startWinterMonth;
+    }
+
+    public int getEndWinterMonth() {
+        return endWinterMonth;
+    }
+
+    public void setEndWinterMonth(int endWinterMonth) {
+        this.endWinterMonth = endWinterMonth;
+    }
+
     // ============================ OTHER METHODS ============================
+
+    /**
+     * @return the season we are currently in
+     */
+    public String getCurrentSeason() {
+        // get the current month
+        int month = dateTime.getMonthValue();
+
+        // initial winter range --> october 1st to march 31st
+        if(month >= this.startWinterMonth || month <= this.endWinterMonth) {
+            return "Winter";
+        }else {
+            return "Summer";
+        }
+    }
 
     /**
      * This function collects all of the existing lights of the house layout and returns them as a list.
