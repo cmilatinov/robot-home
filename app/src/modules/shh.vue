@@ -99,6 +99,17 @@
                     </div>
                 </v-subheader>
                 <zone-manager></zone-manager>
+                <v-subheader class="text-uppercase w-100 pl-0 mt-2" style="margin-bottom: -25px">
+                    <div class="w-100">
+                        Room Temperature
+                    </div>
+                </v-subheader>
+                <v-checkbox color="info" :value="colorCodedTemp" @change="$store.commit('setColorCodedTemp', !!$event)">
+                    <template #label>
+                        <v-icon color="warning" class="mr-2">fa-fire</v-icon>
+                        <span>Heatmap Mode</span>
+                    </template>
+                </v-checkbox>
             </v-col>
         </v-row>
     </div>
@@ -141,6 +152,9 @@
             },
             simulationSummerTemp() {
                 return this.shh?.summerTemperature;
+            },
+            colorCodedTemp() {
+                return this.$store.state.colorCodedTemperature;
             }
         },
         methods: {

@@ -69,8 +69,8 @@
 
             .diagram-content {
                 position: absolute;
-                width: 1000px;
-                height: 1000px;
+                width: 1400px;
+                height: 1400px;
                 top: 0;
                 left: 0;
                 border: 3px solid rgba(white, 0.1);

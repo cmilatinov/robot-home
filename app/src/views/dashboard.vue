@@ -150,7 +150,7 @@
                         House Layout
                     </v-card-title>
                     <house-layout>
-                        <house-layout-room :key="room.name" v-for="room in rooms" :room="room"
+                        <house-layout-room :key="room.name" v-for="(room, index) in rooms" :room="room" :style="{ zIndex: index + 1 }"
                                            @movePerson="$store.commit('onMovePerson', $event)"
                                            @deletePerson="$store.commit('onDeletePerson', $event)">
                         </house-layout-room>

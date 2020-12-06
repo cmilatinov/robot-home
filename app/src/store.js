@@ -7,6 +7,7 @@ export default new Vuex.Store({
     state: {
         simulation: null,
         hvacStates: [],
+        colorCodedTemperature: false,
 
         showMovePerson: false,
         showDeletePerson: false,
@@ -37,6 +38,9 @@ export default new Vuex.Store({
         },
         setShowDeletePerson(state, value) {
             state.showDeletePerson = !!value;
+        },
+        setColorCodedTemp(state, value) {
+            state.colorCodedTemperature = !!value;
         },
         onMovePerson(state, person) {
             state.editPerson = { ...person };
