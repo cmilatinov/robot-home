@@ -29,7 +29,7 @@
                 </v-card>
             </v-menu>
         </div>
-        <h1>{{room.name}}</h1>
+        <h1 style="z-index: 5;">{{room.name}}</h1>
         <div class="diagram-room-status">
             <v-icon class="ma-1 light" :key="`l-${i}`" v-for="i in (0, numLightsOn)">fa-lightbulb</v-icon>
             <v-icon class="ma-1 lock" :key="`dl-${i}`" v-for="i in (0, numDoorsLocked)">fa-lock</v-icon>
@@ -39,7 +39,7 @@
         <div class="diagram-room-controls">
             <v-menu offset-y :close-on-content-click="false">
                 <template #activator="{ on, attrs }">
-                    <v-btn icon :disabled="!simulationRunning" class="ma-2" v-bind="attrs" v-on="on">
+                    <v-btn icon :disabled="!simulationRunning || room.lights.length <= 0" class="ma-2" v-bind="attrs" v-on="on">
                         <v-icon>fa-lightbulb</v-icon>
                     </v-btn>
                 </template>
@@ -54,7 +54,7 @@
 
             <v-menu offset-y :close-on-content-click="false">
                 <template #activator="{ on, attrs }">
-                    <v-btn icon :disabled="!simulationRunning" class="ma-2" v-bind="attrs" v-on="on">
+                    <v-btn icon :disabled="!simulationRunning || room.doors.length <= 0" class="ma-2" v-bind="attrs" v-on="on">
                         <v-icon>fa-door-open</v-icon>
                     </v-btn>
                 </template>
@@ -79,7 +79,7 @@
 
             <v-menu offset-y :close-on-content-click="false">
                 <template #activator="{ on, attrs }">
-                    <v-btn icon :disabled="!simulationRunning" class="ma-2" v-bind="attrs" v-on="on">
+                    <v-btn icon :disabled="!simulationRunning || room.windows.length <= 0" class="ma-2" v-bind="attrs" v-on="on">
                         <v-icon>fab fa-windows</v-icon>
                     </v-btn>
                 </template>
@@ -151,10 +151,12 @@
             </v-card>
         </v-dialog>
         <div @mousedown.stop="onResizeMouseDown" class="diagram-room-resize"></div>
+        <div class="diagram-room-temp-overlay" :style="{ backgroundColor: temperatureColor }" v-if="colorCodedTemp"></div>
     </div>
 </template>
 
 <script>
+    import interpolate from 'color-interpolate';
     export default {
         name: 'house-layout-room',
         props: {
@@ -171,7 +173,10 @@
                 height: 200,
                 offsetX: 0,
                 offsetY: 0,
-                dragResize: false
+                dragResize: false,
+                temperatureMin: 10,
+                temperatureMax: 30,
+                temperatureColorMap: interpolate(['blue', 'lime', 'red'])
             };
         },
         mounted() {
@@ -266,6 +271,12 @@
             },
             hvac() {
                 return this.$store.state.hvacStates.find(s => s.id === this.room.id)?.hvac || false;
+            },
+            colorCodedTemp() {
+                return this.$store.state.colorCodedTemperature;
+            },
+            temperatureColor() {
+                return this.temperatureColorMap(Math.min(Math.max((this.room.temperature - this.temperatureMin) / (this.temperatureMax - this.temperatureMin), 0), 1));
             }
         },
         watch: {
@@ -332,10 +343,22 @@
 </style>
 
 <style lang="scss" scoped>
+    .diagram-room-temp-overlay {
+        position: absolute;
+        z-index: 0;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        opacity: 0.1;
+        pointer-events: none;
+    }
+
     .diagram-room-temp {
         position: absolute;
         bottom: 0;
         left: 0;
+        z-index: 5;
     }
 
     .diagram-room-resize {
@@ -344,6 +367,7 @@
         right: -0.2px;
         width: 0;
         height: 0;
+        z-index: 1;
 
         cursor: se-resize;
 
@@ -365,17 +389,20 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        z-index: 5;
     }
 
     .diagram-room-people {
         display: flex;
         flex-wrap: wrap;
+        z-index: 5;
     }
 
     .diagram-room-status {
         display: flex;
         flex-wrap: wrap;
         opacity: 0.7;
+        z-index: 5;
 
         i {
             font-size: 9pt !important;

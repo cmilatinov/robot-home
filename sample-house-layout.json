@@ -7,8 +7,8 @@
          "nbOfLights": 1,
          "height": 300,
          "width": 200,
-         "position-x": 0,
-         "position-y": 0,
+         "position-x": 50,
+         "position-y": 50,
          "isHouseEntrance": false
       },
       {
@@ -18,7 +18,7 @@
          "nbOfLights": 2,
          "height": 300,
          "width": 400,
-         "position-x": 500,
+         "position-x": 900,
          "position-y": 500,
          "isHouseEntrance": false
       },
@@ -29,7 +29,7 @@
          "nbOfLights": 1,
          "height": 300,
          "width": 300,
-         "position-x": 300,
+         "position-x": 700,
          "position-y": 100,
          "isHouseEntrance": false
       },
@@ -40,8 +40,30 @@
          "nbOfLights": 2,
          "height": 300,
          "width": 400,
-         "position-x": 400,
-         "position-y": 400,
+         "position-x": 50,
+         "position-y": 500,
+         "isHouseEntrance": true
+      },
+      {
+         "name": "Backyard",
+         "nbOfWindows": 0,
+         "nbOfDoors": 1,
+         "nbOfLights": 0,
+         "height": 300,
+         "width": 400,
+         "position-x": 100,
+         "position-y": 1000,
+         "isHouseEntrance": true
+      },
+      {
+         "name": "House Entrance",
+         "nbOfWindows": 2,
+         "nbOfDoors": 1,
+         "nbOfLights": 1,
+         "height": 300,
+         "width": 300,
+         "position-x": 1000,
+         "position-y": 1000,
          "isHouseEntrance": true
       }
    ]
