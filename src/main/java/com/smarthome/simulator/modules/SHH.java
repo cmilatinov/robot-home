@@ -1,10 +1,7 @@
 package com.smarthome.simulator.modules;
 
 
-import com.smarthome.simulator.models.Period;
-import com.smarthome.simulator.models.Room;
-import com.smarthome.simulator.models.Simulation;
-import com.smarthome.simulator.models.Zone;
+import com.smarthome.simulator.models.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import java.util.ArrayList;
@@ -15,8 +12,7 @@ import java.util.Optional;
 public class SHH extends Module {
 
     private final List<Zone> zones = new ArrayList<>();
-
-
+    public HVAC hvac;
     public static final String SET_DEFAULT_ZONE = "setDefaultZone";
     public static final String SET_ROOM_TEMPERATURE = "setRoomTemperature";
     public static final String EDIT_ZONE = "editZone";
@@ -28,12 +24,27 @@ public class SHH extends Module {
     public static final String SET_AWAY_MODE_TEMP = "setAwayModeTemp";
 
     /**
+     * The default temperature for winter when the home is in away mode
+     */
+    private float winterTemperature;
+
+    /**
+     * The default temperature for summer when the home is in away mode
+     */
+    private float summerTemperature;
+
+
+    /**
      * Creates a module with a given name and simulation reference.
      *
      * @param simulation The simulation instance to bind to the module.
      */
     public SHH(Simulation simulation) {
         super("SHH", simulation);
+        this.winterTemperature = 22.0f;
+        this.summerTemperature = 16.0f;
+        hvac = new HVAC(simulation, this);
+        hvac.startHVAC();
     }
 
     /**
@@ -83,16 +94,7 @@ public class SHH extends Module {
             case SET_SEASON_TEMP:
                 setSeasonTemp(payload);
                 break;
-            case SET_AWAY_MODE_TEMP:
-                setAwayModeTemp();
-                break;
         }
-    }
-
-    private void setAwayModeTemp() {
-        // waiting for the change rate temperature to be figured out
-        // will change the actual temperature to the desired temperature according to the season
-        // In Simulator class, winter: winterTemperature, summer: summerTemperature
     }
 
     private void setSeasonTemp(Map<String, Object> payload){
@@ -101,8 +103,8 @@ public class SHH extends Module {
         float summerTemp = Float.parseFloat(payload.get("summer").toString());
 
         // set the temperature to the simulation
-        simulation.setWinterTemperature(winterTemp);
-        simulation.setSummerTemperature(summerTemp);
+        setWinterTemperature(winterTemp);
+        setSummerTemperature(summerTemp);
 
     }
 
@@ -233,5 +235,49 @@ public class SHH extends Module {
 
     public List<Zone> getZones() {
         return zones;
+    }
+
+    /**
+     * The default winter temperature
+     *
+     * @return the fault winter temperature
+     */
+    public float getWinterTemperature() {
+        return winterTemperature;
+    }
+
+    /**
+     * Sets the winter temperature
+     * @param winterTemperature
+     * @return if the change was made or not
+     */
+    public boolean setWinterTemperature(float winterTemperature) {
+        if(winterTemperature <= 30 && winterTemperature >= 15){
+            this.winterTemperature = winterTemperature;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * The default summer temperature
+     *
+     * @return the default summer temperature
+     */
+    public float getSummerTemperature() {
+        return summerTemperature;
+    }
+
+    /**
+     * Sets the default summer temperature
+     * @param summerTemperature
+     * @return if the change was made or not
+     */
+    public boolean setSummerTemperature(float summerTemperature) {
+        if(summerTemperature <= 30 && summerTemperature >= 15){
+            this.summerTemperature = summerTemperature;
+            return true;
+        }
+        return false;
     }
 }
