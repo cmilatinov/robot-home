@@ -6,7 +6,7 @@ import com.smarthome.simulator.utils.Logger;
 /**
  * The UserProfileException class will display an error message if there is any error related to the user profiles.
  */
-public class UserProfileException extends RuntimeException {
+public class UserProfileException extends Exception {
 
     /**
      * Default Constructor

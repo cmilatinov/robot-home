@@ -149,7 +149,7 @@ public class HouseLayout {
      * @param selectedFile File object that contains the JSON file that will be parsed.
      * @return ArrayList of rooms that are in the HouseLayout.
      */
-    public static ArrayList<Room> parseJSONFile(File selectedFile) {
+    public static ArrayList<Room> parseJSONFile(File selectedFile) throws HouseLayoutException {
 
         // Resulting obj from parsing
         Object obj;
@@ -160,14 +160,8 @@ public class HouseLayout {
         } catch (IOException | ParseException e) {
             throw new HouseLayoutException(Logger.ERROR, "System", "Error while fetching and parsing the json file.");
         }
-
-        // Catch HouseLayoutExceptions
-        try {
-            //getting RoomsList
-            return getRoomsList(obj);
-        } catch (HouseLayoutException e) {
-            return null;
-        }
+        //getting RoomsList
+        return getRoomsList(obj);
     }
 
     /**
@@ -176,18 +170,22 @@ public class HouseLayout {
      * @param obj represents the parsed room file.
      * @return ArrayList of rooms that are in the house layout.
      */
-    private static ArrayList<Room> getRoomsList(Object obj) throws HouseLayoutException {
+    private static ArrayList<Room> getRoomsList(Object obj){
         // Typecasting obj to JSONObject
         JSONObject house = (JSONObject) obj;
 
         // Getting rooms
         JSONArray rooms = (JSONArray) house.get("rooms");
 
-        // Verifying the rooms
-        verifyRooms(rooms);
+        try {
+            // Verifying the rooms
+            verifyRooms(rooms);
 
-        // returning roomsList
-        return saveRooms(rooms);
+            // returning roomsList
+            return saveRooms(rooms);
+        }catch(HouseLayoutException e) {
+            return null;
+        }
     }
 
     /**
@@ -213,14 +211,16 @@ public class HouseLayout {
      * @param rooms JSONArray object containing the parsed rooms.
      * @return ArrayList of rooms that are in the HouseLayout.
      */
-    private static ArrayList<Room> saveRooms(JSONArray rooms) throws HouseLayoutException {
+    private static ArrayList<Room> saveRooms(JSONArray rooms) {
         // Creating arraylist to store all rooms in the house
         ArrayList<Room> roomsList = new ArrayList<>();
 
         // Going through each room
         for (Object room : rooms) {
-            // Adding the room to the list of rooms in the house
-            roomsList.add(getRoomsInfo((JSONObject) room));
+            try {
+                // Adding the room to the list of rooms in the house
+                roomsList.add(getRoomsInfo((JSONObject) room));
+            } catch (HouseLayoutException e){}
         }
 
         return roomsList;
