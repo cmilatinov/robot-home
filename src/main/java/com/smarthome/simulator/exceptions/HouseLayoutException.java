@@ -6,7 +6,7 @@ import com.smarthome.simulator.utils.Logger;
 /**
  * The HouseLayoutException class will display an error message if there is any error related to the house layout
  */
-public class HouseLayoutException extends RuntimeException {
+public class HouseLayoutException extends Exception {
 
     /**
      * Default Constructor

@@ -168,7 +168,9 @@ public class SHP extends Module {
                 put("id", light.getId());
                 put("on", true);
             }};
-            simulation.executeCommand(SHC.REMOTE_CONTROL_LIGHT, eventMap, false);
+            try {
+                simulation.executeCommand(SHC.REMOTE_CONTROL_LIGHT, eventMap, false);
+            }catch(ModuleException e){};
         });
 
     }
@@ -244,7 +246,9 @@ public class SHP extends Module {
                 break;
 
             case SET_AWAY_MODE:
-                ExecuteAwayMode(payload);
+                try {
+                    ExecuteAwayMode(payload);
+                }catch(ModuleException e){};
                 break;
 
             case SET_ALERT_DELAY:

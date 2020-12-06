@@ -1,6 +1,7 @@
 package com.smarthome.simulator.models;
 
 import com.smarthome.simulator.SmartHomeSimulator;
+import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.modules.SHC;
 import com.smarthome.simulator.modules.SHH;
 import com.smarthome.simulator.utils.DelayedRunnable;
@@ -168,7 +169,9 @@ public class HVAC {
                                 payload.put("id", window.getId());
                                 payload.put("blocked", window.isBlocked());
                                 payload.put("open", true);
-                                simulation.executeCommand(SHC.CONTROL_WINDOW, payload, false);
+                                try {
+                                    simulation.executeCommand(SHC.CONTROL_WINDOW, payload, false);
+                                }catch(ModuleException e){}
                                 if (window.isOpen()) {
                                     windowOpen.set(true);
                                     break;
@@ -186,7 +189,9 @@ public class HVAC {
                                 payload.put("id", window.getId());
                                 payload.put("blocked", window.isBlocked());
                                 payload.put("open", false);
-                                simulation.executeCommand(SHC.CONTROL_WINDOW, payload, false);
+                                try {
+                                    simulation.executeCommand(SHC.CONTROL_WINDOW, payload, false);
+                                }catch(ModuleException e){};
                             });
                             roomStates.put(room, HVACState.RUNNING);
                         }
