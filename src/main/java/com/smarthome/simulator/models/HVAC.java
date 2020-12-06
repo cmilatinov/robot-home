@@ -1,7 +1,11 @@
 package com.smarthome.simulator.models;
 
+import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.modules.SHH;
 import com.smarthome.simulator.utils.DelayedRunnable;
+import com.smarthome.simulator.utils.Logger;
+
+import java.util.List;
 
 public class HVAC {
     private Simulation simulation;
@@ -15,6 +19,8 @@ public class HVAC {
     private final float workingRate = 0.1f;
     private final float pausedRate = 0f;
     private final float stoppedRate = 0.05f;
+    private static final float MINIMUM_ALERT_TEMP = -20f;
+    private static final float MAXIMUM_ALERT_TEMP = 50f;
 
     public HVAC(Simulation simulation, SHH shh){
         super();
@@ -28,12 +34,12 @@ public class HVAC {
     private void changeTemp(HVAC hvac, Simulation simulation){
         HouseLayout house = simulation.getHouseLayout();
         if(house != null) {
-            if (hvac.state == State.WORKING) {
-                //increase temp by working amount
-            } else if (this.state == State.PAUSED) {
-                //check temp
-            } else if (this.state == State.STOPPED) {
-                //something else
+            List<Room> rooms = house.getRooms();
+            for(Room room: rooms) {
+                float roomTemp = room.getTemperature();
+                if(roomTemp <= MINIMUM_ALERT_TEMP || roomTemp>=MAXIMUM_ALERT_TEMP) {
+                    SmartHomeSimulator.LOGGER.log(Logger.WARN, "SHH", "Critical temperature: " + roomTemp);
+                }
             }
         }
     }
