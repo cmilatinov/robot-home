@@ -13,26 +13,65 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * The HVAC class represents the Heating Ventilation Air Conditioning system.
+ */
 public class HVAC {
 
+    /**
+     * This is a pointer to the simulation instance
+     */
     private final Simulation simulation;
+
+    /**
+     * The is a pointer to the shh instance
+     */
     private final SHH shh;
 
+    /**
+     * This is a Mapping of Room -> State
+     */
     private final Map<Room, HVACState> roomStates = new HashMap<>();
 
+    /**
+     * Enum representing the various states that HVAC can have
+     */
     private enum HVACState {
         STOPPED,
         PAUSED,
         RUNNING
     };
 
+    /**
+     * The rate at which the temperature changes with HVAC on
+     */
     private static final float HVAC_RATE = 0.1f;
+
+    /**
+     * The rate at which the temperature changes with HVAC off
+     */
     private static final float STOPPED_RATE = 0.05f;
+
+    /**
+     * The temperature threshold/difference before HVAC turns back on
+     */
     private static final float TEMP_THRESHOLD = 0.25f;
 
+    /**
+     * The alerting minimum temperature point
+     */
     private static final float MINIMUM_ALERT_TEMP = 0f;
+
+    /**
+     * The alerting maximum temperature point
+     */
     private static final float MAXIMUM_ALERT_TEMP = 50f;
 
+    /**
+     * The parameterized constructor for the HVAC class
+     * @param simulation pointer to the existing simulation instance
+     * @param shh pointer to the existing shh instance
+     */
     public HVAC(Simulation simulation, SHH shh) {
         super();
         this.shh = shh;
@@ -41,6 +80,11 @@ public class HVAC {
 
     // ============================  Other methods  ============================
 
+    /**
+     * This function is responsible for changing the temperature of the rooms with the correct rate.
+     * @param shh pointer to the existing shh instance
+     * @param simulation pointer to the existing simulation instance
+     */
     private void changeTemp(SHH shh, Simulation simulation) {
 
         //SmartHomeSimulator.LOGGER.log(Logger.DEBUG, "SHH", "Test");
@@ -178,6 +222,9 @@ public class HVAC {
         SmartHomeSimulator.updateRoomTempView();
     }
 
+    /**
+     * This function starts the HVAC when called in the SHH.
+     */
     public void startHVAC() {
         HVAC hvac = this;
 

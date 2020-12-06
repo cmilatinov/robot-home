@@ -92,8 +92,14 @@ public class Simulation {
      */
     private int endWinterMonth;
 
-
+    /**
+     * Constant representation of the string 'winter'
+     */
     public static final String WINTER = "winter";
+
+    /**
+     * Constant representation of the string 'summer'
+     */
     public static final String SUMMER = "summer";
 
 
@@ -441,18 +447,34 @@ public class Simulation {
         return dateTime.toLocalTime();
     }
 
+    /**
+     * This function gets the starting month for the winter season
+     * @return int representation of the month
+     */
     public int getStartWinterMonth() {
         return startWinterMonth;
     }
 
+    /**
+     * This function sets the starting month for the winter season
+     * @param startWinterMonth int representation of the month
+     */
     public void setStartWinterMonth(int startWinterMonth) {
         this.startWinterMonth = startWinterMonth;
     }
 
+    /**
+     * This function gets the ending month for the winter season
+     * @return int representation of the month
+     */
     public int getEndWinterMonth() {
         return endWinterMonth;
     }
 
+    /**
+     * This function sets the ending month for the winter season
+     * @param endWinterMonth int representation of the month
+     */
     public void setEndWinterMonth(int endWinterMonth) {
         this.endWinterMonth = endWinterMonth;
     }

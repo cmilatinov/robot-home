@@ -44,12 +44,12 @@ public class Room extends IdentifiableObject {
     private float desiredTemperature = 24.0f;
 
     /**
-     *
+     * Represents whether or not this room's temperature has been overridden by the user.
      */
     private boolean overrideZoneTemp = false;
 
     /**
-     *
+     * Represents whether the critical temperature message has been logged for this room
      */
     private boolean criticalTempLogged = false;
 
@@ -214,40 +214,66 @@ public class Room extends IdentifiableObject {
         this.lights = lights;
     }
 
+    /**
+     * This function gets the current temperature of this room.
+     * @return the current temperature of the room
+     */
     public float getTemperature() {
         return temperature;
     }
 
+    /**
+     * This function sets the current temperature of the room with the given temperature
+     * @param temperature new temperature of the room
+     */
     public void setTemperature(float temperature) {
         this.temperature = temperature;
     }
 
-
+    /**
+     * This function gets the desired temperature of the room
+     * @return the desired temperature of the room
+     */
     public float getDesiredTemperature() {
         return desiredTemperature;
     }
 
+    /**
+     * This function sets the desired temperature of the room with the given temperature
+     * @param desiredTemperature new desired temperature of the room
+     */
     public void setDesiredTemperature(float desiredTemperature) {
         this.desiredTemperature = desiredTemperature;
     }
 
     /**
      * Returns whether or not this room has overridden the zone temperature control of the zone it belongs to.
-     *
-     * @return
+     * @return boolean representation of it.
      */
     public boolean isZoneTempOverridden() {
         return overrideZoneTemp;
     }
 
+    /**
+     * This function sets whether or not this room's temperature has been overridden by the user
+     * @param override boolean representation of it.
+     */
     public void setOverrideZoneTemp(boolean override) {
         this.overrideZoneTemp = override;
     }
 
+    /**
+     * This function returns whether or not this the critical temperature message for this room has been already logged.
+     * @return boolean representation of it.
+     */
     public boolean isCriticalTempLogged() {
         return criticalTempLogged;
     }
 
+    /**
+     * This function sets whether or not this the critical temperature message for this room has been logged.
+     * @param criticalTempLogged boolean representation of it.
+     */
     public void setCriticalTempLogged(boolean criticalTempLogged) {
         this.criticalTempLogged = criticalTempLogged;
     }
