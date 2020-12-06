@@ -138,7 +138,7 @@ public class HVAC {
                 }
             }
         }
-        SmartHomeSimulator.updateView();
+        SmartHomeSimulator.updateRoomTempView();
     }
 
     public void startHVAC () {

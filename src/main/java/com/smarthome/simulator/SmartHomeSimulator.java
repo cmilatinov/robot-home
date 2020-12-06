@@ -774,8 +774,8 @@ public class SmartHomeSimulator {
                 });
     }
 
-    public static void updateView () {
-        handler.updateViews();
+    public static void updateRoomTempView () {
+        handler.updateRoomTemps();
     }
 
 
