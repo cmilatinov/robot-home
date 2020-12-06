@@ -5,6 +5,7 @@ import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.modules.Module;
 import com.smarthome.simulator.modules.SHP;
+import com.smarthome.simulator.utils.DelayedRunnable;
 import com.smarthome.simulator.utils.Logger;
 import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.utils.TaskDispatcher;
@@ -91,15 +92,11 @@ public class Simulation {
      */
     private int endWinterMonth;
 
-    /**
-     * The default temperature for winter when the home is in away mode
-     */
-    private float winterTemperature;
 
-    /**
-     * The default temperature for summer when the home is in away mode
-     */
-    private float summerTemperature;
+    public static final String WINTER = "winter";
+    public static final String SUMMER = "summer";
+
+
 
     // ============================ CONSTRUCTORS ============================
 
@@ -138,8 +135,7 @@ public class Simulation {
         this.modules = new ArrayList<>();
         this.startWinterMonth = 10;
         this.endWinterMonth = 3;
-        this.winterTemperature = 24.0f;
-        this.summerTemperature = 16.0f;
+
     }
 
     // ============================ OVERRIDES ============================
@@ -461,51 +457,24 @@ public class Simulation {
         this.endWinterMonth = endWinterMonth;
     }
 
-    /**
-     * The default winter temperature
-     *
-     * @return the fault winter temperature
-     */
-    public float getWinterTemperature() {
-        return winterTemperature;
-    }
 
-    /**
-     * Sets the winter temperature
-     * @param winterTemperature
-     * @return if the change was made or not
-     */
-    public boolean setWinterTemperature(float winterTemperature) {
-        if(winterTemperature <= 30 && winterTemperature >= 15){
-            this.winterTemperature = winterTemperature;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * The default summer temperature
-     *
-     * @return the default summer temperature
-     */
-    public float getSummerTemperature() {
-        return summerTemperature;
-    }
-
-    /**
-     * Sets the default summer temperature
-     * @param summerTemperature
-     * @return if the change was made or not
-     */
-    public boolean setSummerTemperature(float summerTemperature) {
-        if(summerTemperature <= 30 && summerTemperature >= 15){
-            this.summerTemperature = summerTemperature;
-            return true;
-        }
-        return false;
-    }
 
     // ============================ OTHER METHODS ============================
+
+    /**
+     * @return the season we are currently in
+     */
+    public String getCurrentSeason() {
+        // get the current month
+        int month = dateTime.getMonthValue();
+
+        // initial winter range --> october 1st to march 31st
+        if (month >= this.startWinterMonth || month <= this.endWinterMonth) {
+            return WINTER;
+        } else {
+            return SUMMER;
+        }
+    }
 
     /**
      * Registers a module for the simulation, adding its functionality to the simulation.
