@@ -501,21 +501,6 @@ public class Simulation {
     }
 
     /**
-     * @return the season we are currently in
-     */
-    public String getCurrentSeason() {
-        // get the current month
-        int month = dateTime.getMonthValue();
-
-        // initial winter range --> october 1st to march 31st
-        if(month >= this.startWinterMonth || month <= this.endWinterMonth) {
-            return "Winter";
-        }else {
-            return "Summer";
-        }
-    }
-
-    /**
      * This function collects all of the existing lights of the house layout and returns them as a list.
      *
      * @return The list of {@link Light} objects in this simulation's house layout.
