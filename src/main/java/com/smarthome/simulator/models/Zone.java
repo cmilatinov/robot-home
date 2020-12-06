@@ -30,7 +30,8 @@ public class Zone extends IdentifiableObject {
 
     /**
      * The parameterized constructor for the zone class
-     * @param name The name of the zone
+     *
+     * @param name      The name of the zone
      * @param isDefault Whether or not it's a default
      */
     public Zone(String name, boolean isDefault) {
@@ -40,6 +41,7 @@ public class Zone extends IdentifiableObject {
 
     /**
      * This function gets the name of the zone
+     *
      * @return the name of the zone
      */
     public String getName() {
@@ -48,6 +50,7 @@ public class Zone extends IdentifiableObject {
 
     /**
      * This function sets the name of the zone
+     *
      * @param name the name of the zone
      */
     public void setName(String name) {
@@ -56,6 +59,7 @@ public class Zone extends IdentifiableObject {
 
     /**
      * This function gets the list of rooms in the zone
+     *
      * @return the list of rooms in the zone
      */
     public List<Room> getRooms() {
@@ -64,6 +68,7 @@ public class Zone extends IdentifiableObject {
 
     /**
      * This function gets the list of periods in the zone
+     *
      * @return the list of periods in the zone
      */
     public List<Period> getPeriods() {
@@ -72,6 +77,7 @@ public class Zone extends IdentifiableObject {
 
     /**
      * This function checks if this zone instance is default one
+     *
      * @return boolean representation of it.
      */
     public boolean isDefault() {

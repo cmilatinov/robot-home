@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Class that handles the scheduling of tasks on simulation time
  */
-public class TaskDispatcher extends Thread{
+public class TaskDispatcher extends Thread {
 
     /**
      * Reference to the simulation
@@ -33,6 +33,7 @@ public class TaskDispatcher extends Thread{
 
     /**
      * Constructor that takes a reference to the simulation
+     *
      * @param simulation Simulation instance to which the task dispatch should match its speed.
      */
     public TaskDispatcher(Simulation simulation) {
@@ -56,9 +57,9 @@ public class TaskDispatcher extends Thread{
                 this.currentTime = System.nanoTime();
                 float simSpeed = simulation.getSimulationSpeed();
                 long timeDelta = currentTime - previousTime;
-                for (Iterator<DelayedRunnable> iterator = taskList.iterator(); iterator.hasNext();) {
+                for (Iterator<DelayedRunnable> iterator = taskList.iterator(); iterator.hasNext(); ) {
                     DelayedRunnable dr = iterator.next();
-                    dr.setDelay(dr.getDelay() - (long)simSpeed*timeDelta);
+                    dr.setDelay(dr.getDelay() - (long) simSpeed * timeDelta);
                     if (dr.getDelay() <= 0) {
                         dr.run();
                         if (dr.isPeriodic()) {
@@ -77,9 +78,10 @@ public class TaskDispatcher extends Thread{
 
     /**
      * Schedules a task
+     *
      * @param task The task to schedule
      */
-    public synchronized void schedule (DelayedRunnable task) {
+    public synchronized void schedule(DelayedRunnable task) {
         taskList.add(task);
     }
 

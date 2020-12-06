@@ -170,7 +170,7 @@ public class HouseLayout {
      * @param obj represents the parsed room file.
      * @return ArrayList of rooms that are in the house layout.
      */
-    private static ArrayList<Room> getRoomsList(Object obj){
+    private static ArrayList<Room> getRoomsList(Object obj) {
         // Typecasting obj to JSONObject
         JSONObject house = (JSONObject) obj;
 
@@ -183,7 +183,7 @@ public class HouseLayout {
 
             // returning roomsList
             return saveRooms(rooms);
-        }catch(HouseLayoutException e) {
+        } catch (HouseLayoutException e) {
             return null;
         }
     }
@@ -220,7 +220,8 @@ public class HouseLayout {
             try {
                 // Adding the room to the list of rooms in the house
                 roomsList.add(getRoomsInfo((JSONObject) room));
-            } catch (HouseLayoutException e){}
+            } catch (HouseLayoutException e) {
+            }
         }
 
         return roomsList;

@@ -1,18 +1,22 @@
 package com.smarthome.simulator.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.modules.Module;
 import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.Logger;
-import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.utils.TaskDispatcher;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class Simulation {
 
@@ -95,7 +99,6 @@ public class Simulation {
      * Constant representation of the string 'summer'
      */
     public static final String SUMMER = "summer";
-
 
 
     // ============================ CONSTRUCTORS ============================
@@ -420,6 +423,7 @@ public class Simulation {
 
     /**
      * This function gets the starting month for the winter season
+     *
      * @return int representation of the month
      */
     public int getStartWinterMonth() {
@@ -428,6 +432,7 @@ public class Simulation {
 
     /**
      * This function sets the starting month for the winter season
+     *
      * @param startWinterMonth int representation of the month
      */
     public void setStartWinterMonth(int startWinterMonth) {
@@ -436,6 +441,7 @@ public class Simulation {
 
     /**
      * This function gets the ending month for the winter season
+     *
      * @return int representation of the month
      */
     public int getEndWinterMonth() {
@@ -444,12 +450,12 @@ public class Simulation {
 
     /**
      * This function sets the ending month for the winter season
+     *
      * @param endWinterMonth int representation of the month
      */
     public void setEndWinterMonth(int endWinterMonth) {
         this.endWinterMonth = endWinterMonth;
     }
-
 
 
     // ============================ OTHER METHODS ============================

@@ -29,11 +29,12 @@
                 </v-card>
             </v-menu>
         </div>
-        <h1>{{room.name}} ({{Number(room.temperature).toFixed(2)}} &deg;C)</h1>
+        <h1>{{room.name}}</h1>
         <div class="diagram-room-status">
             <v-icon class="ma-1 light" :key="`l-${i}`" v-for="i in (0, numLightsOn)">fa-lightbulb</v-icon>
             <v-icon class="ma-1 lock" :key="`dl-${i}`" v-for="i in (0, numDoorsLocked)">fa-lock</v-icon>
             <v-icon class="ma-1 lock" :key="`wb-${i}`" v-for="i in (0, numWindowsBlocked)">fa-ban</v-icon>
+            <v-icon class="ma-1 white--text" v-if="hvac">mdi-fan</v-icon>
         </div>
         <div class="diagram-room-controls">
             <v-menu offset-y :close-on-content-click="false">
@@ -103,9 +104,12 @@
         </div>
         <v-dialog width="400">
             <template #activator="{ on, attrs }">
-                <v-btn icon :disabled="!simulationRunning" class="diagram-room-temp ma-2" v-bind="attrs" v-on="on">
-                    <v-icon>fa-thermometer-half</v-icon>
-                </v-btn>
+                <div :class="{ disabled: !simulationRunning }" class="diagram-room-temp ma-2">
+                    <v-btn class="mr-1" color="grey" icon v-bind="attrs" v-on="on">
+                        <v-icon>fa-thermometer-half</v-icon>
+                    </v-btn>
+                    <span class="grey--text f-14 font-weight-bold">{{Number(room.temperature).toFixed(2)}} &deg;C</span>
+                </div>
             </template>
             <v-card>
                 <v-card-title>{{room.name}} Temperature Controls</v-card-title>
@@ -259,6 +263,9 @@
             },
             zone() {
                 return this.shh?.zones.find(z => z.rooms.find(r => r.id === this.room.id));
+            },
+            hvac() {
+                return this.$store.state.hvacStates.find(s => s.id === this.room.id)?.hvac || false;
             }
         },
         watch: {
@@ -271,10 +278,14 @@
 </script>
 
 <style lang="scss">
-    .diagram-room-controls .v-btn, .diagram-room-temp {
-        opacity: 0.5;
-        &:hover {
-            opacity: 1;
+    .diagram-room-controls, .diagram-room-temp {
+        display: flex;
+        align-items: center;
+        .v-btn {
+            opacity: 0.5;
+            &:hover {
+                opacity: 1;
+            }
         }
     }
 

@@ -193,6 +193,7 @@ public class Room extends IdentifiableObject {
 
     /**
      * This function gets the current temperature of this room.
+     *
      * @return the current temperature of the room
      */
     public float getTemperature() {
@@ -201,6 +202,7 @@ public class Room extends IdentifiableObject {
 
     /**
      * This function sets the current temperature of the room with the given temperature
+     *
      * @param temperature new temperature of the room
      */
     public void setTemperature(float temperature) {
@@ -209,6 +211,7 @@ public class Room extends IdentifiableObject {
 
     /**
      * This function gets the desired temperature of the room
+     *
      * @return the desired temperature of the room
      */
     public float getDesiredTemperature() {
@@ -217,6 +220,7 @@ public class Room extends IdentifiableObject {
 
     /**
      * This function sets the desired temperature of the room with the given temperature
+     *
      * @param desiredTemperature new desired temperature of the room
      */
     public void setDesiredTemperature(float desiredTemperature) {
@@ -225,6 +229,7 @@ public class Room extends IdentifiableObject {
 
     /**
      * Returns whether or not this room has overridden the zone temperature control of the zone it belongs to.
+     *
      * @return boolean representation of it.
      */
     public boolean isZoneTempOverridden() {
@@ -233,6 +238,7 @@ public class Room extends IdentifiableObject {
 
     /**
      * This function sets whether or not this room's temperature has been overridden by the user
+     *
      * @param override boolean representation of it.
      */
     public void setOverrideZoneTemp(boolean override) {
@@ -241,6 +247,7 @@ public class Room extends IdentifiableObject {
 
     /**
      * This function returns whether or not this the critical temperature message for this room has been already logged.
+     *
      * @return boolean representation of it.
      */
     public boolean isCriticalTempLogged() {
@@ -249,6 +256,7 @@ public class Room extends IdentifiableObject {
 
     /**
      * This function sets whether or not this the critical temperature message for this room has been logged.
+     *
      * @param criticalTempLogged boolean representation of it.
      */
     public void setCriticalTempLogged(boolean criticalTempLogged) {

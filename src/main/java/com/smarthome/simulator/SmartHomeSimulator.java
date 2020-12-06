@@ -78,7 +78,8 @@ public class SmartHomeSimulator {
             simulation.registerModule(SHC.class);
             simulation.registerModule(SHP.class);
             simulation.registerModule(SHH.class);
-        }catch(ModuleException e){}
+        } catch (ModuleException ignored) {
+        }
 
         // Start web server
         server.start();
@@ -89,7 +90,8 @@ public class SmartHomeSimulator {
             List<UserProfile> profiles = null;
             try {
                 profiles = UserProfile.loadUserProfiles(userProfileFile);
-            }catch(UserProfileException e){}
+            } catch (UserProfileException ignored) {
+            }
             if (profiles != null) {
                 simulation.setUserProfiles(profiles);
                 simulation.setActiveUserProfile(profiles.get(0));
@@ -103,7 +105,7 @@ public class SmartHomeSimulator {
         pandomium.initialize();
 
         PandomiumClient client = pandomium.createClient();
-        PandomiumBrowser browser = client.loadURL("http://localhost:" + WebServer.SERVER_PORT);
+        PandomiumBrowser browser = client.loadURL("http://localhost:3000");
 
         // Create JavaScript query handler and logger
         handler = new JavaScriptQueryHandler(browser.getCefBrowser(), simulation);
@@ -175,7 +177,8 @@ public class SmartHomeSimulator {
                 simulation.setHouseLayout(layout);
                 try {
                     simulation.executeCommand(SHH.SET_DEFAULT_ZONE, null, false);
-                }catch(ModuleException e){}
+                } catch (ModuleException ignored) {
+                }
                 handler.updateViews();
             }
         }));
@@ -264,7 +267,8 @@ public class SmartHomeSimulator {
             // Save changes
             try {
                 UserProfile.writeUserProfiles(new File(UserProfile.USER_PROFILE_FILEPATH), simulation.getUserProfiles());
-            }catch(UserProfileException e){}
+            } catch (UserProfileException ignored) {
+            }
 
             // Set active user profile to first if it is being deleted
             if (simulation.getActiveUserProfile().getId().equals(id))
@@ -350,7 +354,8 @@ public class SmartHomeSimulator {
                         // Leaving the time range for lights to stay on, so close all lights
                     else if (beforeInRange && !afterInRange)
                         simulation.executeCommand(SHC.CLOSE_ALL_LIGHTS, null, false);
-                }catch(ModuleException e){}
+                } catch (ModuleException ignored) {
+                }
 
             }
 
@@ -410,7 +415,8 @@ public class SmartHomeSimulator {
                     // User is outside of the house
                 } else
                     simulation.executeCommand(SHC.REMOTE_CONTROL_LIGHT, EventUtil.convertToMap(event), true);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -456,7 +462,8 @@ public class SmartHomeSimulator {
                 // If simulation is away then intruder detected, so alert user
                 if (simulation.isAway())
                     simulation.executeCommand(SHP.ALERT_USER, null, false);
-            }catch(ModuleException e){};
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -504,7 +511,8 @@ public class SmartHomeSimulator {
                 // If simulation is away then intruder detected, so alert user
                 if (simulation.isAway())
                     simulation.executeCommand(SHP.ALERT_USER, null, false);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -549,7 +557,8 @@ public class SmartHomeSimulator {
             try {
                 if (simulation.isAway())
                     simulation.executeCommand(SHP.ALERT_USER, null, false);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -583,7 +592,8 @@ public class SmartHomeSimulator {
                 // If simulation is away then intruder detected, so alert user
                 if (simulation.isAway())
                     simulation.executeCommand(SHP.ALERT_USER, null, false);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -617,7 +627,8 @@ public class SmartHomeSimulator {
             try {
                 // Execute the set away lights command
                 simulation.executeCommand(SHP.SET_AWAY_LIGHTS, EventUtil.convertToMap(event), true);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -627,10 +638,11 @@ public class SmartHomeSimulator {
         // Set the time delay before alerting authorities when motion is detected during away mode
         handler.addEventListener("setAlertDelay", (event) -> {
 
-            try{
+            try {
                 // Pass command
                 simulation.executeCommand(SHP.SET_ALERT_DELAY, EventUtil.convertToMap(event), true);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -640,10 +652,11 @@ public class SmartHomeSimulator {
         // Set the time window for selected lights to remain on during away mode
         handler.addEventListener("setAwayTime", (event) -> {
 
-            try{
+            try {
                 // Pass command
                 simulation.executeCommand(SHP.SET_AWAY_TIME, EventUtil.convertToMap(event), true);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -653,10 +666,11 @@ public class SmartHomeSimulator {
         // User toggles away mode
         handler.addEventListener("toggleAway", (event) -> {
 
-            try{
+            try {
                 // Execute the set away mode command
                 simulation.executeCommand(SHP.SET_AWAY_MODE, EventUtil.convertToMap(event), true);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -670,10 +684,11 @@ public class SmartHomeSimulator {
             if (!(boolean) event.get("value"))
                 updateAllRoomLights();
 
-            try{
+            try {
                 // Execute the set auto mode command
                 simulation.executeCommand(SHC.SET_AUTO_MODE, EventUtil.convertToMap(event), true);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update all room lights
             if ((boolean) event.get("value"))
@@ -704,7 +719,8 @@ public class SmartHomeSimulator {
             try {
                 // Execute the set room temperature command
                 simulation.executeCommand(SHH.SET_ROOM_TEMPERATURE, EventUtil.convertToMap(event), true);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -713,10 +729,11 @@ public class SmartHomeSimulator {
         // User sets if room should be overriding zone temperature
         handler.addEventListener("setRoomOverride", (event) -> {
 
-            try{
+            try {
                 // Execute the set room override command
                 simulation.executeCommand(SHH.SET_ROOM_OVERRIDE, EventUtil.convertToMap(event), true);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -725,10 +742,11 @@ public class SmartHomeSimulator {
         // User edits a specific zone
         handler.addEventListener("editZone", (event) -> {
 
-            try{
+            try {
                 // Execute the edit zone command
                 simulation.executeCommand(SHH.EDIT_ZONE, EventUtil.convertToMap(event), true);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -737,10 +755,11 @@ public class SmartHomeSimulator {
         // User adds a new zone to the simulation
         handler.addEventListener("addZone", (event) -> {
 
-            try{
+            try {
                 // Execute the add zone command
                 simulation.executeCommand(SHH.ADD_ZONE, EventUtil.convertToMap(event), true);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -750,10 +769,11 @@ public class SmartHomeSimulator {
         // User removes a zone
         handler.addEventListener("removeZone", (event) -> {
 
-            try{
+            try {
                 // Execute the remove zone command
                 simulation.executeCommand(SHH.REMOVE_ZONE, EventUtil.convertToMap(event), true);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front-end
             handler.updateViews();
@@ -763,10 +783,11 @@ public class SmartHomeSimulator {
         // User sets the winter and summer dates
         handler.addEventListener("setWinterRange", (event) -> {
 
-            try{
+            try {
                 // Set the range of winter
                 simulation.executeCommand(SHH.SET_WINTER_RANGE, EventUtil.convertToMap(event), false);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             //Update front end
             handler.updateViews();
@@ -774,10 +795,11 @@ public class SmartHomeSimulator {
 
         handler.addEventListener("setSeasonTemp", (event) -> {
 
-            try{
+            try {
                 //Set the desired winter and summer temperature when the house is in away mode
                 simulation.executeCommand(SHH.SET_SEASON_TEMP, EventUtil.convertToMap(event), true);
-            }catch(ModuleException e){}
+            } catch (ModuleException ignored) {
+            }
 
             // Update front end
             handler.updateViews();
@@ -787,6 +809,7 @@ public class SmartHomeSimulator {
 
     /**
      * This function updates all lights for a specific room from the SHC
+     *
      * @param rooms the room that needs its lights updated
      */
     private static void updateRoomLights(String... rooms) {
@@ -797,9 +820,10 @@ public class SmartHomeSimulator {
                 .forEach(room -> {
                     HashMap<String, Object> eventMap = new HashMap<>();
                     eventMap.put("room", room);
-                    try{
+                    try {
                         simulation.executeCommand(SHC.UPDATE_ROOM_LIGHTS, eventMap, false);
-                    }catch(ModuleException e){}
+                    } catch (ModuleException ignored) {
+                    }
                 });
     }
 
@@ -811,17 +835,20 @@ public class SmartHomeSimulator {
                 .forEach(room -> {
                     HashMap<String, Object> eventMap = new HashMap<>();
                     eventMap.put("room", room);
-                    try{
+                    try {
                         simulation.executeCommand(SHC.UPDATE_ROOM_LIGHTS, eventMap, false);
-                    }catch(ModuleException e){}
+                    } catch (ModuleException ignored) {
+                    }
                 });
     }
 
     /**
-     * This function updates the front end view for all the room temperatures
+     * This function updates the front end view for all the room temperatures.
+     *
+     * @param hvac The HVAC instance taking care of the update.
      */
-    public static void updateRoomTempView () {
-        handler.updateRoomTemps();
+    public static void updateRoomTempView(HVAC hvac) {
+        handler.updateRoomTemps(hvac);
     }
 
 

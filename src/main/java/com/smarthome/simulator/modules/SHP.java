@@ -10,7 +10,10 @@ import com.smarthome.simulator.utils.TimeUtil;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -100,7 +103,7 @@ public class SHP extends Module {
         NotifyUser();
         DelayedRunnable task = new DelayedRunnable() {
 
-            private long delay = (long) alertDelay*1000000000;
+            private long delay = (long) alertDelay * 1000000000;
 
             @Override
             public long getDelay() {
@@ -170,7 +173,9 @@ public class SHP extends Module {
             }};
             try {
                 simulation.executeCommand(SHC.REMOTE_CONTROL_LIGHT, eventMap, false);
-            }catch(ModuleException e){};
+            } catch (ModuleException e) {
+            }
+            ;
         });
 
     }
@@ -248,7 +253,9 @@ public class SHP extends Module {
             case SET_AWAY_MODE:
                 try {
                     ExecuteAwayMode(payload);
-                }catch(ModuleException e){};
+                } catch (ModuleException e) {
+                }
+                ;
                 break;
 
             case SET_ALERT_DELAY:

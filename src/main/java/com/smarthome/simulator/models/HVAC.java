@@ -47,7 +47,7 @@ public class HVAC {
     /**
      * Enum representing the various states that HVAC can have
      */
-    private enum HVACState {
+    public enum HVACState {
         STOPPED,
         PAUSED,
         RUNNING
@@ -70,8 +70,9 @@ public class HVAC {
 
     /**
      * The parameterized constructor for the HVAC class
+     *
      * @param simulation pointer to the existing simulation instance
-     * @param shh pointer to the existing shh instance
+     * @param shh        pointer to the existing shh instance
      */
     public HVAC(Simulation simulation, SHH shh) {
         super();
@@ -83,7 +84,8 @@ public class HVAC {
 
     /**
      * This function is responsible for changing the temperature of the rooms with the correct rate.
-     * @param shh pointer to the existing shh instance
+     *
+     * @param shh        pointer to the existing shh instance
      * @param simulation pointer to the existing simulation instance
      */
     private void changeTemp(SHH shh, Simulation simulation) {
@@ -164,14 +166,15 @@ public class HVAC {
                         if (roomTemp > simulation.getTemperatureOutside() && !windowOpen.get()) {
 
                             // If no windows are open, attempt to open at least one
-                            for (Window window: room.getWindows()) {
+                            for (Window window : room.getWindows()) {
                                 Map<String, Object> payload = new HashMap<>();
                                 payload.put("id", window.getId());
                                 payload.put("blocked", window.isBlocked());
                                 payload.put("open", true);
                                 try {
                                     simulation.executeCommand(SHC.CONTROL_WINDOW, payload, false);
-                                }catch(ModuleException e){}
+                                } catch (ModuleException e) {
+                                }
                                 if (window.isOpen()) {
                                     windowOpen.set(true);
                                     break;
@@ -182,7 +185,7 @@ public class HVAC {
                             // Else, HVAC has to run to cool the room, change temp by -0.1
                             roomStates.put(room, windowOpen.get() ? HVACState.STOPPED : HVACState.RUNNING);
 
-                        // Otherwise, force HVAC to run and close all windows to get to desired temp
+                            // Otherwise, force HVAC to run and close all windows to get to desired temp
                         } else {
                             room.getWindows().forEach(window -> {
                                 Map<String, Object> payload = new HashMap<>();
@@ -191,16 +194,18 @@ public class HVAC {
                                 payload.put("open", false);
                                 try {
                                     simulation.executeCommand(SHC.CONTROL_WINDOW, payload, false);
-                                }catch(ModuleException e){};
+                                } catch (ModuleException e) {
+                                }
+                                ;
                             });
                             roomStates.put(room, HVACState.RUNNING);
                         }
 
-                    // Otherwise, if we've reach desired temp, pause HVAC
+                        // Otherwise, if we've reach desired temp, pause HVAC
                     } else if (room.getTemperature() == desiredTemp.get())
                         roomStates.put(room, HVACState.PAUSED);
 
-                    // Abs temp diff > 0.25 and HVAC is paused
+                        // Abs temp diff > 0.25 and HVAC is paused
                     else if (Math.abs(tempDiff) > TEMP_THRESHOLD && roomStates.get(room) == HVACState.PAUSED)
                         roomStates.put(room, HVACState.RUNNING);
 
@@ -213,7 +218,7 @@ public class HVAC {
                         else if (aboveDesired)
                             room.setTemperature((Math.abs(tempDiff) < HVAC_RATE) ? desiredTemp.get() : roomTemp - HVAC_RATE);
 
-                    // Otherwise, slowly drift to outside temp
+                        // Otherwise, slowly drift to outside temp
                     } else {
                         float outsideTemp = simulation.getTemperatureOutside();
                         float factor = outsideTemp > roomTemp ? 1.0f : -1.0f;
@@ -222,7 +227,7 @@ public class HVAC {
                 }
             }
         }
-        SmartHomeSimulator.updateRoomTempView();
+        SmartHomeSimulator.updateRoomTempView(this);
     }
 
     /**
@@ -260,6 +265,15 @@ public class HVAC {
         };
 
         Simulation.getDispatcher().schedule(task);
+    }
+
+    /**
+     * Returns a map representing the current state of HVAC in each room.
+     *
+     * @return The current state of HVAC in each room.
+     */
+    public Map<Room, HVACState> getHVACRoomStates() {
+        return new HashMap<>(roomStates);
     }
 
 }

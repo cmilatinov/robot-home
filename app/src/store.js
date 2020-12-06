@@ -6,6 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         simulation: null,
+        hvacStates: [],
 
         showMovePerson: false,
         showDeletePerson: false,
@@ -29,6 +30,7 @@ export default new Vuex.Store({
                 if (roomFound)
                     room.temperature = roomFound.temperature;
             });
+            state.hvacStates = rooms.map(r => ({ id: r.id, hvac: r.hvac }));
         },
         setShowMovePerson(state, value) {
             state.showMovePerson = !!value;

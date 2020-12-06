@@ -3,6 +3,8 @@ package com.smarthome.simulator.web;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smarthome.simulator.SmartHomeSimulator;
+import com.smarthome.simulator.models.HVAC;
+import com.smarthome.simulator.models.Room;
 import com.smarthome.simulator.models.Simulation;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
@@ -111,10 +113,11 @@ public class JavaScriptQueryHandler implements CefMessageRouterHandler {
     /**
      * Only update the room temperatures in the front end.
      */
-    public void updateRoomTemps() {
+    public void updateRoomTemps(HVAC hvac) {
+        Map<Room, HVAC.HVACState> roomStates = hvac.getHVACRoomStates();
         String state = "[" + simulation.getHouseLayout().getRooms()
                 .stream()
-                .map(r -> "{\"id\":\"" + r.getId() + "\",\"temperature\":" + r.getTemperature() + "}")
+                .map(r -> "{\"id\":\"" + r.getId() + "\",\"temperature\":" + r.getTemperature() + ",\"hvac\":" + roomStates.get(r).equals(HVAC.HVACState.RUNNING) + "}")
                 .reduce("", (str, r) -> str + ", " + r)
                 .substring(2) + "]";
         browser.executeJavaScript("window.vm.$store.commit('setRoomTemperatures', JSON.parse('" + state + "'))", browser.getURL(), 0);
