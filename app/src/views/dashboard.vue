@@ -121,7 +121,7 @@
                             <v-slider
                                     color="info"
                                     :min="1"
-                                    :max="120"
+                                    :max="10"
                                     :step="1"
                                     :value="simulationSpeed"
                                     thumb-label

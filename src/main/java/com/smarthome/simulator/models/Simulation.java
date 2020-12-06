@@ -582,7 +582,7 @@ public class Simulation {
                 return;
 
             // Log command
-            if (SmartHomeSimulator.LOGGER != null)
+            if (SmartHomeSimulator.LOGGER != null && sentByUser)
                 SmartHomeSimulator.LOGGER.log(Logger.INFO, module.getName(), "Executing command '" + command + "'");
 
             // Execute command

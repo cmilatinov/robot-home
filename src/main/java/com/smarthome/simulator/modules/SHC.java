@@ -1,5 +1,6 @@
 package com.smarthome.simulator.modules;
 
+import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.models.Person;
 import com.smarthome.simulator.models.Room;
@@ -212,7 +213,7 @@ public class SHC extends Module {
                     if (w.isOpen() != open && !blocked)
                         w.setOpen(open);
                     else if (w.isOpen() != open && blocked)
-                        throw new ModuleException(Logger.ERROR, getName(), "COMMAND CANNOT BE EXECUTED!" +
+                        SmartHomeSimulator.LOGGER.log(Logger.ERROR, getName(), "COMMAND CANNOT BE EXECUTED!" +
                                 " Window cannot be opened/closed because its path is blocked");
                 });
     }

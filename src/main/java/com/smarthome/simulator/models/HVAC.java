@@ -5,11 +5,13 @@ import com.smarthome.simulator.modules.SHC;
 import com.smarthome.simulator.modules.SHH;
 import com.smarthome.simulator.utils.DelayedRunnable;
 import com.smarthome.simulator.utils.Logger;
+import com.smarthome.simulator.utils.TimeUtil;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class HVAC {
     private Simulation simulation;
@@ -29,9 +31,10 @@ public class HVAC {
 
     // ============================  Other methods  ============================
 
-    private void changeTemp(Simulation simulation) {
+    private void changeTemp(SHH shh, Simulation simulation) {
 
         //SmartHomeSimulator.LOGGER.log(Logger.DEBUG, "SHH", "Test");
+
 
         HouseLayout house = simulation.getHouseLayout();
         if(house != null) {
@@ -43,17 +46,32 @@ public class HVAC {
             for(Room room: rooms) {
 
                 float roomTemp = room.getTemperature();
-                float desiredTemp = room.getDesiredTemperature();
-                float tempDiff = desiredTemp - roomTemp;
+                AtomicReference<Float> desiredTemp = new AtomicReference<>(simulation.getCurrentSeason().equals(Simulation.SUMMER)?shh.getSummerTemperature():shh.getWinterTemperature());
+                if (room.isZoneTempOverridden())
+                    desiredTemp.set(room.getDesiredTemperature());
+                else {
+                    shh.getZones().stream().filter(zone ->
+                            zone.getRooms().contains(room)).findFirst().ifPresent(
+                                    zone -> {
+                                        for (Period p: zone.getPeriods()) {
+                                            if (TimeUtil.isInRange(simulation.getTime(), p.getStartTimeObj(), p.getEndTimeObj())) {
+                                                desiredTemp.set(p.getDesiredTemperature());
+                                                break;
+                                            }
+                                        }
+                                    }
+                    );
+                }
+                float tempDiff = desiredTemp.get() - roomTemp;
 
-                boolean belowDesired = roomTemp < desiredTemp;
-                boolean aboveDesired = roomTemp > desiredTemp;
+                boolean belowDesired = roomTemp < desiredTemp.get();
+                boolean aboveDesired = roomTemp > desiredTemp.get();
                 boolean outsideCoolerThanInside = simulation.getTemperatureOutside() < roomTemp;
                 boolean outsideHotterThanInside = simulation.getTemperatureOutside() > roomTemp;
                 boolean paused = true;
 
                 //Check critical temp
-                if(roomTemp <= MINIMUM_ALERT_TEMP || roomTemp >= MAXIMUM_ALERT_TEMP && !room.isCriticalTempLogged()) {
+                if((roomTemp <= MINIMUM_ALERT_TEMP || roomTemp >= MAXIMUM_ALERT_TEMP) && !room.isCriticalTempLogged()) {
                     room.setCriticalTempLogged(true);
                     SmartHomeSimulator.LOGGER.log(Logger.WARN, "SHH", "Critical temperature: " + roomTemp + " in room " + room.getName());
                 }
@@ -84,8 +102,9 @@ public class HVAC {
 
                 else {
                     //Open windows in summer
-                    if (isSummer && outsideCoolerThanInside && aboveDesired) {
-                        AtomicBoolean windowOpen = new AtomicBoolean(false);
+                    AtomicBoolean windowOpen = new AtomicBoolean(room.getWindows().stream().anyMatch(window -> window.isOpen()));
+
+                    if (isSummer && outsideCoolerThanInside && aboveDesired && !windowOpen.get()) {
                         room.getWindows().forEach(window -> {
                             Map<String, Object> payload = new HashMap<String, Object>();
                             payload.put("id", window.getId());
@@ -95,20 +114,22 @@ public class HVAC {
                             if (window.isOpen())
                                 windowOpen.set(true);
                         });
-                        if (windowOpen.get()) {
-                            room.setTemperature(roomTemp - 0.05f);
-                            //SmartHomeSimulator.LOGGER.log(Logger.INFO, "SHH", "Shutting down AC in room: " + room.getName());
-                        }
                     }
-                    if (Math.abs(tempDiff) > 0.25f) {
+                    if (isSummer && outsideCoolerThanInside && aboveDesired && windowOpen.get()) {
+                        room.setTemperature(roomTemp - 0.05f);
+                        windowOpen.set(false);
+                        //SmartHomeSimulator.LOGGER.log(Logger.INFO, "SHH", "Shutting down AC in room: " + room.getName());
+                    }
+
+                    if (Math.abs(tempDiff) > 0.25f || roomTemp!=desiredTemp.get()) {
                         if (paused) {
                             paused = false;
                             //SmartHomeSimulator.LOGGER.log(Logger.INFO, "SHH", "HVAC Unpausing in room: " + room.getName());
                         }
                         if (belowDesired)
-                            room.setTemperature(roomTemp + 0.1f);
-                        else
-                            room.setTemperature(roomTemp - 0.1f);
+                            room.setTemperature((Math.abs(tempDiff) < 0.1f)?desiredTemp.get():roomTemp+0.1f);
+                        else if (aboveDesired)
+                            room.setTemperature((Math.abs(tempDiff) < 0.1f)?desiredTemp.get():roomTemp-0.1f);
                     }
                     else {
                         paused = true;
@@ -149,7 +170,7 @@ public class HVAC {
 
             @Override
             public void run() {
-                changeTemp(simulation);
+                changeTemp(shh, simulation);
             }
         };
 
