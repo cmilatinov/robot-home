@@ -4,15 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Zone extends IdentifiableObject {
-    private final boolean isDefault;
-
-    public boolean isDefault() {
-        return isDefault;
-    }
 
     private String name;
     private final List<Room> rooms = new ArrayList<>();
     private final List<Period> periods = new ArrayList<>();
+    private final boolean isDefault;
 
     public Zone(String name, boolean isDefault) {
         this.name = name;
@@ -33,5 +29,9 @@ public class Zone extends IdentifiableObject {
 
     public List<Period> getPeriods() {
         return periods;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
     }
 }

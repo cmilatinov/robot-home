@@ -6,15 +6,12 @@ import com.smarthome.simulator.exceptions.DateTimeFormatException;
 import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.modules.Module;
-import com.smarthome.simulator.modules.SHC;
-import com.smarthome.simulator.modules.SHH;
 import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.Logger;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -99,6 +96,7 @@ public class Simulation {
      * The default temperature for summer when the home is in away mode
      */
     private float summerTemperature;
+
     /**
      * Timer that handles scheduled tasks.
      */
@@ -136,14 +134,10 @@ public class Simulation {
         this.userLocation = null;
         this.people = new ArrayList<>();
         this.modules = new ArrayList<>();
-        modules.add(new SHC(this));
-        modules.add(new SHP(this));
-        modules.add(new SHH(this));
         this.startWinterMonth = 10;
         this.endWinterMonth = 3;
         this.winterTemperature = 24.0f;
         this.summerTemperature = 16.0f;
-
     }
 
     // ============================ OVERRIDES ============================
@@ -517,21 +511,6 @@ public class Simulation {
     // ============================ OTHER METHODS ============================
 
     /**
-     * @return the season we are currently in
-     */
-    public String getCurrentSeason() {
-        // get the current month
-        int month = dateTime.getMonthValue();
-
-        // initial winter range --> october 1st to march 31st
-        if (month >= this.startWinterMonth || month <= this.endWinterMonth) {
-            return "Winter";
-        } else {
-            return "Summer";
-        }
-    }
-
-    /**
      * Registers a module for the simulation, adding its functionality to the simulation.
      *
      * @param moduleClass The class of the module to instantiate.
@@ -553,6 +532,21 @@ public class Simulation {
             throw new ModuleException();
         }
 
+    }
+
+    /**
+     * @return the season we are currently in
+     */
+    public String getCurrentSeason() {
+        // get the current month
+        int month = dateTime.getMonthValue();
+
+        // initial winter range --> october 1st to march 31st
+        if(month >= this.startWinterMonth || month <= this.endWinterMonth) {
+            return "Winter";
+        }else {
+            return "Summer";
+        }
     }
 
     /**

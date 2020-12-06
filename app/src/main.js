@@ -10,14 +10,16 @@ import './filters';
 import './mixins';
 
 import panzoom from 'vue-panzoom';
-import moment from 'vue-moment';
+import VueMoment from 'vue-moment';
+import moment from 'moment';
+import { extendMoment } from 'moment-range';
 
 import shc from './modules/shc';
 import shp from './modules/shp';
 import shh from './modules/shh';
 
 Vue.use(panzoom);
-Vue.use(moment);
+Vue.use(VueMoment, { moment: extendMoment(moment) });
 
 Vue.component('SHC', shc);
 Vue.component('SHP', shp);

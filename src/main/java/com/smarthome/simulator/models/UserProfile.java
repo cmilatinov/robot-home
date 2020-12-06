@@ -58,6 +58,8 @@ public class UserProfile extends IdentifiableObject {
             add(SHH.REMOVE_ZONE);
             add(SHH.SET_ROOM_OVERRIDE);
             add(SHH.SET_SEASON_TEMP);
+            add(SHH.SET_AWAY_MODE_TEMP);
+            add(SHH.SET_WINTER_RANGE);
         }
     };
 

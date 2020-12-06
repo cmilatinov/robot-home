@@ -14,8 +14,9 @@ import java.util.Optional;
 
 public class SHH extends Module {
 
-
     private final List<Zone> zones = new ArrayList<>();
+
+
     public static final String SET_DEFAULT_ZONE = "setDefaultZone";
     public static final String SET_ROOM_TEMPERATURE = "setRoomTemperature";
     public static final String EDIT_ZONE = "editZone";
@@ -147,7 +148,7 @@ public class SHH extends Module {
     @SuppressWarnings({"unchecked", "Duplicates"})
     private void addZone(Map<String, Object> payload) {
         String zoneName = (String) payload.get("name");
-        List<Room> rooms = (List<Room>) ((JSONArray) payload.get("room_ids"))
+        List<Room> rooms = (List<Room>) ((JSONArray) payload.get("rooms"))
                 .stream()
                 .map(Object::toString)
                 .reduce(new ArrayList<Room>(), (listObj, roomId) -> {
@@ -162,9 +163,10 @@ public class SHH extends Module {
         zones.forEach(z -> z.getRooms().removeIf(rooms::contains));
         List<Period> periods = (List<Period>) ((JSONArray) payload.get("periods"))
                 .stream()
-                .map(Object::toString)
                 .reduce(new ArrayList<Period>(), (listObj, periodPayloadObj) -> {
                     List<Period> list = (List<Period>) listObj;
+                    System.out.println(periodPayloadObj.getClass());
+                    System.out.println(periodPayloadObj);
                     JSONObject json = (JSONObject) periodPayloadObj;
                     Period period = new Period(
                             json.get("startTime").toString(),
@@ -206,10 +208,9 @@ public class SHH extends Module {
     @SuppressWarnings({"unchecked", "Duplicates"})
     private void editZone(Map<String, Object> payload) {
         String zoneName = (String) payload.get("name");
-        String zoneId = (String) payload.get("zone_id");
+        String zoneId = (String) payload.get("id");
         List<Period> periods = (List<Period>) ((JSONArray) payload.get("periods"))
                 .stream()
-                .map(Object::toString)
                 .reduce(new ArrayList<Period>(), (listObj, periodPayloadObj) -> {
                     List<Period> list = (List<Period>) listObj;
                     JSONObject json = (JSONObject) periodPayloadObj;

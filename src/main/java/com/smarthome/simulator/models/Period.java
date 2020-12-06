@@ -1,5 +1,7 @@
 package com.smarthome.simulator.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -29,7 +31,6 @@ public class Period {
      */
     private final float desiredTemperature;
 
-
     /**
      * Creates a new period with the given values.
      *
@@ -48,7 +49,8 @@ public class Period {
      *
      * @return {@link LocalTime} The start of this period.
      */
-    public LocalTime getStartTime() {
+    @JsonIgnore
+    public LocalTime getStartTimeObj() {
         return startTime;
     }
 
@@ -57,8 +59,27 @@ public class Period {
      *
      * @return {@link LocalTime} The end of this period.
      */
-    public LocalTime getEndTime() {
+    @JsonIgnore
+    public LocalTime getEndTimeObj() {
         return endTime;
+    }
+
+    /**
+     * Returns this period's start time.
+     *
+     * @return {@link LocalTime} The start of this period.
+     */
+    public String getStartTime() {
+        return formatter.format(startTime);
+    }
+
+    /**
+     * Returns this period's end time.
+     *
+     * @return {@link LocalTime} The end of this period.
+     */
+    public String getEndTime() {
+        return formatter.format(endTime);
     }
 
     /**
