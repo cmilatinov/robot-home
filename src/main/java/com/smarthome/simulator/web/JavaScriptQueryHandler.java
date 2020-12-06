@@ -109,6 +109,18 @@ public class JavaScriptQueryHandler implements CefMessageRouterHandler {
     }
 
     /**
+     * Only update the room temperatures in the front end.
+     */
+    public void updateRoomTemps() {
+        String state = "[" + simulation.getHouseLayout().getRooms()
+                .stream()
+                .map(r -> "{\"id\":\"" + r.getId() + "\",\"temperature\":" + r.getTemperature() + "}")
+                .reduce("", (str, r) -> str + ", " + r)
+                .substring(2) + "]";
+        browser.executeJavaScript("window.vm.$store.commit('setRoomTemperatures', JSON.parse('" + state + "'))", browser.getURL(), 0);
+    }
+
+    /**
      * Registers an event listener executed when an event with the specified type is caught by the Java part of the app.
      *
      * @param event    The name of the event to listen for. (Ex. "toggleSimulation")

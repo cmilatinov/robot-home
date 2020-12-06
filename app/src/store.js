@@ -21,6 +21,15 @@ export default new Vuex.Store({
         setLogs(state, logs) {
             state.logs = logs;
         },
+        setRoomTemperatures(state, rooms) {
+            if (!state.simulation)
+                return;
+            state.simulation.houseLayout.rooms.forEach(room => {
+                let roomFound = rooms.find(r => r.id === room.id);
+                if (roomFound)
+                    room.temperature = roomFound.temperature;
+            });
+        },
         setShowMovePerson(state, value) {
             state.showMovePerson = !!value;
         },
