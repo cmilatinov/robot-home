@@ -12,7 +12,7 @@ import java.util.Optional;
 public class SHH extends Module {
 
     private final List<Zone> zones = new ArrayList<>();
-    public HVAC hvac;
+    private final HVAC hvac;
     public static final String SET_DEFAULT_ZONE = "setDefaultZone";
     public static final String SET_ROOM_TEMPERATURE = "setRoomTemperature";
     public static final String EDIT_ZONE = "editZone";
