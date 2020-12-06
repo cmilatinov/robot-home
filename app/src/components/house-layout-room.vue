@@ -101,6 +101,51 @@
                 </v-card>
             </v-menu>
         </div>
+        <v-dialog width="400">
+            <template #activator="{ on, attrs }">
+                <v-btn icon :disabled="!simulationRunning" class="diagram-room-temp ma-2" v-bind="attrs" v-on="on">
+                    <v-icon>fa-thermometer-half</v-icon>
+                </v-btn>
+            </template>
+            <v-card>
+                <v-card-title>{{room.name}} Temperature Controls</v-card-title>
+                <div class="py-0 px-6">
+                    <v-text-field v-if="zone" :value="zone.name" label="Current Zone" readonly prepend-icon="fa-object-ungroup">
+                        <v-tooltip slot="append-outer" top>
+                            <template #activator="{ on, attrs }">
+                                <v-icon v-on="on" v-bind="attrs">fa-info-circle</v-icon>
+                            </template>
+                            <div class="text-justify" style="max-width: 300px;">To change this room's zone, open the zone list in the SHH module tab. Then, create a new zone and add this room to it. Rooms can only ever be in one zone at a time.</div>
+                        </v-tooltip>
+                    </v-text-field>
+                    <v-switch :value="room.zoneTempOverridden" color="info" style="margin-top: -5px;" @change="dispatchEvent('setRoomOverride', { id: room.id, value: !!$event })">
+                        <template #label>
+                            <div class="ml-2">Override Zone Temperature
+                                <v-tooltip top>
+                                    <template #activator="{ on }">
+                                        <v-icon class="ml-2" v-on="on">fa-info-circle</v-icon>
+                                    </template>
+                                    <div class="text-justify" style="max-width: 300px;">Use this control to specify whether a room should override the desired temperature set by the zone it belongs to. Any changes made to the room's desired temperature will automatically turn this option on.</div>
+                                </v-tooltip>
+                            </div>
+                        </template>
+                    </v-switch>
+                    <v-subheader class="px-0" style="margin-top: -15px; margin-bottom: -10px;">
+                        <v-icon class="mr-3">fa-sun</v-icon>
+                        <span class="f-10 w-100">Desired Room Temperature
+                            <strong class="float-right white--text">{{ room.desiredTemperature }} &deg;C</strong>
+                        </span>
+                    </v-subheader>
+                    <v-slider
+                            :value="room.desiredTemperature"
+                            color="info"
+                            :min="0"
+                            :max="30"
+                            thumb-label
+                            @change="dispatchEvent('setRoomTemperature', { id: room.id, temperature: $event })"></v-slider>
+                </div>
+            </v-card>
+        </v-dialog>
         <div @mousedown.stop="onResizeMouseDown" class="diagram-room-resize"></div>
     </div>
 </template>
@@ -182,6 +227,9 @@
                 this.top = this.room.dimensions.y;
                 this.width = this.room.dimensions.width;
                 this.height = this.room.dimensions.height;
+            },
+            test() {
+                console.log('asdal;sdksdal;kjsad');
             }
         },
         computed: {
@@ -202,18 +250,28 @@
             },
             simulationRunning() {
                 return !!this.$store.state.simulation?.running;
+            },
+            simulationModules() {
+                return this.$store.state.simulation?.modules || [];
+            },
+            shh() {
+                return this.simulationModules.find(m => m.name === 'SHH');
+            },
+            zone() {
+                return this.shh?.zones.find(z => z.rooms.find(r => r.id === this.room.id));
             }
         },
         watch: {
             room() {
                 this.updateRoomDimensions();
+                this.$forceUpdate();
             }
         }
     }
 </script>
 
 <style lang="scss">
-    .diagram-room-controls .v-btn {
+    .diagram-room-controls .v-btn, .diagram-room-temp {
         opacity: 0.5;
         &:hover {
             opacity: 1;
@@ -263,6 +321,12 @@
 </style>
 
 <style lang="scss" scoped>
+    .diagram-room-temp {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
+
     .diagram-room-resize {
         position: absolute;
         bottom: -0.2px;

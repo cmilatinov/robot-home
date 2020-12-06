@@ -8,15 +8,19 @@
                     </div>
                 </v-subheader>
                 <v-btn color="primary" block @click="onSetWinterRange">
-                    <v-icon class="mr-2">fa-calendar-alt</v-icon>
+                    <v-icon class="mr-2">fa-snowflake</v-icon>
                     Modify Parameters
                 </v-btn>
                 <v-dialog width="400" v-model="showSetWinterRange">
                     <v-card>
-                        <v-card-title>Set Winter Range</v-card-title>
-                        <v-card-text>Use this dialog to change the span of winter over the year. The specified month range is inclusive and will determine the duration of winter. The rest of the year will be interpreted as the summer.</v-card-text>
+                        <v-card-title>Change Season Parameters</v-card-title>
+                        <v-card-text>Use this dialog to change the span of winter over the year and the desired away mode temperatures for both winter and summer. The specified month range is inclusive and will determine the duration of winter. The rest of the year will be interpreted as the summer. The away mode temperatures define the target temperatures the system will keep up while it is set to away mode.</v-card-text>
                         <v-form ref="winterForm">
+
                             <v-row class="ma-0 px-2">
+                                <v-col cols="12" class="pa-0 ma-0">
+                                    <v-subheader class="text-uppercase" style="margin-top: -15px; margin-bottom: -5px;">Winter Range</v-subheader>
+                                </v-col>
                                 <v-col cols="6" class="pr-1 pb-0">
                                     <v-select v-model="winterStart"
                                               outlined dense
@@ -45,7 +49,7 @@
                                     </v-card-text>
                                     <v-subheader class="text-uppercase mt-2">Temperature In Away Mode</v-subheader>
                                     <v-subheader style="margin-top: -15px; margin-bottom: -10px;">
-                                        <v-icon class="mr-3">fa-thermometer-half</v-icon>
+                                        <v-icon class="mr-3">fa-sun</v-icon>
                                         <span class="f-10 w-100">Summer&nbsp;
                                             <span class="white--text font-weight-light">(Current: {{ simulationSummerTemp }} &deg;C)</span>
                                             <strong class="float-right white--text">{{ summerTemp }} &deg;C</strong>
@@ -59,7 +63,7 @@
                                             :max="30"
                                             thumb-label></v-slider>
                                     <v-subheader class="form-subheader" style="margin-top: -30px; margin-bottom: -10px;">
-                                        <v-icon class="mr-3">fa-thermometer-half</v-icon>
+                                        <v-icon class="mr-3">fa-snowflake</v-icon>
                                         <span class="f-10 w-100">Winter
                                             <span class="white--text font-weight-light">(Current: {{ simulationWinterTemp }} &deg;C)</span>
                                             <strong class="float-right white--text">{{ winterTemp }} &deg;C</strong>
@@ -91,8 +95,7 @@
             <v-col cols="6" class="pt-0">
                 <v-subheader class="text-uppercase w-100 pl-0 mt-0" style="margin-bottom: -10px">
                     <div class="w-100">
-                        Zone Manager
-<!--                        <strong class="float-right white&#45;&#45;text">{{awayMode ? 'On' : 'Off'}}</strong>-->
+                        Zones
                     </div>
                 </v-subheader>
                 <zone-manager></zone-manager>

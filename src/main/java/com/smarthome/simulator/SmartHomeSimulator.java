@@ -97,7 +97,7 @@ public class SmartHomeSimulator {
         pandomium.initialize();
 
         PandomiumClient client = pandomium.createClient();
-        PandomiumBrowser browser = client.loadURL("http://localhost:"+WebServer.SERVER_PORT);
+        PandomiumBrowser browser = client.loadURL("http://localhost:3000");
 
         // Create JavaScript query handler and logger
         handler = new JavaScriptQueryHandler(browser.getCefBrowser(), simulation);
