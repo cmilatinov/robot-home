@@ -6,7 +6,7 @@ import com.smarthome.simulator.utils.Logger;
 /**
  * The ModuleException class will display an error message if there is any error related to the modules.
  */
-public class ModuleException extends RuntimeException {
+public class ModuleException extends Exception {
 
     /**
      * Default Constructor

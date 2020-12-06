@@ -241,7 +241,7 @@ public class UserProfile extends IdentifiableObject {
      * @param selectedFile The file in which the {@link UserProfile} will be written into.
      * @param profiles     The list of all current {@link UserProfile} in the simulation
      */
-    public static void writeUserProfiles(File selectedFile, List<UserProfile> profiles) {
+    public static void writeUserProfiles(File selectedFile, List<UserProfile> profiles) throws UserProfileException {
         JSONObject users = createUsers(createProfiles(profiles));
 
         //Writing the JSON file with the JSON object and array
@@ -297,7 +297,7 @@ public class UserProfile extends IdentifiableObject {
      * @param selectedFile The file in which the {@link UserProfile} will be fetch from.
      * @return The resulting {@link UserProfile} list, or null for any parsing errors.
      */
-    public static List<UserProfile> loadUserProfiles(File selectedFile) {
+    public static List<UserProfile> loadUserProfiles(File selectedFile) throws UserProfileException {
         // Resulting obj from parsing
         Object obj;
 

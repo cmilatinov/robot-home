@@ -16,7 +16,7 @@ public class HouseLayoutTest {
      * Testing if the parser method returns exception when the JSON file is empty
      */
     @Test(expected= NullPointerException.class)
-    public void parsingEmptyFileShouldReturnException()
+    public void parsingEmptyFileShouldReturnException() throws HouseLayoutException
     {
         File selectedFile = new File("./src/test/resources/empty-sample-house-layout.json");
 
@@ -27,7 +27,7 @@ public class HouseLayoutTest {
      * Testing if the parser method returns exception when there is a missing field in the JSON file
      */
     @Test(expected= NullPointerException.class)
-    public void missingFieldInFileShouldReturnException()
+    public void missingFieldInFileShouldReturnException() throws HouseLayoutException
     {
         File selectedFile = new File("./src/test/resources/missing-field-sample-house-layout.json");
 
@@ -38,7 +38,7 @@ public class HouseLayoutTest {
      * Testing if the parser method returns exception when the JSON file does not follow the right format (JSON format)
      */
     @Test(expected= NullPointerException.class)
-    public void wrongFormatShouldReturnException()
+    public void wrongFormatShouldReturnException() throws HouseLayoutException
     {
         File selectedFile = new File("./src/test/resources/wrong-format-sample-house-layout.json");
 
@@ -49,7 +49,7 @@ public class HouseLayoutTest {
      * Testing if the parser method returns exception when a JSON field contains the wrong data type
      */
     @Test(expected= NullPointerException.class)
-    public void wrongFieldDataTypeShouldReturnException()
+    public void wrongFieldDataTypeShouldReturnException() throws HouseLayoutException
     {
         File selectedFile = new File("./src/test/resources/wrong-field-data-type-sample-house-layout.json");
 
@@ -60,7 +60,7 @@ public class HouseLayoutTest {
      * Testing if the parser method returns exception when no file is chosen
      */
     @Test(expected= NullPointerException.class)
-    public void noFileChosenShouldReturnException()
+    public void noFileChosenShouldReturnException() throws HouseLayoutException
     {
         File selectedFile = new File("");
 
@@ -71,7 +71,7 @@ public class HouseLayoutTest {
      * Testing if the parser method returns an ArrayList of Room when the JSON file is written correctly
      */
     @Test
-    public void rightFormatShouldReturnArrayListOfRoom()
+    public void rightFormatShouldReturnArrayListOfRoom() throws HouseLayoutException
     {
         File selectedFile = new File("./src/test/resources/working-sample-house-layout.json");
 

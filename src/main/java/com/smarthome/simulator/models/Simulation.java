@@ -503,7 +503,7 @@ public class Simulation {
      *
      * @param moduleClass The class of the module to instantiate.
      */
-    public void registerModule(Class<? extends Module> moduleClass) {
+    public void registerModule(Class<? extends Module> moduleClass) throws ModuleException {
 
         // Check if there already is a module of this type
         Optional<Module> existingModule = modules.stream().filter(m -> m.getClass().equals(moduleClass)).findFirst();
@@ -586,7 +586,7 @@ public class Simulation {
      * @param payload    The payload passed to the command.
      * @param sentByUser True if the command was sent by a user, false otherwise.
      */
-    public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) {
+    public void executeCommand(String command, Map<String, Object> payload, boolean sentByUser) throws ModuleException {
 
         // Find module which handles the given command
         Optional<Module> moduleOptional = modules.stream()
