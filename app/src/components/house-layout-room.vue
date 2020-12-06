@@ -29,7 +29,7 @@
                 </v-card>
             </v-menu>
         </div>
-        <h1>{{room.name}} ({{Number(room.temperature).toFixed(1)}} &deg;C)</h1>
+        <h1>{{room.name}} ({{Number(room.temperature).toFixed(2)}} &deg;C)</h1>
         <div class="diagram-room-status">
             <v-icon class="ma-1 light" :key="`l-${i}`" v-for="i in (0, numLightsOn)">fa-lightbulb</v-icon>
             <v-icon class="ma-1 lock" :key="`dl-${i}`" v-for="i in (0, numDoorsLocked)">fa-lock</v-icon>
