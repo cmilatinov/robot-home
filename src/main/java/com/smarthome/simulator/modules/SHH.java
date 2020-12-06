@@ -9,18 +9,64 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * The SHH class represents the Smart Home Heater module.
+ */
 public class SHH extends Module {
 
+    /**
+     * All zones that are active
+     */
     private final List<Zone> zones = new ArrayList<>();
+
+    /**
+     * The hvac instance that will be used from here
+     */
     private final HVAC hvac;
+
+    /**
+     * Permission identifier to set default zone
+     */
     public static final String SET_DEFAULT_ZONE = "setDefaultZone";
+
+    /**
+     * Permission identifier to set room temperature
+     */
     public static final String SET_ROOM_TEMPERATURE = "setRoomTemperature";
+
+    /**
+     * Permission identifier to edit zone
+     */
     public static final String EDIT_ZONE = "editZone";
+
+    /**
+     * Permission identifier to add zone
+     */
     public static final String ADD_ZONE = "addZone";
+
+    /**
+     * Permission identifier to remove zone
+     */
     public static final String REMOVE_ZONE = "removeZone";
+
+    /**
+     * Permission identifier to set if room temperature has been overridden
+     */
     public static final String SET_ROOM_OVERRIDE = "setRoomOverride";
+
+    /**
+     * Permission identifier to set season temperature
+     */
     public static final String SET_SEASON_TEMP = "setSeasonTemp";
+
+    /**
+     * Permission identifier to set winter range
+     */
     public static final String SET_WINTER_RANGE = "setWinterRange";
+
+    /**
+     * Permission identifier to set away mode temperature
+     */
     public static final String SET_AWAY_MODE_TEMP = "setAwayModeTemp";
 
     /**
@@ -97,6 +143,10 @@ public class SHH extends Module {
         }
     }
 
+    /**
+     * This function sets the seasons' temperatures (winter and summer)
+     * @param payload The arguments needed for this command.
+     */
     private void setSeasonTemp(Map<String, Object> payload){
         // desired temperature of winter and summer time in away mode
         float winterTemp = Float.parseFloat(payload.get("winter").toString());
@@ -108,6 +158,10 @@ public class SHH extends Module {
 
     }
 
+    /**
+     * This function sets the winter season's range of time
+     * @param payload The arguments needed for this command.
+     */
     private void setWinterRange(Map<String, Object> payload){
         // receives the month in integer format
         int startMonth = Integer.parseInt(payload.get("start").toString());
@@ -118,8 +172,10 @@ public class SHH extends Module {
         this.simulation.setEndWinterMonth(endMonth);
     }
 
-
-
+    /**
+     * This function sets the overridden attribute of a room to true
+     * @param payload The arguments needed for this command.
+     */
     private void setRoomOverride(Map<String, Object> payload) {
         String roomId = (String) payload.get("id");
         boolean overrideBool = (boolean) payload.get("value");
@@ -130,6 +186,10 @@ public class SHH extends Module {
                 .ifPresent(room -> room.setOverrideZoneTemp(overrideBool));
     }
 
+    /**
+     * This function removes a given zone from the list of zones and sets its rooms to the default zone
+     * @param payload The arguments needed for this command.
+     */
     private void removeZone(Map<String, Object> payload) {
         String zoneId = (String) payload.get("id");
 
@@ -148,6 +208,11 @@ public class SHH extends Module {
                 });
     }
 
+    /**
+     * This function adds a new zone in the list of zones, sets the given list of rooms in it,
+     * including the periods and the desired temperatures for them.
+     * @param payload The arguments needed for this command.
+     */
     @SuppressWarnings({"unchecked", "Duplicates"})
     private void addZone(Map<String, Object> payload) {
         String zoneName = (String) payload.get("name");
@@ -184,6 +249,9 @@ public class SHH extends Module {
 
     }
 
+    /**
+     * This function sets up the default zone where all rooms belong initially.
+     */
     private void setDefaultZone() {
         zones.clear();
         Zone defaultZone = new Zone("default", true);
@@ -192,6 +260,10 @@ public class SHH extends Module {
         zones.add(defaultZone);
     }
 
+    /**
+     * This function sets the temperature of a specific room when triggered by the user.
+     * @param payload The arguments needed for this command.
+     */
     private void setRoomTemperature(Map<String, Object> payload) {
         String room_id = (String) payload.get("id");
         float temperature = Float.parseFloat(payload.get("temperature").toString());
@@ -206,6 +278,10 @@ public class SHH extends Module {
                 });
     }
 
+    /**
+     * This function edits the properties a given zone.
+     * @param payload The arguments needed for this command.
+     */
     @SuppressWarnings({"unchecked", "Duplicates"})
     private void editZone(Map<String, Object> payload) {
         String zoneName = (String) payload.get("name");
@@ -233,6 +309,10 @@ public class SHH extends Module {
                 });
     }
 
+    /**
+     * This functions will return a list of all zones currently active.
+     * @return List of zones.
+     */
     public List<Zone> getZones() {
         return zones;
     }
