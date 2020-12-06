@@ -26,13 +26,15 @@ public class HVAC {
     // ============================  Other methods  ============================
 
     private void changeTemp(HVAC hvac, Simulation simulation){
-        if(hvac.state == State.WORKING) {
-
-            //increase temp by working amount
-        } else if(this.state == State.PAUSED) {
-            //check temp
-        }else if(this.state == State.STOPPED) {
-            //something else
+        HouseLayout house = simulation.getHouseLayout();
+        if(house != null) {
+            if (hvac.state == State.WORKING) {
+                //increase temp by working amount
+            } else if (this.state == State.PAUSED) {
+                //check temp
+            } else if (this.state == State.STOPPED) {
+                //something else
+            }
         }
     }
 
@@ -50,7 +52,7 @@ public class HVAC {
 
             @Override
             public void setDelay(long delay) {
-
+                this.delay = delay;
             }
 
             @Override
