@@ -753,6 +753,10 @@ public class SmartHomeSimulator {
 
     }
 
+    /**
+     * This function updates all lights for a specific room from the SHC
+     * @param rooms the room that needs its lights updated
+     */
     private static void updateRoomLights(String... rooms) {
         // Update the given rooms with the given IDs
         simulation.getHouseLayout().getRooms()
@@ -765,6 +769,9 @@ public class SmartHomeSimulator {
                 });
     }
 
+    /**
+     * This function updates all the room lights' states from the SHC
+     */
     private static void updateAllRoomLights() {
         simulation.getHouseLayout().getRooms()
                 .forEach(room -> {
@@ -774,6 +781,9 @@ public class SmartHomeSimulator {
                 });
     }
 
+    /**
+     * This function updates the front end view for all the room temperatures
+     */
     public static void updateRoomTempView () {
         handler.updateRoomTemps();
     }
