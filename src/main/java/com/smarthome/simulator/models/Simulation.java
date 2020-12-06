@@ -5,6 +5,7 @@ import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.modules.Module;
 import com.smarthome.simulator.modules.SHP;
+import com.smarthome.simulator.utils.DelayedRunnable;
 import com.smarthome.simulator.utils.Logger;
 import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.utils.TaskDispatcher;
@@ -111,6 +112,35 @@ public class Simulation {
 
         this.dispatcher = new TaskDispatcher(this);
         dispatcher.start();
+        dispatcher.schedule(new DelayedRunnable() {
+
+            long delay = (long)5*1000000000;
+
+            @Override
+            public long getDelay() {
+                return delay;
+            }
+
+            @Override
+            public void setDelay(long delay) {
+                this.delay = delay;
+            }
+
+            @Override
+            public boolean isPeriodic() {
+                return true;
+            }
+
+            @Override
+            public long getPeriod() {
+                return (long)5*1000000000;
+            }
+
+            @Override
+            public void run() {
+                SmartHomeSimulator.LOGGER.log(Logger.DEBUG, "Timer", "Task Schedule Test");
+            }
+        });
 
         this.dateTime = LocalDateTime.now();
         this.running = false;
