@@ -774,5 +774,9 @@ public class SmartHomeSimulator {
                 });
     }
 
+    public static void updateView () {
+        handler.updateViews();
+    }
+
 
 }

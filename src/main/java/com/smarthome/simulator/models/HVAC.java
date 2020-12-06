@@ -29,7 +29,10 @@ public class HVAC {
 
     // ============================  Other methods  ============================
 
-    private void changeTemp(Simulation simulation){
+    private void changeTemp(Simulation simulation) {
+
+        //SmartHomeSimulator.LOGGER.log(Logger.DEBUG, "SHH", "Test");
+
         HouseLayout house = simulation.getHouseLayout();
         if(house != null) {
             List<Room> rooms = house.getRooms();
@@ -114,6 +117,7 @@ public class HVAC {
                 }
             }
         }
+        SmartHomeSimulator.updateView();
     }
 
     public void startHVAC () {
