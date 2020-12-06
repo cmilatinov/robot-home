@@ -37,8 +37,12 @@ public class HVAC {
             List<Room> rooms = house.getRooms();
             for(Room room: rooms) {
                 float roomTemp = room.getTemperature();
-                if(roomTemp <= MINIMUM_ALERT_TEMP || roomTemp>=MAXIMUM_ALERT_TEMP) {
-                    SmartHomeSimulator.LOGGER.log(Logger.WARN, "SHH", "Critical temperature: " + roomTemp);
+                if(roomTemp <= MINIMUM_ALERT_TEMP || roomTemp >= MAXIMUM_ALERT_TEMP && !room.isCriticalTempLogged()) {
+                    room.setCriticalTempLogged(true);
+                    SmartHomeSimulator.LOGGER.log(Logger.WARN, "SHH", "Critical temperature: " + roomTemp + " in room " + room.getName());
+                }
+                else if (roomTemp > MINIMUM_ALERT_TEMP && roomTemp < MAXIMUM_ALERT_TEMP && room.isCriticalTempLogged()) {
+                    room.setCriticalTempLogged(false);
                 }
             }
         }

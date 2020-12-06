@@ -48,6 +48,11 @@ public class Room extends IdentifiableObject {
      */
     private boolean overrideZoneTemp = false;
 
+    /**
+     *
+     */
+    private boolean criticalTempLogged = false;
+
     // ============================ CONSTRUCTORS ============================
 
     /**
@@ -239,4 +244,11 @@ public class Room extends IdentifiableObject {
         this.overrideZoneTemp = override;
     }
 
+    public boolean isCriticalTempLogged() {
+        return criticalTempLogged;
+    }
+
+    public void setCriticalTempLogged(boolean criticalTempLogged) {
+        this.criticalTempLogged = criticalTempLogged;
+    }
 }
