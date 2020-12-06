@@ -67,7 +67,7 @@ public class TaskDispatcher extends Thread{
                         }
                     }
                 }
-                this.previousTime = System.nanoTime();
+                this.previousTime = this.currentTime;
                 yield();
             }
             yield();
