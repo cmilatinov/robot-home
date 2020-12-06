@@ -134,10 +134,10 @@
                 return this.$store.state.simulation?.endWinterMonth;
             },
             simulationWinterTemp() {
-                return this.$store.state.simulation?.winterTemperature;
+                return this.shh?.winterTemperature;
             },
             simulationSummerTemp() {
-                return this.$store.state.simulation?.summerTemperature;
+                return this.shh?.summerTemperature;
             }
         },
         methods: {
