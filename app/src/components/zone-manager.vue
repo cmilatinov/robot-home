@@ -71,7 +71,7 @@
                                 </v-btn>
                                 <v-tooltip top v-else>
                                     <template #activator="{ on }">
-                                        <v-btn class="f-14 white--text" icon @mousedown.stop v-on="on" @click.stop>
+                                        <v-btn class="f-14 white--text" icon @mousedown.stop v-on="on" @click.stop="">
                                             <v-icon disabled>fa-info-circle</v-icon>
                                         </v-btn>
                                     </template>
@@ -99,7 +99,7 @@
         <!-- Edit zone modal -->
         <v-dialog width="400" v-model="showEditZone">
             <v-card v-if="editZone">
-                <v-card-title>Edit {{currentZone.name}}</v-card-title>
+                <v-card-title>Edit {{currentZone ? currentZone.name : ''}}</v-card-title>
                 <v-form ref="addForm" lazy-validation>
                     <v-text-field v-model="editZone.name"
                                   :rules="[validationRules.required, validationRules.format, validationRules.length]"
@@ -215,9 +215,6 @@
                 if (this.editZone)
                     return this.zones.find(z => z.id === this.editZone.id);
                 return null;
-            },
-            currentZoneRooms() {
-                return this.currentZone?.rooms.map(r => r.name).join(', ') || '';
             }
         },
         methods: {

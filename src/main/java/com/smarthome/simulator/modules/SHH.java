@@ -67,6 +67,7 @@ public class SHH extends Module {
                 break;
             case SET_WINTER_RANGE:
                 setWinterRange(payload);
+                break;
             case EDIT_ZONE:
                 editZone(payload);
                 break;
@@ -165,8 +166,6 @@ public class SHH extends Module {
                 .stream()
                 .reduce(new ArrayList<Period>(), (listObj, periodPayloadObj) -> {
                     List<Period> list = (List<Period>) listObj;
-                    System.out.println(periodPayloadObj.getClass());
-                    System.out.println(periodPayloadObj);
                     JSONObject json = (JSONObject) periodPayloadObj;
                     Period period = new Period(
                             json.get("startTime").toString(),
