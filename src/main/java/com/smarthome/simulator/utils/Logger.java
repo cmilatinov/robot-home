@@ -56,6 +56,7 @@ public class Logger {
     /**
      * Log file path.
      */
+    @SuppressWarnings("FieldCanBeLocal")
     private final String DEFAULT_LOG_FILEPATH = "./logs/" + new SimpleDateFormat("MMddyyyy-HHmmss").format(new Date())
             + ".log";
 

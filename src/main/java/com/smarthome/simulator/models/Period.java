@@ -86,8 +86,9 @@ public class Period {
      * Returns this period's duration.
      *
      * @return {@link LocalTime} The duration of this period based on its start and end times.
-     * @parma timeUnit The unit of time in which to return the duration. (ex: {@link ChronoUnit#HOURS}, {@link ChronoUnit#MINUTES})
+     * @param timeUnit The unit of time in which to return the duration. (ex: {@link ChronoUnit#HOURS}, {@link ChronoUnit#MINUTES})
      */
+    @SuppressWarnings("unused")
     public long getDuration(ChronoUnit timeUnit) {
         return startTime.until(endTime, timeUnit);
     }

@@ -14,7 +14,7 @@ public class TaskDispatcher extends Thread{
     /**
      * Reference to the simulation
      */
-    private Simulation simulation;
+    private final Simulation simulation;
 
     /**
      * The current time of the system
@@ -33,10 +33,10 @@ public class TaskDispatcher extends Thread{
 
     /**
      * Constructor that takes a reference to the simulation
-     * @param _simulation
+     * @param simulation Simulation instance to which the task dispatch should match its speed.
      */
-    public TaskDispatcher(Simulation _simulation) {
-        this.simulation = _simulation;
+    public TaskDispatcher(Simulation simulation) {
+        this.simulation = simulation;
         this.currentTime = System.currentTimeMillis();
         this.previousTime = System.currentTimeMillis();
     }
@@ -46,8 +46,9 @@ public class TaskDispatcher extends Thread{
      * Always looping to keep previous time up to date.
      * Inner loop for simulation time
      */
+    @SuppressWarnings("InfiniteLoopStatement")
     public void run() {
-        this.taskList = new ArrayList<DelayedRunnable>();
+        this.taskList = new ArrayList<>();
         this.currentTime = System.nanoTime();
         while (true) {
             this.previousTime = System.nanoTime();
@@ -68,15 +69,15 @@ public class TaskDispatcher extends Thread{
                     }
                 }
                 this.previousTime = this.currentTime;
-                yield();
+                Thread.yield();
             }
-            yield();
+            Thread.yield();
         }
     }
 
     /**
      * Schedules a task
-     * @param task
+     * @param task The task to schedule
      */
     public synchronized void schedule (DelayedRunnable task) {
         taskList.add(task);

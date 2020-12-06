@@ -158,13 +158,13 @@ public class ServerResourceHandler implements HttpHandler {
             throws IOException {
         if (httpExchange.getRequestMethod().equals("HEAD")) {
             Set<Map.Entry<String, List<String>>> entries = httpExchange.getRequestHeaders().entrySet();
-            String response = "";
+            StringBuilder response = new StringBuilder();
             for (Map.Entry<String, List<String>> entry : entries) {
-                response += entry.toString() + "\n";
+                response.append(entry.toString()).append("\n");
             }
             httpExchange.getResponseHeaders().set("Content-Type", "text/plain; charset=utf-8");
             httpExchange.sendResponseHeaders(200, response.length());
-            httpExchange.getResponseBody().write(response.getBytes());
+            httpExchange.getResponseBody().write(response.toString().getBytes());
         } else {
             httpExchange.getResponseHeaders().set("Content-Type", contentType);
             httpExchange.sendResponseHeaders(200, contentLength);

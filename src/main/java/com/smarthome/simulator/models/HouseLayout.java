@@ -233,15 +233,15 @@ public class HouseLayout {
      * @return One room of the house layout.
      */
     private static Room getRoomsInfo(JSONObject room) throws HouseLayoutException {
-        String name = "";
-        int nbOfWindows = 0;
-        int nbOfDoors = 0;
-        int nbOfLights = 0;
-        float height = 0;
-        float width = 0;
-        float positionX = 0;
-        float positionY = 0;
-        boolean isHouseEntrance = false;
+        String name;
+        int nbOfWindows;
+        int nbOfDoors;
+        int nbOfLights;
+        float height;
+        float width;
+        float positionX;
+        float positionY;
+        boolean isHouseEntrance;
 
         // Getting all the information on the room
         try {
@@ -290,7 +290,7 @@ public class HouseLayout {
 
         // if the room is of type houseEntrance
         if (isHouseEntrance)
-            room1.getDoors().stream().forEach(door -> door.setHouseEntrance(true));
+            room1.getDoors().forEach(door -> door.setHouseEntrance(true));
 
         return room1;
     }

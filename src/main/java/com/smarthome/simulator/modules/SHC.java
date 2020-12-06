@@ -1,7 +1,6 @@
 package com.smarthome.simulator.modules;
 
 import com.smarthome.simulator.SmartHomeSimulator;
-import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.models.Person;
 import com.smarthome.simulator.models.Room;
 import com.smarthome.simulator.models.Simulation;

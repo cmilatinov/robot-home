@@ -7,26 +7,26 @@ public interface DelayedRunnable extends Runnable {
 
     /**
      * Get the delay time
-     * @return the value of the delay
+     * @return The value of the delay
      */
-    public long getDelay();
+    long getDelay();
 
     /**
      * Set the delay time
-     * @param delay
+     * @param delay The delay time for the runnable
      */
-    public void setDelay(long delay);
+    void setDelay(long delay);
 
     /**
      * Returns true if the task is periodic
-     * @return
+     * @return Indicates if the task is periodic
      */
-    public boolean isPeriodic();
+    boolean isPeriodic();
 
     /**
      * Returns the value of the period that the task recurs over
-     * @return
+     * @return The value of the period that the task recurs over
      */
-    public long getPeriod();
+    long getPeriod();
 
 }
