@@ -1,14 +1,13 @@
 package com.smarthome.simulator.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.smarthome.simulator.SmartHomeSimulator;
-import com.smarthome.simulator.exceptions.DateTimeFormatException;
 import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.modules.Module;
 import com.smarthome.simulator.modules.SHP;
 import com.smarthome.simulator.utils.Logger;
-
+import com.smarthome.simulator.SmartHomeSimulator;
+import com.smarthome.simulator.utils.TaskDispatcher;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,6 +15,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Simulation {
+
+    /**
+     * TaskDispatcher that handles scheduled tasks.
+     */
+    private static TaskDispatcher dispatcher;
 
     /**
      * The date format used to display the simulation date and time.
@@ -97,11 +101,6 @@ public class Simulation {
      */
     private float summerTemperature;
 
-    /**
-     * Timer that handles scheduled tasks.
-     */
-    private final Timer timer = new Timer(true);
-
     // ============================ CONSTRUCTORS ============================
 
     /**
@@ -109,6 +108,10 @@ public class Simulation {
      */
     public Simulation() {
         super();
+
+        this.dispatcher = new TaskDispatcher(this);
+        dispatcher.start();
+
         this.dateTime = LocalDateTime.now();
         this.running = false;
 
@@ -126,7 +129,6 @@ public class Simulation {
         this.userProfiles.get(1).setPermissions("Child");
         this.userProfiles.get(2).setPermissions("Guest");
         this.userProfiles.get(3).setPermissions("Stranger");
-
         this.activeUserProfile = this.userProfiles.get(0);
         this.temperatureOutside = 11.0f;
         this.simulationSpeed = 1.0f;
@@ -166,13 +168,12 @@ public class Simulation {
 
 
     /**
-     * This function returns a reference to the timer object.
+     * This function returns a reference to the dispatcher object.
      *
-     * @return The {@link Timer}
+     * @return The {@link TaskDispatcher}
      */
-    @JsonIgnore
-    public Timer getTimer() {
-        return timer;
+    public static TaskDispatcher getDispatcher() {
+        return dispatcher;
     }
 
     /**
@@ -229,12 +230,8 @@ public class Simulation {
      *
      * @param dateTime The date time string in the "yyyy-MM-dd HH:mm" format.
      */
-    public void setDateTime(String dateTime) throws DateTimeFormatException {
-        if (dateTime != null && !dateTime.equals("") && !dateTime.equals(" ")) {
-            this.dateTime = LocalDateTime.parse(dateTime, formatter);
-            return;
-        }
-        throw new DateTimeFormatException();
+    public void setDateTime(String dateTime) {
+        this.dateTime = LocalDateTime.parse(dateTime, formatter);
     }
 
     /**
