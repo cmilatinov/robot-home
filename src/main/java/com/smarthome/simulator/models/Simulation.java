@@ -5,7 +5,6 @@ import com.smarthome.simulator.exceptions.ModuleException;
 import com.smarthome.simulator.exceptions.UserProfileException;
 import com.smarthome.simulator.modules.Module;
 import com.smarthome.simulator.modules.SHP;
-import com.smarthome.simulator.utils.DelayedRunnable;
 import com.smarthome.simulator.utils.Logger;
 import com.smarthome.simulator.SmartHomeSimulator;
 import com.smarthome.simulator.utils.TaskDispatcher;
@@ -112,7 +111,7 @@ public class Simulation {
     public Simulation() {
         super();
 
-        this.dispatcher = new TaskDispatcher(this);
+        dispatcher = new TaskDispatcher(this);
         dispatcher.start();
 
         this.dateTime = LocalDateTime.now();
@@ -400,6 +399,7 @@ public class Simulation {
      *
      * @return boolean
      */
+    @SuppressWarnings("OptionalIsPresent")
     public boolean isAway() {
         Optional<Module> shp = modules.stream().filter(m -> m instanceof SHP).findFirst();
         if (shp.isPresent())

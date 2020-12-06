@@ -22,17 +22,8 @@ public class SHH extends Module {
     /**
      * The hvac instance that will be used from here
      */
+    @SuppressWarnings("FieldCanBeLocal")
     private final HVAC hvac;
-
-    /**
-     * Permission identifier to set default zone
-     */
-    public static final String SET_DEFAULT_ZONE = "setDefaultZone";
-
-    /**
-     * Permission identifier to set room temperature
-     */
-    public static final String SET_ROOM_TEMPERATURE = "setRoomTemperature";
 
     /**
      * Permission identifier to edit zone
@@ -50,12 +41,22 @@ public class SHH extends Module {
     public static final String REMOVE_ZONE = "removeZone";
 
     /**
+     * Permission identifier to set default zone
+     */
+    public static final String SET_DEFAULT_ZONE = "setDefaultZone";
+
+    /**
+     * Permission identifier to set room temperature
+     */
+    public static final String SET_ROOM_TEMPERATURE = "setRoomTemperature";
+
+    /**
      * Permission identifier to set if room temperature has been overridden
      */
     public static final String SET_ROOM_OVERRIDE = "setRoomOverride";
 
     /**
-     * Permission identifier to set season temperature
+     * Permission identifier to set season temperature in away mode
      */
     public static final String SET_SEASON_TEMP = "setSeasonTemp";
 
@@ -63,11 +64,6 @@ public class SHH extends Module {
      * Permission identifier to set winter range
      */
     public static final String SET_WINTER_RANGE = "setWinterRange";
-
-    /**
-     * Permission identifier to set away mode temperature
-     */
-    public static final String SET_AWAY_MODE_TEMP = "setAwayModeTemp";
 
     /**
      * The default temperature for winter when the home is in away mode
@@ -98,15 +94,14 @@ public class SHH extends Module {
      */
     public List<String> getCommandList() {
         return new ArrayList<String>() {{
-            add(SET_DEFAULT_ZONE);
-            add(SET_ROOM_TEMPERATURE);
-            add(SET_WINTER_RANGE);
             add(EDIT_ZONE);
             add(ADD_ZONE);
             add(REMOVE_ZONE);
+            add(SET_DEFAULT_ZONE);
+            add(SET_ROOM_TEMPERATURE);
+            add(SET_WINTER_RANGE);
             add(SET_ROOM_OVERRIDE);
             add(SET_SEASON_TEMP);
-            add(SET_AWAY_MODE_TEMP);
         }};
     }
 
@@ -327,10 +322,11 @@ public class SHH extends Module {
     }
 
     /**
-     * Sets the winter temperature
-     * @param winterTemperature
+     * Sets the desired winter temperature in away mode
+     * @param winterTemperature The new desired temperature for away mode in winter
      * @return if the change was made or not
      */
+    @SuppressWarnings("UnusedReturnValue")
     public boolean setWinterTemperature(float winterTemperature) {
         if(winterTemperature <= 30 && winterTemperature >= 15){
             this.winterTemperature = winterTemperature;
@@ -349,10 +345,11 @@ public class SHH extends Module {
     }
 
     /**
-     * Sets the default summer temperature
-     * @param summerTemperature
+     * Sets the desired summer temperature in away mode
+     * @param summerTemperature The new desired temperature for away mode in summer
      * @return if the change was made or not
      */
+    @SuppressWarnings("UnusedReturnValue")
     public boolean setSummerTemperature(float summerTemperature) {
         if(summerTemperature <= 30 && summerTemperature >= 15){
             this.summerTemperature = summerTemperature;

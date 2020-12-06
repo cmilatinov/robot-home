@@ -58,7 +58,6 @@ public class UserProfile extends IdentifiableObject {
             add(SHH.REMOVE_ZONE);
             add(SHH.SET_ROOM_OVERRIDE);
             add(SHH.SET_SEASON_TEMP);
-            add(SHH.SET_AWAY_MODE_TEMP);
             add(SHH.SET_WINTER_RANGE);
         }
     };
@@ -187,6 +186,7 @@ public class UserProfile extends IdentifiableObject {
      * @param clearance The type of profile permission level.
      * @return Boolean representation of whether or not the setPermissions was successful.
      */
+    @SuppressWarnings("UnusedReturnValue")
     public boolean setPermissions(String clearance) {
         switch (clearance) {
             case "Parent":
@@ -240,13 +240,12 @@ public class UserProfile extends IdentifiableObject {
      *
      * @param selectedFile The file in which the {@link UserProfile} will be written into.
      * @param profiles     The list of all current {@link UserProfile} in the simulation
-     * @return The resulting {@link File} instance, or null if the user has not selected a file.
      */
     public static void writeUserProfiles(File selectedFile, List<UserProfile> profiles) {
         JSONObject users = createUsers(createProfiles(profiles));
 
         //Writing the JSON file with the JSON object and array
-        FileWriter file = null;
+        FileWriter file;
         try {
             file = new FileWriter(selectedFile.getPath());
             file.write(users.toJSONString());
@@ -262,6 +261,7 @@ public class UserProfile extends IdentifiableObject {
      * @param profiles UserProfile list containing all the current profiles.
      * @return JSONArray containing all the user profiles.
      */
+    @SuppressWarnings("unchecked")
     private static JSONArray createProfiles(List<UserProfile> profiles) {
         JSONArray userProfiles = new JSONArray();
 
@@ -281,6 +281,7 @@ public class UserProfile extends IdentifiableObject {
      * @param userProfiles JSONArray of user profiles.
      * @return JSONObject containing all users of the application.
      */
+    @SuppressWarnings("unchecked")
     private static JSONObject createUsers(JSONArray userProfiles) {
         JSONObject users = new JSONObject();
 
@@ -361,9 +362,9 @@ public class UserProfile extends IdentifiableObject {
         ArrayList<UserProfile> profilesList = new ArrayList<>();
 
         // Going through each profile
-        for (int i = 0; i < userProfiles.size(); i++) {
+        for (Object userProfile : userProfiles) {
             //Adding the userProfile to the list
-            profilesList.add(getUserProfileInfo((JSONObject) userProfiles.get(i)));
+            profilesList.add(getUserProfileInfo((JSONObject) userProfile));
         }
 
         return profilesList;
@@ -377,9 +378,9 @@ public class UserProfile extends IdentifiableObject {
      */
     private static UserProfile getUserProfileInfo(JSONObject profile) throws UserProfileException {
         //Setting the initial value of the name and permission
-        String name = "";
+        String name;
         JSONArray permissions;
-        ArrayList<String> permissionList = new ArrayList<String>();
+        ArrayList<String> permissionList = new ArrayList<>();
 
         // Getting all the information on the profile
         try {
@@ -387,8 +388,8 @@ public class UserProfile extends IdentifiableObject {
             permissions = (JSONArray) profile.get("permissions");
 
             //Looping through the permission and saving them
-            for (int j = 0; j < permissions.size(); j++) {
-                String temp = permissions.get(j).toString();
+            for (Object permission : permissions) {
+                String temp = permission.toString();
                 permissionList.add(temp);
             }
         } catch (NumberFormatException e) {

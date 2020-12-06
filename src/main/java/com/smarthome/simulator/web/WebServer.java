@@ -59,6 +59,7 @@ public class WebServer extends Thread {
     /**
      * Stops the web server and kills all threads allocated to it.
      */
+    @SuppressWarnings("SynchronizeOnNonFinalField")
     public void halt() {
         try {
             httpServer.stop(0);

@@ -19,30 +19,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class HVAC {
 
     /**
-     * This is a pointer to the simulation instance
-     */
-    private final Simulation simulation;
-
-    /**
-     * The is a pointer to the shh instance
-     */
-    private final SHH shh;
-
-    /**
-     * This is a Mapping of Room -> State
-     */
-    private final Map<Room, HVACState> roomStates = new HashMap<>();
-
-    /**
-     * Enum representing the various states that HVAC can have
-     */
-    private enum HVACState {
-        STOPPED,
-        PAUSED,
-        RUNNING
-    };
-
-    /**
      * The rate at which the temperature changes with HVAC on
      */
     private static final float HVAC_RATE = 0.1f;
@@ -66,6 +42,30 @@ public class HVAC {
      * The alerting maximum temperature point
      */
     private static final float MAXIMUM_ALERT_TEMP = 50f;
+
+    /**
+     * Enum representing the various states that HVAC can have
+     */
+    private enum HVACState {
+        STOPPED,
+        PAUSED,
+        RUNNING
+    }
+
+    /**
+     * This is a pointer to the simulation instance
+     */
+    private final Simulation simulation;
+
+    /**
+     * The is a pointer to the shh instance
+     */
+    private final SHH shh;
+
+    /**
+     * This is a Mapping of Room -> State
+     */
+    private final Map<Room, HVACState> roomStates = new HashMap<>();
 
     /**
      * The parameterized constructor for the HVAC class
@@ -124,9 +124,7 @@ public class HVAC {
 
                 boolean belowDesired = roomTemp < desiredTemp.get();
                 boolean aboveDesired = roomTemp > desiredTemp.get();
-                boolean outsideCoolerThanInside = simulation.getTemperatureOutside() < roomTemp;
                 boolean outsideHotterThanInside = simulation.getTemperatureOutside() > roomTemp;
-                boolean paused = true;
 
                 // Check critical temp
                 if ((roomTemp <= MINIMUM_ALERT_TEMP || roomTemp >= MAXIMUM_ALERT_TEMP) && !room.isCriticalTempLogged()) {
@@ -166,7 +164,7 @@ public class HVAC {
 
                             // If no windows are open, attempt to open at least one
                             for (Window window: room.getWindows()) {
-                                Map<String, Object> payload = new HashMap<String, Object>();
+                                Map<String, Object> payload = new HashMap<>();
                                 payload.put("id", window.getId());
                                 payload.put("blocked", window.isBlocked());
                                 payload.put("open", true);
@@ -184,7 +182,7 @@ public class HVAC {
                         // Otherwise, force HVAC to run and close all windows to get to desired temp
                         } else {
                             room.getWindows().forEach(window -> {
-                                Map<String, Object> payload = new HashMap<String, Object>();
+                                Map<String, Object> payload = new HashMap<>();
                                 payload.put("id", window.getId());
                                 payload.put("blocked", window.isBlocked());
                                 payload.put("open", false);
@@ -226,8 +224,6 @@ public class HVAC {
      * This function starts the HVAC when called in the SHH.
      */
     public void startHVAC() {
-        HVAC hvac = this;
-
         DelayedRunnable task = new DelayedRunnable() {
 
             private long delay = 1000000000;
@@ -258,10 +254,7 @@ public class HVAC {
             }
         };
 
-        simulation.getDispatcher().schedule(task);
+        Simulation.getDispatcher().schedule(task);
     }
-
-    // ============================ GETTERS/SETTERS ============================
-
 
 }

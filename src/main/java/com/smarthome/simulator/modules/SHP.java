@@ -44,11 +44,6 @@ public class SHP extends Module {
     private LocalTime awayTimeEnd;
 
     /**
-     * Whether or not the current time of the simulation is within the time window for awayLights to be kept on.
-     */
-    private boolean withinAwayTime;
-
-    /**
      * Format of time used in simulation.
      */
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -95,7 +90,6 @@ public class SHP extends Module {
         this.awayLights = new ArrayList<>();
         this.awayTimeEnd = LocalTime.MIDNIGHT;
         this.awayTimeStart = LocalTime.NOON;
-        this.withinAwayTime = false;
     }
 
     /**
@@ -133,7 +127,7 @@ public class SHP extends Module {
                 NotifyAuthorities();
             }
         };
-        simulation.getDispatcher().schedule(task);
+        Simulation.getDispatcher().schedule(task);
     }
 
     /**
@@ -185,7 +179,7 @@ public class SHP extends Module {
      *
      * @param payload The arguments for execution
      */
-    private void ExecuteAwayMode(Map<String, Object> payload) {
+    private void ExecuteAwayMode(Map<String, Object> payload) throws ModuleException {
 
         boolean newAwayMode = ((boolean) payload.get("value"));
         if (isHouseEmpty() || !newAwayMode)
@@ -333,15 +327,6 @@ public class SHP extends Module {
      */
     public void setAwayTimeEnd(LocalTime awayTimeEnd) {
         this.awayTimeEnd = awayTimeEnd;
-    }
-
-    /**
-     * Returns the value of withinAwayTime.
-     *
-     * @return boolean
-     */
-    public boolean isWithinAwayTime() {
-        return withinAwayTime;
     }
 
     /**
