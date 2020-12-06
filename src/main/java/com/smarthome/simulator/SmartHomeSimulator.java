@@ -361,20 +361,6 @@ public class SmartHomeSimulator {
 
         });
 
-        // User changes the inside temperature
-        handler.addEventListener("setInsideTemp", (event) -> {
-
-            // Get value
-            float value = Float.parseFloat(event.get("value").toString());
-
-            // Set outside temperature
-            simulation.setTemperatureInside(value);
-
-            // Update front-end
-            handler.updateViews();
-
-        });
-
         // User toggles a light
         handler.addEventListener("toggleLightState", event -> {
 

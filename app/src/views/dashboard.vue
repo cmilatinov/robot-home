@@ -139,17 +139,6 @@
                                     :value="outsideTemperature"
                                     thumb-label
                                     @change="dispatchEvent('setOutsideTemp', { value: $event })"></v-slider>
-                            <v-subheader class="form-subheader" style="margin-top: -30px; margin-bottom: -10px;">
-                                <v-icon class="mr-3">fa-thermometer-half</v-icon>
-                                <span class="f-10 w-100">Inside<strong class="float-right white--text">{{ insideTemperature }} &deg;C</strong></span>
-                            </v-subheader>
-                            <v-slider
-                                    color="info"
-                                    :min="-30"
-                                    :max="35"
-                                    :value="insideTemperature"
-                                    thumb-label
-                                    @change="dispatchEvent('setInsideTemp', { value: $event })"></v-slider>
                         </v-form>
                     </v-container>
                 </v-card>
@@ -271,9 +260,6 @@
             },
             awayMode() {
                 return this.simulationModules.find(m => m.name === 'SHP')?.away;
-            },
-            insideTemperature() {
-                return this.$store.state.simulation?.temperatureInside;
             },
             outsideTemperature() {
                 return this.$store.state.simulation?.temperatureOutside;

@@ -47,11 +47,6 @@ public class Simulation {
     private UserProfile activeUserProfile;
 
     /**
-     * The temperature inside of the house.
-     */
-    private float temperatureInside;
-
-    /**
      * The temperature outside of the house.
      */
     private float temperatureOutside;
@@ -157,7 +152,6 @@ public class Simulation {
                 ", running=" + running +
                 ", userProfiles=" + userProfiles +
                 ", activeUProfile=" + activeUserProfile +
-                ", temperatureInside=" + temperatureInside +
                 ", temperatureOutside=" + temperatureOutside +
                 ", houseLayout=" + houseLayout +
                 ", houseLocation='" + +'\'' +
@@ -251,29 +245,6 @@ public class Simulation {
      */
     public void setRunning(boolean running) {
         this.running = running;
-    }
-
-    /**
-     * This function gets the temperature of inside the house.
-     *
-     * @return The temperature of inside the house.
-     */
-    public float getTemperatureInside() {
-        return temperatureInside;
-    }
-
-    /**
-     * This function sets the temperature of inside the house.
-     *
-     * @param temperatureInside The temperature of inside the house.
-     * @return boolean representation of whether the temperature changed or not.
-     */
-    public boolean setTemperatureInside(float temperatureInside) {
-        if (temperatureInside <= 35 && temperatureInside >= -30) {
-            this.temperatureInside = temperatureInside;
-            return true;
-        }
-        return false;
     }
 
     /**
