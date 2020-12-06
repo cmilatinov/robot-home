@@ -95,15 +95,11 @@ public class Simulation {
      */
     private int endWinterMonth;
 
-    /**
-     * The default temperature for winter when the home is in away mode
-     */
-    private float winterTemperature;
 
-    /**
-     * The default temperature for summer when the home is in away mode
-     */
-    private float summerTemperature;
+    public static final String WINTER = "winter";
+    public static final String SUMMER = "summer";
+
+
 
     // ============================ CONSTRUCTORS ============================
 
@@ -115,35 +111,6 @@ public class Simulation {
 
         this.dispatcher = new TaskDispatcher(this);
         dispatcher.start();
-        dispatcher.schedule(new DelayedRunnable() {
-
-            long delay = (long)5*1000000000;
-
-            @Override
-            public long getDelay() {
-                return delay;
-            }
-
-            @Override
-            public void setDelay(long delay) {
-                this.delay = delay;
-            }
-
-            @Override
-            public boolean isPeriodic() {
-                return true;
-            }
-
-            @Override
-            public long getPeriod() {
-                return (long)5*1000000000;
-            }
-
-            @Override
-            public void run() {
-                SmartHomeSimulator.LOGGER.log(Logger.DEBUG, "Timer", "Task Schedule Test");
-            }
-        });
 
         this.dateTime = LocalDateTime.now();
         this.running = false;
@@ -171,8 +138,6 @@ public class Simulation {
         this.modules = new ArrayList<>();
         this.startWinterMonth = 10;
         this.endWinterMonth = 3;
-        this.winterTemperature = 24.0f;
-        this.summerTemperature = 16.0f;
 
     }
 
@@ -495,49 +460,7 @@ public class Simulation {
         this.endWinterMonth = endWinterMonth;
     }
 
-    /**
-     * The default winter temperature
-     *
-     * @return the fault winter temperature
-     */
-    public float getWinterTemperature() {
-        return winterTemperature;
-    }
 
-    /**
-     * Sets the winter temperature
-     * @param winterTemperature
-     * @return if the change was made or not
-     */
-    public boolean setWinterTemperature(float winterTemperature) {
-        if(winterTemperature <= 30 && winterTemperature >= 15){
-            this.winterTemperature = winterTemperature;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * The default summer temperature
-     *
-     * @return the default summer temperature
-     */
-    public float getSummerTemperature() {
-        return summerTemperature;
-    }
-
-    /**
-     * Sets the default summer temperature
-     * @param summerTemperature
-     * @return if the change was made or not
-     */
-    public boolean setSummerTemperature(float summerTemperature) {
-        if(summerTemperature <= 30 && summerTemperature >= 15){
-            this.summerTemperature = summerTemperature;
-            return true;
-        }
-        return false;
-    }
 
     // ============================ OTHER METHODS ============================
 
@@ -550,9 +473,9 @@ public class Simulation {
 
         // initial winter range --> october 1st to march 31st
         if (month >= this.startWinterMonth || month <= this.endWinterMonth) {
-            return "Winter";
+            return WINTER;
         } else {
-            return "Summer";
+            return SUMMER;
         }
     }
 
