@@ -90,44 +90,50 @@ public class HVAC {
      */
     private void changeTemp(SHH shh, Simulation simulation) {
 
-        //SmartHomeSimulator.LOGGER.log(Logger.DEBUG, "SHH", "Test");
-
-
         HouseLayout house = simulation.getHouseLayout();
         if (house != null) {
             List<Room> rooms = house.getRooms();
 
             boolean isSummer = simulation.getCurrentSeason().equals(Simulation.SUMMER);
             boolean isWinter = simulation.getCurrentSeason().equals(Simulation.WINTER);
+            float winterTemp = shh.getWinterTemperature();
+            float summerTemp = shh.getSummerTemperature();
 
             for (Room room : rooms) {
 
                 // Add this room to state map if not present, HVAC stopped at start
-                roomStates.putIfAbsent(room, HVACState.STOPPED);
+                roomStates.putIfAbsent(room, HVACState.PAUSED);
 
                 float roomTemp = room.getTemperature();
                 AtomicReference<Float> desiredTemp = new AtomicReference<>(simulation.getCurrentSeason().equals(Simulation.SUMMER) ? shh.getSummerTemperature() : shh.getWinterTemperature());
-                if (room.isZoneTempOverridden())
+
+                //Determine Desired Temp of this room
+                if (simulation.isAway()) {
+                    desiredTemp.set(isSummer?summerTemp:winterTemp);
+                }
+                else if (room.isZoneTempOverridden())
                     desiredTemp.set(room.getDesiredTemperature());
                 else {
                     shh.getZones()
-                            .stream()
-                            .filter(zone -> zone.getRooms().contains(room))
-                            .findFirst()
-                            .ifPresent(zone -> {
-                                for (Period p : zone.getPeriods()) {
-                                    if (TimeUtil.isInRange(simulation.getTime(), p.getStartTimeObj(), p.getEndTimeObj())) {
-                                        desiredTemp.set(p.getDesiredTemperature());
-                                        break;
-                                    }
+                        .stream()
+                        .filter(zone -> zone.getRooms().contains(room))
+                        .findFirst()
+                        .ifPresent(zone -> {
+                            for (Period p : zone.getPeriods()) {
+                                if (TimeUtil.isInRange(simulation.getTime(), p.getStartTimeObj(), p.getEndTimeObj())) {
+                                    desiredTemp.set(p.getDesiredTemperature());
+                                    break;
                                 }
-                            });
+                            }
+                        });
                 }
-                float tempDiff = desiredTemp.get() - roomTemp;
 
+                //Calculate some values
+                float tempDiff = desiredTemp.get() - roomTemp;
                 boolean belowDesired = roomTemp < desiredTemp.get();
                 boolean aboveDesired = roomTemp > desiredTemp.get();
                 boolean outsideHotterThanInside = simulation.getTemperatureOutside() > roomTemp;
+
 
                 // Check critical temp
                 if ((roomTemp <= MINIMUM_ALERT_TEMP || roomTemp >= MAXIMUM_ALERT_TEMP) && !room.isCriticalTempLogged()) {
@@ -137,34 +143,19 @@ public class HVAC {
                     room.setCriticalTempLogged(false);
                 }
 
-                // Away mode temp control
-                if (simulation.isAway()) {
-                    float winterTemp = shh.getWinterTemperature();
-                    float summerTemp = shh.getSummerTemperature();
-                    if (isWinter && winterTemp != room.getTemperature()) {
-                        if (winterTemp > roomTemp) {
-                            room.setTemperature((winterTemp - roomTemp < HVAC_RATE) ? winterTemp : roomTemp + HVAC_RATE);
-                        } else if (winterTemp < roomTemp) {
-                            room.setTemperature((winterTemp - roomTemp < HVAC_RATE) ? winterTemp : roomTemp - HVAC_RATE);
-                        }
-                    } else if (isSummer && summerTemp != room.getTemperature()) {
-                        if (summerTemp > roomTemp) {
-                            room.setTemperature((summerTemp - roomTemp < HVAC_RATE) ? summerTemp : roomTemp + HVAC_RATE);
-                        } else if (summerTemp < roomTemp) {
-                            room.setTemperature((summerTemp - roomTemp < HVAC_RATE) ? summerTemp : roomTemp - HVAC_RATE);
-                        }
-                    }
+            if (isWinter) {
+                if (belowDesired || aboveDesired) {
+                    if (Math.abs(tempDiff) >= 0.25f && roomStates.get(room) == HVACState.PAUSED)
+                        roomStates.put(room, HVACState.RUNNING);
                 } else {
-
-                    // Open windows in summer
-                    AtomicBoolean windowOpen = new AtomicBoolean(room.getWindows().stream().anyMatch(Window::isOpen));
-
-                    // Summer, outside temp is cooler, actual temp > desired temp
-                    if (isSummer && !outsideHotterThanInside && aboveDesired) {
-
-                        // If room temp > outside temp, try to open a window
-                        if (roomTemp > simulation.getTemperatureOutside() && !windowOpen.get()) {
-
+                    roomStates.put(room, HVACState.PAUSED);
+                }
+            } else {
+                AtomicBoolean windowOpen = new AtomicBoolean(room.getWindows().stream().anyMatch(Window::isOpen));
+                if (belowDesired || aboveDesired) {
+                    if (Math.abs(tempDiff) >= 0.25f) {
+                        //should i open a window
+                        if (!outsideHotterThanInside && aboveDesired && !simulation.isAway() && roomTemp > simulation.getTemperatureOutside()) {
                             // If no windows are open, attempt to open at least one
                             for (Window window : room.getWindows()) {
                                 Map<String, Object> payload = new HashMap<>();
@@ -173,11 +164,8 @@ public class HVAC {
                                 payload.put("open", true);
                                 try {
                                     simulation.executeCommand(SHC.CONTROL_WINDOW, payload, false);
-                                } catch (ModuleException e) {
-                                }
-                                if (window.isOpen()) {
                                     windowOpen.set(true);
-                                    break;
+                                } catch (ModuleException e) {
                                 }
                             }
 
@@ -185,8 +173,7 @@ public class HVAC {
                             // Else, HVAC has to run to cool the room, change temp by -0.1
                             roomStates.put(room, windowOpen.get() ? HVACState.STOPPED : HVACState.RUNNING);
 
-                            // Otherwise, force HVAC to run and close all windows to get to desired temp
-                        } else {
+                        } else if (roomStates.get(room) != HVACState.RUNNING) {
                             room.getWindows().forEach(window -> {
                                 Map<String, Object> payload = new HashMap<>();
                                 payload.put("id", window.getId());
@@ -196,35 +183,34 @@ public class HVAC {
                                     simulation.executeCommand(SHC.CONTROL_WINDOW, payload, false);
                                 } catch (ModuleException e) {
                                 }
-                                ;
+
                             });
+
                             roomStates.put(room, HVACState.RUNNING);
                         }
-
-                        // Otherwise, if we've reach desired temp, pause HVAC
-                    } else if (room.getTemperature() == desiredTemp.get())
-                        roomStates.put(room, HVACState.PAUSED);
-
-                        // Abs temp diff > 0.25 and HVAC is paused
-                    else if (Math.abs(tempDiff) > TEMP_THRESHOLD && roomStates.get(room) == HVACState.PAUSED)
-                        roomStates.put(room, HVACState.RUNNING);
-
-                    // If HVAC is running
-                    if (roomStates.get(room) == HVACState.RUNNING) {
-
-                        // Adjust temperature accordingly (+/-)
-                        if (belowDesired)
-                            room.setTemperature((Math.abs(tempDiff) < HVAC_RATE) ? desiredTemp.get() : roomTemp + HVAC_RATE);
-                        else if (aboveDesired)
-                            room.setTemperature((Math.abs(tempDiff) < HVAC_RATE) ? desiredTemp.get() : roomTemp - HVAC_RATE);
-
-                        // Otherwise, slowly drift to outside temp
-                    } else {
-                        float outsideTemp = simulation.getTemperatureOutside();
-                        float factor = outsideTemp > roomTemp ? 1.0f : -1.0f;
-                        room.setTemperature((Math.abs(outsideTemp - roomTemp) < STOPPED_RATE) ? outsideTemp : roomTemp + factor * STOPPED_RATE);
                     }
+                } else {
+                    roomStates.put(room, HVACState.PAUSED);
                 }
+            }
+
+            // If HVAC is running
+            if (roomStates.get(room) == HVACState.RUNNING) {
+
+                // Adjust temperature accordingly (+/-)
+                if (belowDesired)
+                    room.setTemperature((Math.abs(tempDiff) < HVAC_RATE) ? desiredTemp.get() : roomTemp + HVAC_RATE);
+                else if (aboveDesired)
+                    room.setTemperature((Math.abs(tempDiff) < HVAC_RATE) ? desiredTemp.get() : roomTemp - HVAC_RATE);
+
+
+                // Otherwise, slowly drift to outside temp
+            } else {
+                float outsideTemp = simulation.getTemperatureOutside();
+                float factor = outsideTemp > roomTemp ? 1.0f : -1.0f;
+                room.setTemperature((Math.abs(outsideTemp - roomTemp) < STOPPED_RATE) ? outsideTemp : roomTemp + factor * STOPPED_RATE);
+
+            }
             }
         }
         SmartHomeSimulator.updateRoomTempView(this);
