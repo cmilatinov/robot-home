@@ -279,7 +279,7 @@ public class SHC extends Module {
         // Check if there are people in the room
         Optional<Person> person = simulation.getPeople()
                 .stream()
-                .filter(p -> p.getRoomId().equals(room.getId()))
+                .filter(p -> p.getRoomId() != null && p.getRoomId().equals(room.getId()))
                 .findFirst();
 
         // Set all the lights to on if there are people in the room, otherwise, turn them all off
