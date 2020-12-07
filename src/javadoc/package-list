@@ -1,4 +1,5 @@
 com.smarthome.simulator
+com.smarthome.simulator.exceptions
 com.smarthome.simulator.models
 com.smarthome.simulator.models.SimulationTestClasses
 com.smarthome.simulator.modules
