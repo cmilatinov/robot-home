@@ -5,6 +5,7 @@
         <v-dialog v-model="showAddZone" width="450">
             <v-card>
                 <v-card-title>Add New Zone</v-card-title>
+                <v-card-text>Use this dialog to create a new zone and specify different time periods for it. If a zone is not current in any specified period, the season away mode temperature will be used as the desired temperature.</v-card-text>
                 <v-form ref="addForm" lazy-validation>
                     <v-text-field v-model="newZone.name"
                                   :rules="[validationRules.required, validationRules.format, validationRules.length]"
@@ -100,6 +101,7 @@
         <v-dialog width="400" v-model="showEditZone">
             <v-card v-if="editZone">
                 <v-card-title>Edit {{currentZone ? currentZone.name : ''}}</v-card-title>
+                <v-card-text>Use this dialog to modify an existing zone and change its time periods for it. If a zone is not current in any specified period, the season away mode temperature will be used as the desired temperature.</v-card-text>
                 <v-form ref="addForm" lazy-validation>
                     <v-text-field v-model="editZone.name"
                                   :rules="[validationRules.required, validationRules.format, validationRules.length]"

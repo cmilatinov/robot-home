@@ -31,10 +31,10 @@
         </div>
         <h1 style="z-index: 5;">{{room.name}}</h1>
         <div class="diagram-room-status">
+            <v-icon class="ma-1 white--text" v-if="hvac">mdi-fan</v-icon>
             <v-icon class="ma-1 light" :key="`l-${i}`" v-for="i in (0, numLightsOn)">fa-lightbulb</v-icon>
             <v-icon class="ma-1 lock" :key="`dl-${i}`" v-for="i in (0, numDoorsLocked)">fa-lock</v-icon>
             <v-icon class="ma-1 lock" :key="`wb-${i}`" v-for="i in (0, numWindowsBlocked)">fa-ban</v-icon>
-            <v-icon class="ma-1 white--text" v-if="hvac">mdi-fan</v-icon>
         </div>
         <div class="diagram-room-controls">
             <v-menu offset-y :close-on-content-click="false">

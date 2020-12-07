@@ -36,7 +36,7 @@ public class Room extends IdentifiableObject {
     /**
      * Actual temperature of the room.
      */
-    private float temperature = 24.0f;
+    private float temperature = 11.0f;
 
     /**
      * Desired temperature of the room.
