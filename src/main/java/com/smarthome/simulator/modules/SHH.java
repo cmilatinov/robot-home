@@ -255,7 +255,7 @@ public class SHH extends Module {
      */
     private void setDefaultZone() {
         zones.clear();
-        Zone defaultZone = new Zone("default", true);
+        Zone defaultZone = new Zone("Home", true);
         defaultZone.getPeriods().add(new Period("00:00", "23:59", simulation.getTemperatureOutside()));
         defaultZone.getRooms().addAll(simulation.getHouseLayout().getRooms());
         zones.add(defaultZone);
